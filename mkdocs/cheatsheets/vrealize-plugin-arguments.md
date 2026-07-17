@@ -1,4 +1,4 @@
-com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.21.1-SNAPSHOT
+com.vmware.pscoe.maven.plugins:vrealize-package-maven-plugin:4.22.1-SNAPSHOT
 
 Name: vrealize-package-maven-plugin
 Description: Build Tools for VMware Aria provides development and release
@@ -8,7 +8,7 @@ Description: Build Tools for VMware Aria provides development and release
   DevOps practices for managing and deploying content.
 Group Id: com.vmware.pscoe.maven.plugins
 Artifact Id: vrealize-package-maven-plugin
-Version: 4.21.1-SNAPSHOT
+Version: 4.22.1-SNAPSHOT
 Goal Prefix: vrealize
 
 This plugin has 4 goals:
@@ -69,6 +69,10 @@ vrealize:auth
 
     vcd (Default: ${vcd.*})
       User property: vcd
+      (no description available)
+
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
       (no description available)
 
     vrang (Default: ${vrang.*})
@@ -161,6 +165,10 @@ vrealize:clean
       User property: vcd
       (no description available)
 
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
+      (no description available)
+
     vrang (Default: ${vrang.*})
       User property: vrang
       (no description available)
@@ -245,6 +253,10 @@ vrealize:push
 
     vcd (Default: ${vcd.*})
       User property: vcd
+      (no description available)
+
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
       (no description available)
 
     vrang (Default: ${vrang.*})
@@ -334,6 +346,10 @@ vrealize:release
 
     vcd (Default: ${vcd.*})
       User property: vcd
+      (no description available)
+
+    vcfa (Default: ${vcfa.*})
+      User property: vcfa
       (no description available)
 
     version

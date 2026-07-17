@@ -68,7 +68,7 @@ Copy the configuration below that matches your target environment. Be sure to re
                     <vro.authPort>443</vro.authPort>
                     <vro.port>443</vro.port>
                     <vro.username>configurationadmin</vro.username>
-                    <vro.password>VMware1!VMware1!</vro.password>   
+                    <vro.password>VMware1!VMware1!</vro.password>
 
                     <vrang.host>flt-auto01.corp.internal</vrang.host>
                     <vrang.auth.host>flt-auto01.corp.internal</vrang.auth.host>
@@ -78,7 +78,7 @@ Copy the configuration below that matches your target environment. Be sure to re
                     <vrang.project.name>Development</vrang.project.name>
                     <vrang.org.name>vidm-l-01a</vrang.org.name>
                     <vrang.import.timeout>6</vrang.import.timeout>
-                    
+
                     <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
                     <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
                     <http.connection.timeout>10000000</http.connection.timeout>
@@ -117,8 +117,9 @@ Copy the configuration below that matches your target environment. Be sure to re
                     <vro.authPort>443</vro.authPort>
                     <vro.port>443</vro.port>
                     <vro.username>admin@System</vro.username>
-                    <vro.password>VMware1!VMware1!</vro.password>   
+                    <vro.password>VMware1!VMware1!</vro.password>
 
+                    <!-- Parameters for VM-Apps tenants (similar to Aria 8) -->
                     <vrang.host>flt-auto01.corp.internal</vrang.host>
                     <vrang.auth.host>flt-auto01.corp.internal</vrang.auth.host>
                     <vrang.username>admin@System</vrang.username>
@@ -127,7 +128,17 @@ Copy the configuration below that matches your target environment. Be sure to re
                     <vrang.project.name>Development</vrang.project.name>
                     <vrang.org.name>vm-apps</vrang.org.name>
                     <vrang.import.timeout>6</vrang.import.timeout>
-                    
+
+                    <!-- Parameters for All-Apps tenants (separate set starting with vcfa.) -->
+                    <vcfa.host>flt-auto01.corp.internal</vcfa.host>
+                    <vcfa.auth.host>flt-auto01.corp.internal</vcfa.auth.host>
+                    <vcfa.username>admin@System</vcfa.username>
+                    <vcfa.password>VMware1!VMware1!</vcfa.password>
+                    <vcfa.port>443</vcfa.port>
+                    <vcfa.project.name>Development</vcfa.project.name>
+                    <vcfa.org.name>vm-apps</vcfa.org.name>
+                    <vcfa.import.timeout>6</vcfa.import.timeout>
+
                     <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
                     <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>
                     <http.connection.timeout>10000000</http.connection.timeout>
@@ -191,7 +202,7 @@ To export Actions as JavaScript files:
 3. Add your modified Action(s) to the package and click **Save**.
 4. Run the following command locally:
     ```bash
-    mvn vro:pull -Pdev -pl actions 
+    mvn vro:pull -Pdev -pl actions
     ```
 
 ### Pulling Other Content (Workflows, Configs, etc.)
@@ -265,7 +276,7 @@ To bypass the manual prompts, you can create an `environment.properties` file in
     vro_run_workflow=false
     ```
 
-=== "VCF 9"
+=== "VCF 9 VM Apps"
     ```conf
     http_connection_timeout=360
     http_socket_timeout=360
@@ -277,6 +288,30 @@ To bypass the manual prompts, you can create an `environment.properties` file in
     vrang_password=VMware1!VMware1!
     vrang_port=443
     vrang_username=admin@System
+    vrealize_ssh_timeout=300
+    vro_delete_old_versions=false
+    vro_embedded=true
+    vro_enable_backup=false
+    vro_force_import_latest_versions=false
+    vro_import_configuration_attribute_values=false
+    vro_import_configuration_secure_attribute_values=false
+    vro_import_old_versions=false
+    vro_import_packages=true
+    vro_run_workflow=false
+    ```
+
+=== "VCF 9 All Apps"
+    ```conf
+    http_connection_timeout=360
+    http_socket_timeout=360
+    ignore_ssl_certificate_verification=true
+    ignore_ssl_host_verification=true
+    skip_vro_import_old_versions=true
+    vcfa_auth_with_refresh_token=false
+    vcfa_host=flt-auto01.corp.internal
+    vcfa_password=VMware1!VMware1!
+    vcfa_port=443
+    vcfa_username=admin@System
     vrealize_ssh_timeout=300
     vro_delete_old_versions=false
     vro_embedded=true

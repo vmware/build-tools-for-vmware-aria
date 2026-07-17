@@ -1,0 +1,380 @@
+{
+  "id" : "aac5710f-a7e2-45f8-9f2f-b539cbbeb5fa",
+  "displayName" : "Custom REST Host",
+  "description" : "Sample custom resource",
+  "resourceType" : "Custom.hosts",
+  "externalType" : "REST:RESTHost",
+  "status" : "RELEASED",
+  "orgId" : "457e4ab6-727f-446c-9d20-ba150e18950b",
+  "schemaType" : "VRO_INVENTORY",
+  "mainActions" : {
+    "create" : {
+      "id" : "8F8080808080808080808080808080808080808001299080088268176866967b3",
+      "name" : "Add a REST host",
+      "description" : "Adds a REST host to the plug-in's inventory.",
+      "type" : "vro.workflow",
+      "inputParameters" : [ {
+        "type" : "string",
+        "name" : "name",
+        "description" : "Host's name"
+      }, {
+        "type" : "string",
+        "name" : "url",
+        "description" : "Host's base URL"
+      }, {
+        "type" : "string",
+        "name" : "authentication",
+        "description" : "Host's authentication type"
+      }, {
+        "type" : "string",
+        "name" : "authUserName",
+        "description" : "Authentication user name"
+      }, {
+        "type" : "SecureString",
+        "name" : "authPassword",
+        "description" : "Authentication password"
+      }, {
+        "type" : "string",
+        "name" : "consumerKey",
+        "description" : "Consumer key"
+      }, {
+        "type" : "SecureString",
+        "name" : "consumerSecret",
+        "description" : "Consumer secret"
+      }, {
+        "type" : "string",
+        "name" : "accessToken",
+        "description" : "Access token"
+      }, {
+        "type" : "SecureString",
+        "name" : "accessTokenSecret",
+        "description" : "Access token secret"
+      }, {
+        "type" : "number",
+        "name" : "connectionTimeout",
+        "description" : "Connection timeout"
+      }, {
+        "type" : "number",
+        "name" : "operationTimeout",
+        "description" : "Operation timeout"
+      }, {
+        "type" : "string",
+        "name" : "sessionMode",
+        "description" : "Session mode"
+      }, {
+        "type" : "string",
+        "name" : "oauth2Token",
+        "description" : "OAuth 2.0 token"
+      }, {
+        "type" : "string",
+        "name" : "tokenSendingStrategy",
+        "description" : "OAuth 2.0 token sending strategy"
+      }, {
+        "type" : "string",
+        "name" : "workstation",
+        "description" : "Workstation  for NTLM authentication"
+      }, {
+        "type" : "string",
+        "name" : "domain",
+        "description" : "Domain  for NTLM authentication"
+      }, {
+        "type" : "boolean",
+        "name" : "useProxy",
+        "description" : "Use Proxy"
+      }, {
+        "type" : "string",
+        "name" : "proxyHost",
+        "description" : "Proxy host"
+      }, {
+        "type" : "number",
+        "name" : "proxyPort",
+        "description" : "Proxy port"
+      }, {
+        "type" : "boolean",
+        "name" : "ignoreWarnings",
+        "description" : "If set to true, the certificate is accepted silently and the certificate is added to the trusted store"
+      }, {
+        "type" : "boolean",
+        "name" : "hostVerification",
+        "description" : "Verify whether the target hostname matches the names stored inside the server's X.509 certificate"
+      }, {
+        "type" : "Configurator:Key",
+        "name" : "key",
+        "description" : "The PrivateKeyEntry to use for client certificate authentication."
+      }, {
+        "type" : "string",
+        "name" : "proxyAuthentication",
+        "description" : "Proxy AuthenticationType"
+      }, {
+        "type" : "string",
+        "name" : "proxyAuthUserName",
+        "description" : "Proxy user name"
+      }, {
+        "type" : "SecureString",
+        "name" : "proxyAuthPassword",
+        "description" : "Proxy password"
+      }, {
+        "type" : "string",
+        "name" : "proxySessionMode",
+        "description" : "Proxy Session mode"
+      }, {
+        "type" : "boolean",
+        "name" : "autoUrlRedirection",
+        "description" : "Automatically URL redirection"
+      }, {
+        "type" : "string",
+        "name" : "redirectStrategy",
+        "description" : "Redirect strategy"
+      }, {
+        "type" : "boolean",
+        "name" : "parallelRequestExecution"
+      } ],
+      "outputParameters" : [ {
+        "type" : "REST:RESTHost",
+        "name" : "restHost",
+        "description" : "The created RESTHost"
+      } ],
+      "endpointLink" : "/resources/endpoints/d88757a9-cda8-4efe-8d8c-866006b86782"
+    },
+    "delete" : {
+      "id" : "99808080808080808080808080808080A8808080012995053491651398b094fa1",
+      "name" : "Remove a REST host",
+      "description" : "Removes a REST host from the plug-in's inventory.",
+      "type" : "vro.workflow",
+      "inputParameters" : [ {
+        "type" : "REST:RESTHost",
+        "name" : "host",
+        "description" : "REST host to be removed"
+      } ],
+      "outputParameters" : [ {
+        "type" : "rest:RESTHost",
+        "name" : "removedRestHost",
+        "description" : "The removed REST host"
+      } ],
+      "endpointLink" : "/resources/endpoints/d88757a9-cda8-4efe-8d8c-866006b86782"
+    }
+  },
+  "properties" : {
+    "type" : "object",
+    "properties" : {
+      "parallelRequestExecution" : {
+        "type" : "boolean",
+        "title" : "Support for parallel request executions",
+        "default" : false
+      },
+      "oauth2Token" : {
+        "type" : "string",
+        "title" : "Token"
+      },
+      "operationTimeout" : {
+        "type" : "number",
+        "title" : "Operation timeout (seconds)",
+        "minimum" : 0,
+        "default" : 60
+      },
+      "consumerSecret" : {
+        "type" : "string",
+        "encrypted" : true,
+        "title" : "Consumer secret",
+        "writeOnly" : true
+      },
+      "proxyPort" : {
+        "type" : "number",
+        "title" : "Proxy port",
+        "$dynamicDefault" : "/data/vro-actions/com.vmware.o11n.forms/evalOGNL?ognl=(#useProxy && #host != null) ? #host.proxyPort : \"\"&host=vcoSerialized:&host__type_=string&useProxy={{useProxy}}&useProxy__type_=boolean&return=number"
+      },
+      "hostVerification" : {
+        "type" : "boolean",
+        "title" : "Verify whether the target hostname matches the names stored inside the server's X.509 certificate",
+        "default" : true
+      },
+      "proxyAuthPassword" : {
+        "type" : "string",
+        "encrypted" : true,
+        "title" : "Proxy password",
+        "writeOnly" : true
+      },
+      "consumerKey" : {
+        "type" : "string",
+        "title" : "Consumer key"
+      },
+      "connectionTimeout" : {
+        "type" : "number",
+        "title" : "Connection timeout (seconds)",
+        "minimum" : 0,
+        "default" : 30
+      },
+      "key" : {
+        "type" : "object",
+        "title" : "The PrivateKeyEntry to use for client certificate authentication.",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "title" : "Reference object identifier"
+          },
+          "type" : {
+            "type" : "string",
+            "title" : "Reference object type"
+          }
+        },
+        "$data" : "vro/data/inventory/Configurator:Key"
+      },
+      "authentication" : {
+        "type" : "string",
+        "title" : "Host's authentication type",
+        "enum" : [ "NONE", "OAuth 1.0", "OAuth 2.0", "Basic", "Digest", "NTLM", "Kerberos" ],
+        "default" : "NONE"
+      },
+      "redirectStrategy" : {
+        "type" : "string",
+        "title" : "Redirect strategy",
+        "enum" : [ "defaultRedirect", "alwaysRedirect", "neverRedirect" ],
+        "default" : "defaultRedirect"
+      },
+      "authUserName" : {
+        "type" : "string",
+        "title" : "Authentication user name"
+      },
+      "autoUrlRedirection" : {
+        "type" : "boolean",
+        "title" : "Automatically URL Redirection",
+        "default" : false
+      },
+      "ignoreWarnings" : {
+        "type" : "boolean",
+        "title" : "If set to true, the certificate is accepted silently and the certificate is added to the trusted store.",
+        "default" : false
+      },
+      "workstation" : {
+        "type" : "string",
+        "title" : "Workstation  for NTLM authentication"
+      },
+      "proxySessionMode" : {
+        "type" : "string",
+        "title" : "Proxy Session mode",
+        "enum" : [ "Shared Session", "Per User Session" ],
+        "default" : "Shared Session"
+      },
+      "proxyAuthentication" : {
+        "type" : "string",
+        "title" : "Proxy AuthenticationType",
+        "$data" : "/data/vro-actions/com.vmware.o11n.forms/evalOGNL?ognl=new String[]{\"NONE\", \"Basic\"}&return=Array/string",
+        "$dynamicDefault" : "/data/vro-actions/com.vmware.o11n.forms/evalOGNL?ognl=NONE&return=string"
+      },
+      "useProxy" : {
+        "type" : "boolean",
+        "title" : "Use Proxy",
+        "default" : false
+      },
+      "accessToken" : {
+        "type" : "string",
+        "title" : "Access token"
+      },
+      "proxyHost" : {
+        "type" : "string",
+        "title" : "Proxy address",
+        "$dynamicDefault" : "/data/vro-actions/com.vmware.o11n.forms/evalOGNL?ognl=(#useProxy && #host != null) ? #host.proxyHost : \"\"&host=vcoSerialized:&host__type_=string&useProxy={{useProxy}}&useProxy__type_=boolean&return=string"
+      },
+      "url" : {
+        "type" : "string",
+        "title" : "URL"
+      },
+      "authPassword" : {
+        "type" : "string",
+        "encrypted" : true,
+        "title" : "Authentication password",
+        "writeOnly" : true
+      },
+      "accessTokenSecret" : {
+        "type" : "string",
+        "encrypted" : true,
+        "title" : "Access token secret",
+        "writeOnly" : true
+      },
+      "tokenSendingStrategy" : {
+        "type" : "string",
+        "title" : "Token sending strategy",
+        "enum" : [ "Authorization header", "Query parameter" ],
+        "default" : "Authorization header"
+      },
+      "proxyAuthUserName" : {
+        "type" : "string",
+        "title" : "Proxy user name"
+      },
+      "domain" : {
+        "type" : "string",
+        "title" : "Domain  for NTLM authentication"
+      },
+      "name" : {
+        "type" : "string",
+        "title" : "Name"
+      },
+      "sessionMode" : {
+        "type" : "string",
+        "title" : "Session mode",
+        "enum" : [ "Shared Session", "Per User Session" ],
+        "default" : "Shared Session"
+      },
+      "restHost" : {
+        "type" : "object",
+        "properties" : {
+          "redirectStrategy" : {
+            "type" : "string",
+            "title" : "redirectStrategy"
+          },
+          "displayName" : {
+            "type" : "string",
+            "title" : "displayName"
+          },
+          "operationTimeout" : {
+            "type" : "number",
+            "title" : "operationTimeout"
+          },
+          "proxyAuthentication" : {
+            "type" : "object",
+            "title" : "proxyAuthentication"
+          },
+          "proxyHost" : {
+            "type" : "string",
+            "title" : "proxyHost"
+          },
+          "url" : {
+            "type" : "string",
+            "title" : "url"
+          },
+          "proxyPort" : {
+            "type" : "number",
+            "title" : "proxyPort"
+          },
+          "hostVerification" : {
+            "type" : "boolean",
+            "title" : "hostVerification"
+          },
+          "name" : {
+            "type" : "string",
+            "title" : "name"
+          },
+          "id" : {
+            "type" : "string",
+            "title" : "id"
+          },
+          "connectionTimeout" : {
+            "type" : "number",
+            "title" : "connectionTimeout"
+          },
+          "privateKeyId" : {
+            "type" : "string",
+            "title" : "privateKeyId"
+          },
+          "authentication" : {
+            "type" : "object",
+            "title" : "authentication"
+          }
+        },
+        "computed" : true
+      }
+    },
+    "required" : [ "name", "url", "authentication" ]
+  },
+  "name" : "Custom.hosts"
+}

@@ -26,6 +26,12 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add CSS as separate file to request forms in `vra-ng` projects*
+
+CSS is now stored as a separate file and removed from the original custom form JSON definition. If no CSS is present an empty file is created for better usability.
+
+In case of legacy content (CSS is present as in-line content in the form and no separate file exists) the original behaviour is preserved. During the next `pull` operation the content is updated to the new format.
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -39,26 +45,21 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Change type of `Import Dashboard for All Users` Installer input to boolean*
+### *Improved Operation Logging*
 
 #### Previous Behavior
-The input is parsed as boolean but the input type is string which is confusing for the user and does not have auto suggested values.
-
-```txt
-Import Dashboards For All Users:
-Invalid value.
-Expected a string with at least 1 character.
-
-Import Dashboards For All Users: yes
-```
+Push, pull, and clean operations produced log output that was more difficult to read and analyze.
 
 #### New Behavior
+Updated log severity levels to provide clearer and more easily readable output when push, pull, and clean operations are executed.
 
-Input type is boolean with suggested values and default value of true.
+### *Improved Store Execution Order*
 
-```txt
-Import Dashboards For All Users (Y/N) [Y]:
-```
+#### Previous Behavior
+The execution order of store operations could lead to dependency-related issues between object types during push, pull, and clean operations.
+
+#### New Behavior
+Updated the store execution sequence for all three operations to ensure dependencies are processed in the correct order, reducing the likelihood of object type dependency issues.
 
 ## Upgrade procedure
 

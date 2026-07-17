@@ -78,7 +78,7 @@ public class PullMojo extends AbstractIacMojo {
 		}
 
 		MavenProjectPackageInfoProvider pkgInfoProvider = new MavenProjectPackageInfoProvider(project);
-		File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtention())
+		File pkgFile = tempDir.resolve(pkgInfoProvider.getPackageName() + "." + PackageType.VRLI.getPackageExtension())
 				.toFile();
 		Package pkg = PackageFactory.getInstance(PackageType.VRLI, pkgFile);
 		try {

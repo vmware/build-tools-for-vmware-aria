@@ -16,6 +16,7 @@
 		<module>polyglot</module>
 		<module>abx</module>
 		<module>vra-ng</module>
+		<module>vcfa-all-apps</module>
 		<module>xml</module>
 		<module>vcd-ng</module>
 		<module>vrops</module>

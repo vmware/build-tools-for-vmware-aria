@@ -88,7 +88,11 @@ gulp.task("bundle", async done => {
 	done();
 });
 
-gulp.task("build", gulp.series("clean", "compile", "bundle", "copyLibs", "test"));
+const buildTasks = ["clean", "compile", "bundle", "copyLibs"];
+if (!(process.env.SKIP_NPM_TESTS && process.env.SKIP_NPM_TESTS.toLowerCase() === 'true')) {
+    buildTasks.push("test");
+}
+gulp.task("build", gulp.series(buildTasks));
 // gulp.task("build", gulp.series("clean", "compile", "copyLibs", "test"));
 
 function getLibFiles(path: string): string[] {

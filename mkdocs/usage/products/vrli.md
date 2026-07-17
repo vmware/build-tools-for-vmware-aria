@@ -126,7 +126,7 @@ The following need to be added to the profile that you intend to use:
     <vrli.vropsPort>443</vrli.vropsPort>
     <vrli.vropsUser>admin</vrli.vropsUser>
     <vrli.vropsPassword>VMware1!VMware1!</vrli.vropsPassword>
-    <vrli.vropsAuthSource>local</vrli.vropsAuthSource> 
+    <vrli.vropsAuthSource>local</vrli.vropsAuthSource>
 </profile>
 ```
 
