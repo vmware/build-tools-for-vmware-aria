@@ -27,7 +27,7 @@
     "iconv-lite": "0.6.3",
     "nyc": "17.1.0",
     "minimatch": "^10.2.4",
-    "brace-expansion": "^2.0.3"
+    "brace-expansion": "^2.1.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "28.0.1",
