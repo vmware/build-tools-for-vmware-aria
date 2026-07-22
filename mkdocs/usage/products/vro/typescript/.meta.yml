@@ -1,0 +1,6 @@
+vars:
+    archetype:
+        group_id: vmware.pscoe.o11n.archetypes
+        artifact_id: package-typescript-archetype
+    project:
+        artifact_id: vro-ts

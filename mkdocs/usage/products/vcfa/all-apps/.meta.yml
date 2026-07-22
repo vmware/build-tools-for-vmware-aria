@@ -1,0 +1,6 @@
+vars:
+    archetype:
+        group_id: com.vmware.pscoe.vcfa-all-apps.archetypes
+        artifact_id: package-vcfa-all-apps-archetype
+    project:
+        artifact_id: vcfa-project

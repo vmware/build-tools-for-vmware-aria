@@ -1,0 +1,6 @@
+vars:
+    archetype:
+        group_id: vmware.pscoe.o11n.archetypes
+        artifact_id: package-xml-archetype
+    project:
+        artifact_id: vro-xml

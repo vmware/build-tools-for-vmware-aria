@@ -1,5 +1,11 @@
 ---
 title: VCF Operations
+vars:
+    archetype:
+        group_id: com.vmware.pscoe.vrops.archetypes
+        artifact_id: package-vrops-archetype
+    project:
+        artifact_id: vrops-project
 ---
 
 ## Overview
@@ -38,25 +44,7 @@ title: VCF Operations
 
 To create a new {{ products.vrops_9_short_name }} project from archetype use the following command:
 
-```Bash
-mvn archetype:generate \
-    -DinteractiveMode=false \
-    -DarchetypeGroupId=com.vmware.pscoe.vrops.archetypes \
-    -DarchetypeArtifactId=package-vrops-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} \ # (1)!
-    -DgroupId={{ archetype.customer_project.group_id}} \ # (2)!
-    -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
-```
-
-1. {{ archetype.customer_project.archetype_version_hint }}
-2. {{ archetype.customer_project.group_id_hint }}
-3. {{ archetype.customer_project.artifact_id_hint }}
-
-!!! note
-    If **build_tools_for_aria_version** is not specified a default value of 2.38.1 will be used.
-
-!!! note
-    Make sure to remove any trialing spaces after the backslashes (**\\**) otherwise the command will fail.
+{% include "./reusables/archetype-generate.md" %}
 
 ### Content Structure
 

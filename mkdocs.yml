@@ -36,7 +36,7 @@ extra:
   version:
     provider: mike
   iac:
-    latest_release: 4.22.0
+    latest_release: 4.24.0
   general:
     bta_name: Build Tools for VMware Aria
     installer_bundle_profile: bundle-with-installer
@@ -70,6 +70,7 @@ extra:
 
 
 plugins:
+  - meta
   - include-markdown
   - search
   - awesome-pages

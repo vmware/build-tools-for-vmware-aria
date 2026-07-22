@@ -1,0 +1,6 @@
+vars:
+    archetype:
+        group_id: com.vmware.pscoe.vra-ng.archetypes
+        artifact_id: package-vra-ng-archetype
+    project:
+        artifact_id: vrang-project
