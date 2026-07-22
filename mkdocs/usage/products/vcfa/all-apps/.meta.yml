@@ -4,3 +4,4 @@ vars:
         artifact_id: package-vcfa-all-apps-archetype
     project:
         artifact_id: vcfa-project
+        type: VCF Automation All Apps

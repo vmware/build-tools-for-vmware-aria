@@ -6,6 +6,7 @@ vars:
         artifact_id: package-vrli-archetype
     project:
         artifact_id: vrli-project
+        type: VCF Operations for Logs
 ---
 
 ## Overview

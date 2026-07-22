@@ -6,6 +6,7 @@ vars:
         artifact_id: package-vrops-archetype
     project:
         artifact_id: vrops-project
+        type: VCF Operations
 ---
 
 ## Overview

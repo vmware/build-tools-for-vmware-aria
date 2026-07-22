@@ -4,3 +4,4 @@ vars:
         artifact_id: package-vra-ng-archetype
     project:
         artifact_id: vrang-project
+        type: Aria Automation/VCF Automation VM Apps

@@ -4,3 +4,4 @@ vars:
         artifact_id: package-actions-archetype
     project:
         artifact_id: vro-actions
+        type: VCF Operations Orchestrator Actions
