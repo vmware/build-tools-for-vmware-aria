@@ -5,3 +5,5 @@ vars:
     project:
         artifact_id: vcfa-project
         type: VCF Automation All Apps
+    maven:
+        goal: vcfa-all-apps

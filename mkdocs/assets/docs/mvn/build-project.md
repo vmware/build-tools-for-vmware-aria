@@ -1,10 +1,14 @@
-### Build Project
+### Build the Project
+
+This section describes the operation for building the project.
 
 #### Overview
 
-Maven goal for compiling the code into a deployment ready package.
+A Maven goal for compiling the code into a deployment-ready package.
 
 #### Usage
+
+To build the project, use the following command.
 
 ```bash
 mvn clean package
