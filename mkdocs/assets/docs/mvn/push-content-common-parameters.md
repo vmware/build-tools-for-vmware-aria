@@ -46,12 +46,12 @@ This section describes the flags that allow you to to bypass the security featur
     - For the **the CN does not match the actual hostname** error, use the `vrealize.ssl.ignore.hostname` parameter.
 
     ```xml 
-    <!-- Parameters in settings.xml file --> <!-- # (1)! -->
+    <!-- Parameters for ignoring certificates in settings.xml file --> <!-- # (1)! -->
     ...
     <profiles>
       ...
       <profile>
-          <id>{{ archetype.customer_project.maven_profile_name}}</id>
+          <id>{{ archetype.customer_project.maven_profile_name }}</id>
           <properties>
               ...
               <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>

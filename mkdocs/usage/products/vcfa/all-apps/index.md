@@ -21,14 +21,16 @@ title: All Apps Organization Project
 
 Following is a list of the supported content for All Apps organization projects.
 
-- `blueprint`
-- `property-group`
-- `custom-resource`
-- `resource-action`
-- `workflow`
-- `subscription`
-- `policy`
-- `scenario`
+| Content Type                  | Attribute key in [Content Descriptor](#content-descriptor)    | Comment                                               |
+|-------------------------------|---------------------------------------------------------------|-------------------------------------------------------|
+| Blueprints                    | `blueprint`                                                   | See [Blueprint](./Blueprints.md) page.                |
+| Custom Resources              | `custom-resource`                                             | See [Custom Resources](./Custom%20Resources.md) page. |
+| Policies                      | `policy`                                                      | See [Policies](./Policies.md) page.                   |
+| Property Groups               | `property-group`                                              | N/A                                                   |
+| Resource Actions              | `resource-action`                                             | N/A                                                   |
+| Notifications (Configuration) | `scenario`                                                    | N/A                                                   |
+| Event Subscriptions           | `subscription`                                                | N/A                                                   |
+| Workflows (as Catalog Items)  | `workflow`                                                    | See [Workflows](Workflows.md) page.                   |
 
 ## Create New {{ products.vra_9_short_name }} Project for All Apps Organizations
 
@@ -43,7 +45,7 @@ To create a new {{ products.vra_9_short_name }} project for All Apps from the ar
 The command for creating a project produces the following project file structure.
 
 ```ascii
-catalog
+vcfa-project
 ├── README.md
 ├── content.yaml
 ├── pom.xml
@@ -87,7 +89,7 @@ catalog
 
 ## Project Content
 
-The following sections give details about the project content.
+The following sections give details about the project content management.
 
 ### Content Descriptor
 
@@ -231,10 +233,8 @@ This section describes the operations that you can perform with the {{ products.
 
 <!-- Build Project Section -->
 {% include-markdown "../../../../assets/docs/mvn/build-project.md" %}
-The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vcfaa** file generated in the target folder of the project.
 
-<!-- Bundle Project Section -->
-{% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
+The result of the command is a file with the name **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vcfaa** that is generated in the `target` directory of the project.
 
 ### Pull Content
 
@@ -246,7 +246,7 @@ When working with a {{ products.vra_9_full_name }} project for an All Apps organ
 
 #### Usage
 
-To support this use case, a custom Maven goal `vcfa-all-apps:pull` is used. The following command pulls the content defined in the *Content Descriptor* file to the current project from a specified server and expands its content in the local filesystem by overriding any local content.
+To pull content from a remote server, use the `vcfa-all-apps:pull` custom Maven goal. The following command pulls the content defined in the *Content Descriptor* file to the current project from a specified server and expands its content in the local filesystem by overriding any local content.
 
 ```bash
 mvn vcfa-all-apps:pull -P{{ archetype.customer_project.maven_profile_name}}
@@ -267,14 +267,17 @@ In the Maven command, you can pass additional parameters as flags with the `-D` 
 
 #### Additional Parameters
 
-In the Maven command, you can pass additional parameters as flags with the `-D` option, such as `mvn clean package -P{{ archetype.customer_project.maven_profile_name}} -Dvcfa.bp.release=true`, where the `vcfa.bp.release` parameter creates a new version of an already-released blueprint (see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `true` but when dealing with blueprint development, you can set this option to `false` to avoid unnecessary blueprint versions.
+In the Maven command, you can pass additional parameters as flags with the `-D` option, such as `mvn clean package -P{{ archetype.customer_project.maven_profile_name}} -Dvcfa.bp.release=false`, where the `vcfa.bp.release` parameter creates a new version of an already-released blueprint (see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `true` but when dealing with blueprint development, you can set this option to `false` to avoid unnecessary blueprint versions.
+
+<!-- Bundle Project Section -->
+{% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
 
 ### Release
 
-To release specific content that is available on a live server, you can use the ```vrealize:release``` command as shown in the following example.
+To release specific content that is available on a live server, you can use the `{{ maven_goal }}:release` command as shown in the following example.
 
 ```bash
-mvn clean package vrealize:release -P{{ archetype.customer_project.maven_profile_name}} -Dvcfa.contentType=blueprint -Dvcfa.contentNames=testBlueprint -Dvcfa.version=1 -DreleaseIfNotUpdated=false
+mvn clean package {{ maven_goal }}:release -P{{ archetype.customer_project.maven_profile_name}} -Dvcfa.contentType=blueprint -Dvcfa.contentNames=testBlueprint -Dvcfa.version=1 -DreleaseIfNotUpdated=false
 ```
 
 Note that the only required parameter in this command is `vcfa.version`. The following list explains the default behavior for other parameters from the command.
@@ -284,7 +287,7 @@ Note that the only required parameter in this command is `vcfa.version`. The fol
 - The `vcfa.releaseIfNotUpdated` parameter defaults to the value `false` that skips content if there are no updates since latest version.
 
 !!! note
-    Nothing will be released if any of the content on the server already has a release with the version that you specify in `vcfa.version`.
+    Nothing will be released if any of the content on the server already has a release with the version that you specify in the `vcfa.version` parameter.
 
 <!-- Clean Up Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/clean-up-content.md" %}

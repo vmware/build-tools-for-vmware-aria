@@ -10,8 +10,10 @@
 
 This section describes the operation for cleaning up project content from a target environment.
 
+<!-- markdownlint-disable MD051 -->
 !!! Note
     Note that the supported functionality for the cleaning up of project content from a target environment depends on the project type. For details, see the [Project Type Support for Content Clean Up](#project-type-support-for-content-clean-up).
+<!-- markdownlint-enable MD051 -->
 
 #### Overview
 
@@ -30,10 +32,11 @@ Following is a list of the properties that you define via the `-D` command line 
 - The `includeDependencies` flag specifies whether the package dependencies should be deleted together with the project package.
 - The `cleanUpOldVersions` flag specifies whether old versions of the package should be deleted. When combined with the `includeDependencies` flag, the operation is extended to the dependencies of the project package as well.
 - The `cleanUpLastVersion` flag specifies whether the latest version of the project package should be deleted before importing.
-- The `dryrun` flag specifies whether the operation should be run in dry run mode. {% if product_type != "vro" %}
+- The `dryrun` flag specifies whether the operation should be run in dry run mode. {% if product_type != "vro" %} <!-- markdownlint-disable MD051 -->
 
     !!! Note
         Note that the {{ project_type }} project does not support running the clean up operation in dry run mode. For details, see the [Project Type Support for Content Clean Up](#project-type-support-for-content-clean-up).
+<!-- markdownlint-enable MD051 -->
 {% endif %}
 
 ##### Examples

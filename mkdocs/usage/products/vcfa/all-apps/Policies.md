@@ -1,10 +1,10 @@
 ---
-title: Content Policies
+title: Policies
 ---
 
 ## Overview
 
-There are four types of content policies.
+There are four types of policies.
 
 - Approval
 - Day 2 Actions
@@ -13,7 +13,7 @@ There are four types of content policies.
 
 ## Structure
 
-Below is an example structure of content policies export.
+Below is an example structure of policies export.
 
 Example `content.yaml`
 
