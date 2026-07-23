@@ -36,7 +36,7 @@ XML project type is one of the available {{ products.vro_short_name }} project t
 
 To create a new {{ products.vro_short_name }} project from archetype use the following command:
 
-{% include "../../reusables/archetype-generate.md" %}
+{% include "../../../../assets/docs/mvn/archetype-generate.md" %}
 
 ### Content Structure
 

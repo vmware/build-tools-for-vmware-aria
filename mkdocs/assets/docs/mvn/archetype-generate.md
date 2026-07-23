@@ -26,7 +26,7 @@
 
 === "Windows (PowerShell)"
 
-    ```powershell
+    ```pwsh
     mvn archetype:generate `
       -DinteractiveMode=false `
       -DarchetypeGroupId={{ archetype_group_id }} `

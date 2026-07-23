@@ -40,7 +40,7 @@ Following is a list of the supported content for VM Apps organization projects.
 
 To create a new {{ products.vra_9_short_name }} project for VM Apps from archetype, use the following command.
 
-{% include "../../reusables/archetype-generate.md" %}
+{% include "../../../../assets/docs/mvn/archetype-generate.md" %}
 
 ### Content Structure
 

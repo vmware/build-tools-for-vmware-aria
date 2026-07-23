@@ -36,7 +36,7 @@ vars:
 
 To create a new {{ products.vrli_9_full_name }} project from archetype use the following command:
 
-{% include "./reusables/archetype-generate.md" %}
+{% include "../../assets/docs/mvn/archetype-generate.md" %}
 
 ### Content Structure
 

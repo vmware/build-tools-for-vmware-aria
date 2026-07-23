@@ -33,7 +33,7 @@ The actions project type also allows the user to write unit tests and has embedd
 
 To create a new {{ products.vro_short_name }} project from archetype use the following command:
 
-{% include "../../reusables/archetype-generate.md" %}
+{% include "../../../../assets/docs/mvn/archetype-generate.md" %}
 
 ### Content Structure
 

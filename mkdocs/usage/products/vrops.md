@@ -45,7 +45,7 @@ vars:
 
 To create a new {{ products.vrops_9_short_name }} project from archetype use the following command:
 
-{% include "./reusables/archetype-generate.md" %}
+{% include "../../assets/docs/mvn/archetype-generate.md" %}
 
 ### Content Structure
 
