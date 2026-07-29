@@ -7,3 +7,4 @@ vars:
         type: VCF Automation All Apps
     maven:
         goal: vcfa-all-apps
+        property_prefix: vcfa

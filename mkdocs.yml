@@ -17,6 +17,7 @@ theme:
     - search.share
     - content.code.annotate
     - content.code.copy
+    - content.footnote.tooltips
   palette:
     # Palette toggle for light mode
     - scheme: default
@@ -39,6 +40,7 @@ extra:
     latest_release: 4.24.0
   general:
     bta_name: Build Tools for VMware Aria
+    bta_short_name: BTVA
     installer_bundle_profile: bundle-with-installer
   products:
     vro_short_name: Orchestrator
@@ -86,6 +88,7 @@ markdown_extensions:
   - pymdownx.details
   - toc:
       permalink: true
+  - footnotes
 # extra_css:
 #   - css/version-select.css
 # extra_javascript:

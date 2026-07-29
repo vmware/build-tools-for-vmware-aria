@@ -5,3 +5,6 @@ vars:
     project:
         artifact_id: vrang-project
         type: Aria Automation/VCF Automation VM Apps
+    maven:
+        goal: vra-ng
+        property_prefix: vrang

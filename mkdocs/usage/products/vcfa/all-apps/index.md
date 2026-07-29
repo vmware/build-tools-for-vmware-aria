@@ -12,7 +12,7 @@ title: All Apps Organization Project
 | Package extension      | vcfaa                                                 |
 | Product compatibility  | {{ extra.products.vra_9_all_apps_full_name }} (9.x)   |
 
-{{ products.vra_9_full_name }} projects for All Apps organizations are called `vcfa-all-apps` projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
+{{ products.vra_9_full_name }} projects for All Apps organizations are called `vcfa-all-apps` projects in **{{ general.bta_name }}**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
 
 - The *Content Descriptor* defines what part of {{ products.vra_9_short_name }} content is part of the project in the `content.yaml` file.
 - The *Content Container* holds the actual content representation in the `./src` directory.
@@ -23,14 +23,14 @@ Following is a list of the supported content for All Apps organization projects.
 
 | Content Type                  | Attribute key in [Content Descriptor](#content-descriptor)    | Comment                                               |
 |-------------------------------|---------------------------------------------------------------|-------------------------------------------------------|
-| Blueprints                    | `blueprint`                                                   | See [Blueprint](./Blueprints.md) page.                |
-| Custom Resources              | `custom-resource`                                             | See [Custom Resources](./Custom%20Resources.md) page. |
-| Policies                      | `policy`                                                      | See [Policies](./Policies.md) page.                   |
-| Property Groups               | `property-group`                                              | N/A                                                   |
-| Resource Actions              | `resource-action`                                             | N/A                                                   |
-| Notifications (Configuration) | `scenario`                                                    | N/A                                                   |
-| Event Subscriptions           | `subscription`                                                | N/A                                                   |
-| Workflows (as Catalog Items)  | `workflow`                                                    | See [Workflows](Workflows.md) page.                   |
+| Blueprints                    | `blueprint`                                                   | See [Blueprints](./Blueprints.md).                    |
+| Custom Resources              | `custom-resource`                                             | See [Custom Resources](./Custom%20Resources.md).      |
+| Event Subscriptions           | `subscription`                                                | See [Event Subscriptions](./Event%20Subscriptions.md).|
+| Notifications (Configuration) | `scenario`                                                    | See [Notifications](./Scenarios.md).                  |
+| Policies                      | `policy`                                                      | See [Policies](./Policies.md).                        |
+| Property Groups               | `property-group`                                              | See [Property Groups](./Property%20Groups.md).        |
+| Resource Actions              | `resource-action`                                             | See [Resource Actions](./Resource%20Actions.md).      |
+| Workflows (as Catalog Items)  | `workflow`                                                    | See [Workflows](Workflows.md).                        |
 
 ## Create New {{ products.vra_9_short_name }} Project for All Apps Organizations
 
@@ -52,39 +52,40 @@ vcfa-project
 ├── release.sh
 └── src
     └── main
-        └── blueprints
-            └── Blueprint1
-                └── content.yaml
-                └── details.json
-                └── Blueprint1__FormData.json
-                └── styles.css
-        └── custom-resources
-            └── CustomResource1
-                └── details.json
-        └── policies
-            └── approval
-                └── ApprovalPolicy1.json
-            └── day2-actions
-                └── Day2ActionsPolicy1.json
-            └── iaas-resource
-                └── IaasResourcePolicy1.json
-            └── lease
-                └── LeasePolicy1.json
-        └── property-groups
-            └── PropertyGroup1.json
-        └── resource-actions
-            └── ResourceAction1
-                └── details.json
-                └── ResourceAction1__FormData.json
-                └── styles.css
-        └── scenarios
-            └── Scenario1
-                └── details.json
-                └── template.html
-        └── subscriptions
-            └── Subscription1.json
-        └── workflows
-            └── Workflow1.json
+        └── resources
+            └── blueprints
+                └── Blueprint1
+                    └── content.yaml
+                    └── details.json
+                    └── Blueprint1__FormData.json
+                    └── styles.css
+            └── custom-resources
+                └── CustomResource1
+                    └── details.json
+            └── policies
+                └── approval
+                    └── ApprovalPolicy1.json
+                └── day2-actions
+                    └── Day2ActionsPolicy1.json
+                └── iaas-resource
+                    └── IaasResourcePolicy1.json
+                └── lease
+                    └── LeasePolicy1.json
+            └── property-groups
+                └── PropertyGroup1.json
+            └── resource-actions
+                └── ResourceAction1
+                    └── details.json
+                    └── ResourceAction1__FormData.json
+                    └── styles.css
+            └── scenarios
+                └── Scenario1
+                    └── details.json
+                    └── template.html
+            └── subscriptions
+                └── Subscription1.json
+            └── workflows
+                └── Workflow1.json
 ```
 
 ## Project Content
@@ -119,14 +120,11 @@ For more information on each component, please refer to the corresponding sub-se
 
 #### Content Filtering
 
-Following is a list of the rules for managing project contents based on the contents of the content descriptor for each category type. Note that these rules apply to both types operation types, export (pulling contents) and import (pushing contents).
+Following is a list of the rules for managing project contents based on the contents of the content descriptor for each category type. Note that these rules apply to both operation types, export (pulling contents) and import (pushing contents).
 
 - Empty array (`[]`) - nothing from the object type is processed.
 - List of items - only the listed items from the object type are processed. If an object is not present on the server, an exception is thrown.
 - Null (no value) - everything from the object type is processed.
-
-!!! note
-    If the given objects are not found on the server, an error is thrown.
 
 ##### Content Filtering Rule Example
 
@@ -157,7 +155,7 @@ You should not rely on IDs exported by Build Tools for VMware Aria. Where needed
 
 ### Single Project And Single Organization
 
-When you are working with the `vcfa-all-apps` project type, each project that you generate is intended to work with *only a single project and and a single organization*. In case you need to work with more that one project or organization, you need to generate a separate Maven project for each of them.
+When you are working with the `vcfa-all-apps` project type, each project that you generate is intended to work with *a single project and a single organization only*. In case you need to work with more that one project or organization, you need to generate a separate Maven project for each of them.
 
 For every object type that contains the `organization` or the `projectId` key in the JSON definition (such as {{ products.vra_9_short_name }} policies), the following behavior applies.
 
@@ -197,7 +195,7 @@ You need to add the following configurations to the Maven profile from the `sett
 
 1. {{ archetype.customer_project.maven_settings_location_hint}}
 
-To specify the Maven profile that you want to use, passing its name with the `-P` options as shown in the following example.
+To specify the Maven profile that you want to use for an operation, pass its name with the `-P` options as shown in the following example.
 
 ``` bash
 mvn vcfa-all-apps:pull -P{{ archetype.customer_project.maven_profile_name}}
@@ -205,7 +203,7 @@ mvn vcfa-all-apps:pull -P{{ archetype.customer_project.maven_profile_name}}
 
 <!-- this comment is used to properly visualize the unordered list below -->
 
-Following is a list of elements from the profile configuration that provide further description of their values and the behavior they cause.
+Following is a list of elements from the profile configuration with further description of their values and the behavior they cause.
 
 - In the `vcfa.username` element for VCF Automation All Apps organizations, you need to provide the user name in the format `user@domain`, or more precisely, `user@organization`. For example, use `admin@System` for the `admin` user from the Provider organization (the "System" domain identifies the Provider organization) or use `configurationadmin@AllApps` for a `configurationadmin` user from an organization with the name `AllApps`.
 
@@ -220,7 +218,7 @@ Following is a list of elements from the profile configuration that provide furt
 
 - In the `vcfa.data.collection.delay.seconds` optional element, specify the delay in seconds for waiting for the data collection from {{ products.vro_9_full_name }} to {{ products.vra_9_short_name }} before importing data. You can also pass this configuration as an interactive parameter `-Dvcfa.data.collection.delay.seconds=600`.
 
-    Use this configuration when the {{ products.vra_9_short_name }} project contains references to Orchestrator workflows and dynamic types that you are importing together with the {{ products.vra_9_short_name }} content for the project since {{ products.vra_9_full_name }} needs to retrieve the details of the Orchestrator content in order to be able to create the {{ products.vra_9_short_name }} objects that point to the Orchestrator content. The default value is `0` or no delay.
+    Use this configuration when the {{ products.vra_9_short_name }} project contains references to Orchestrator workflows and dynamic types that you are importing together with the {{ products.vra_9_short_name }} content for the project since {{ products.vra_9_full_name }} needs to retrieve the details of the Orchestrator content first before it can create the {{ products.vra_9_short_name }} objects that point to the Orchestrator content. The default value is `0` or no delay.
 
     !!! note
         Note that if you provide a delay value, Build Tools for VMware Aria forces data collection via REST API and if it completes successfully, the delay is skipped and the provided delay time is disregarded. In case the data collection fails, however, the delay time is used and a wait timer is triggered.
@@ -246,7 +244,7 @@ When working with a {{ products.vra_9_full_name }} project for an All Apps organ
 
 #### Usage
 
-To pull content from a remote server, use the `vcfa-all-apps:pull` custom Maven goal. The following command pulls the content defined in the *Content Descriptor* file to the current project from a specified server and expands its content in the local filesystem by overriding any local content.
+To pull content from a remote server, use the `vcfa-all-apps:pull` custom Maven goal. The following command pulls the content defined in the *Content Descriptor* file to the current project from a specified server and expands its content on the local filesystem by overriding any local content.
 
 ```bash
 mvn vcfa-all-apps:pull -P{{ archetype.customer_project.maven_profile_name}}

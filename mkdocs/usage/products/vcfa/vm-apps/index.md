@@ -14,7 +14,7 @@ title: VM Apps Organization Project
 | Product compatibility   | {{ extra.products.vra_9_classic_full_name }} (9.x)<br>{{ extra.products.vra_8_full_name }} (8.x)  |
 <!-- markdownlint-enable MD033 -->
 
-{{ products.vra_9_full_name }} projects are called `vra-ng` (New Generation) projects in **Build Tools for VMware Aria**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
+{{ products.vra_9_full_name }} projects (for VM Apps organizations and in Aria Automation) are called `vra-ng` (New Generation) projects in **{{ general.bta_name }}**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
 
 - The *Content Descriptor* defines what part of {{ products.vra_9_short_name }} content is part of this project in the `content.yaml` file.
 - The *Content Container* holds the actual content representation in the `./src` directory.
@@ -23,22 +23,24 @@ title: VM Apps Organization Project
 
 Following is a list of the supported content for VM Apps organization projects.
 
-- `blueprint`
-- `content-source`
-- `property-group`
-- `catalog-item`
-- `catalog-entitlement`
-- `subscription`
-- `custom-resource`
-- `resource-action`
-- `policy`
-- `scenario`
+| Content Type                  | Attribute key in [Content Descriptor](#content-descriptor)    | Comment                                               |
+|-------------------------------|---------------------------------------------------------------|-------------------------------------------------------|
+| Cloud Templates (Blueprints)  | `blueprint`                                                   | See [Blueprint](./Blueprints.md) page.                |
+| Content (Catalog) Items       | `catalog-item`                                                | See [Catalog Items](./Catalog%20Items.md) page.       |
+| Content Sources               | `content-source`                                              | N/A                                                   |
+| Custom Resources              | `custom-resource`                                             | See [Custom Resources](./Custom%20Resources.md) page. |
+| Entitlements (Catalog)        | `catalog-entitlement`                                         | Starting with version 8.8 of Aria Automation, catalog entitlements are replaced by content sharing policies. |
+| Policies                      | `policy`                                                      | See [Policies](./Policies.md) page.                   |
+| Property Groups               | `property-group`                                              | N/A                                                   |
+| Resource Actions              | `resource-action`                                             | N/A                                                   |
+| Notification Scenarios        | `scenario`                                                    | N/A                                                   |
+| (Event) Subscriptions         | `subscription`                                                | N/A                                                   |
 
 ## Create New {{ products.vra_9_short_name }} Project for VM Apps Organizations
 
-{{ general.bta_name }} provides ready to use {{ products.vra_9_short_name }} project templates (*maven archetypes*) for VM Apps organizations.
+{{ general.bta_name }} provides ready-to-use {{ products.vra_9_short_name }} project templates (*maven archetypes*) for VM Apps organizations.
 
-To create a new {{ products.vra_9_short_name }} project for VM Apps from archetype, use the following command.
+To create a new {{ products.vra_9_short_name }} project for VM Apps from the archetype, use the following command.
 
 {% include "../../../../assets/docs/mvn/archetype-generate.md" %}
 
@@ -47,63 +49,64 @@ To create a new {{ products.vra_9_short_name }} project for VM Apps from archety
 The command for creating a project produces the following project file structure.
 
 ```ascii
-catalog
+vrang-project
 ├── README.md
 ├── content.yaml
 ├── pom.xml
 ├── release.sh
 └── src
     └── main
-        └── blueprints
-            └── blueprint.yaml
-            └── content.yaml
-            └── versions.yaml
-        └── content-sources
-            └── source.json
-        └── property-group
-            └── property_group_name.json
-        └── catalog-items
-            └── forms
-                └── source name__workflow one name with custom form.json
-                └── source name__workflow one name with custom form__FormData.json
-                └── source name__workflow three name with custom icon and form.json
-                └── source name__workflow three name with custom icon and form__FormData.json
-            └── icons
-                └── source name__workflow two name with custom icon.png
-                └── source name__workflow three name with custom icon and form.png
-            └── source name__workflow one name with custom form.json
-            └── source name__workflow two name with custom icon.json
-            └── source name__workflow three name with custom icon and form.json
-        └── entitlements
-            └── Blueprint.yaml
-            └── Workflow.yaml
-            └── ABX Action.yaml
-        └── subscriptions
-            └── subscription.json
-        └── custom-resources
-            └── customResource.json
-        └── resource-actions
-            └── resourceAction.json
-        └── policy
-            └── approval
-                └── approvalPolicy1.json
-            └── content-sharing
-                └── contentSharingPolicy1.json
-            └── day2-actions
-                └── day2ActionsPolicy1.json
-            └── deployment-limit
-                └── deploymentLimitPolicy1.json
-            └── lease
-                └── leasePolicy1.json
-            └── resource-quota
-                └── resourceQuotaPolicy1.json
-        └── scenarios
-            └── Scenario Name.json
+        └── resources
+            └── blueprints
+                └── blueprint.yaml
+                └── content.yaml
+                └── versions.yaml
+            └── content-sources
+                └── source.json
+            └── property-group
+                └── property_group_name.json
+            └── catalog-items
+                └── forms
+                    └── content source name__workflow one name with custom form.json
+                    └── content source name__workflow one name with custom form__FormData.json
+                    └── content source name__workflow three name with custom icon and form.json
+                    └── content source name__workflow three name with custom icon and form__FormData.json
+                └── icons
+                    └── content source name__workflow two name with custom icon.png
+                    └── content source name__workflow three name with custom icon and form.png
+                └── content source name__workflow one name with custom form.json
+                └── content source name__workflow two name with custom icon.json
+                └── content source name__workflow three name with custom icon and form.json
+            └── entitlements
+                └── Blueprint.yaml
+                └── Workflow.yaml
+                └── ABX Action.yaml
+            └── subscriptions
+                └── subscription.json
+            └── custom-resources
+                └── customResource.json
+            └── resource-actions
+                └── resourceAction.json
+            └── policy
+                └── approval
+                    └── approvalPolicy1.json
+                └── content-sharing
+                    └── contentSharingPolicy1.json
+                └── day2-actions
+                    └── day2ActionsPolicy1.json
+                └── deployment-limit
+                    └── deploymentLimitPolicy1.json
+                └── lease
+                    └── leasePolicy1.json
+                └── resource-quota
+                    └── resourceQuotaPolicy1.json
+            └── scenarios
+                └── Scenario Name.json
 ```
 
 ## Project Content
 
-The following sections give details about the project content.
+The following sections give details about the project content management.
 
 ### Content Descriptor
 
@@ -133,7 +136,7 @@ policy:
 
 To capture the state of your {{ products.vra_9_short_name }} environment, fill in the names of the content objects and use the commands described in the [Pull Content](#pull-content) section.
 
-For more information on each component, please refer to the corresponding sub-section.
+For more information on each component, please refer to the corresponding sub-section page.
 
 #### Content Filtering
 
@@ -145,14 +148,11 @@ For import operations (pushing content), all local objects that are available in
 
 ##### Export Rules for Content Types
 
-For export operation (pulling content), remote objects are exported based on the following rules for each category in the content descriptor.
+For export operations (pulling content), remote objects are exported based on the following rules for each category in the content descriptor.
 
 - Empty array (`[]`) - nothing from the object type is exported.
 - List of items - only the listed items from the object type are exported. If an object is not present on the server, an exception is thrown.
 - Null (no value) - everything from the object type is exported.
-
-!!! note
-    If the given objects are not found on the server, an error is thrown.
 
 ###### Export Rule Example
 
@@ -160,9 +160,10 @@ Following is a sample listing of a content descriptor for a project with example
 
 ??? "Content Descriptor"
     ```yaml
-    blueprint:                # exports all blueprint/template objects
+    blueprint:                # exports all blueprint/cloud template objects
     subscription:             # exports all EBS subscription objects
     catalog-item:             # exports catalog item objects listed in the filter
+      # note that the notation is <content-source-name>__<catalog-item-name>
       - Project Blueprints__WindowsVM
       - Project Blueprints__LinuxVm
       - Main Workflows__ConfigureVM
@@ -177,7 +178,7 @@ Following is a sample listing of a content descriptor for a project with example
       - Utility Workflows
       - Project Abx Actions
       - Project Code Stream pipelines
-    policy:                   # export according to filter
+    policy:                   # export policy objects listed in the filter per type
       approval: []            # does not export approval policy objects
       content-sharing:        # exports content sharing policy objects listed in the filter
         - cs policy 1
@@ -193,29 +194,30 @@ Following is a sample listing of a content descriptor for a project with example
     Unreleased blueprints that have custom form will be automatically released with version 1.
 
 !!! note
-    To import / export custom forms and/or icons you have to specify the associated catalog-item name in ```catalog-item``` tag. The naming convention for this is SOURCE_NAME__CATALOG_ITEM_NAME
-    The integration endpoint data for each workflow that is associated with the content source will be updated as well with the one fetched from the {{ products.vra_9_short_name }} server.
+    To import / export custom forms and/or icons, you need to specify the associated catalog-item name in `catalog-item` category. The naming convention for this is `CONTENT_SOURCE_NAME__CATALOG_ITEM_NAME`.
+
+    The integration endpoint data for each Orchestrator workflow that is associated with the content source is also updated with the one fetched from the {{ products.vra_9_short_name }} server.
 
 ### ID handling
 
-Relying on ids exported by Build Tools for VMware Aria should not happen. Build Tools for VMware Aria will remove where needed such ids or in some cases data will be fetched from the remote server, modified in flight and pushed to the server ( in cases where an import is needed ).
+You should not rely on IDs exported by {{ general.bta_name }}. Where needed, {{ general.bta_name }} removes such IDs or in some cases, it fetches data from the remote server, modifies it in flight, and pushes to the server (in cases where an import is needed).
 
 ### Single Project And Single Organization
 
-When working with vra-ng project type, each generated project is intended to work with **only one project and one organization**. In a case where more are needed, you must generate multiple projects.
+When working with the `vra-ng` project type, each project that you generate is intended to work with *a single project and a single organization only*. In case you need to work with more that one project or organization, you need to generate a separate Maven project for each of them.
 
-For every object type that contains `organization` or `projectId` key in the JSON definition (e.g. Policies) the following behavior applies:
+For every object type that contains the `organization` or the `projectId` key in the JSON definition (such as policies), the following behavior applies.
 
-- if the JSON definition contains `projectId` key and value defined, the value is replaced by the project defined in (based on import mechanism used):
-    - `<vrang.project.name>` from the selected `settings.xml` Maven profile.
-    - `vrang_project_name` provided to the `installer` script.
-- if the JSON definition contains `organization` key and value defined, the object is imported with the option of `Available for any project` or `Organization` enabled for the specific organization (the exact option name differentiates in UI based on product version) defined in (based on import mechanism used):
-    - `<vrang.org.name>` from the selected `settings.xml` Maven profile.
-    - `vrang_org_name` provided to the `installer` script.
+- If the JSON definition contains the `projectId` key with a value, the value is replaced by the project defined in one of the following sources (based on import mechanism that you use).
+    - The `<vrang.project.name>` attribute from the `settings.xml` Maven profile that you are using.
+    - The `vrang_project_name` property that you provide to the `installer` script.
+- If the JSON definition contains the `organization` key with a value, the object is imported with the scope option **Available for any project** or **Organization** (the exact option name differs in the user interface of based on product version) defined in one of the following sources (based on import mechanism that you use).
+    - The `<vrang.org.name>` attribute from the `settings.xml` Maven profile that you are using.
+    - The `vrang_org_name` property that you provide to the `installer` script.
 
 ## Environment Connection Parameters
 
-The following need to be added to the profile that you intend to use:
+You need to add the following configurations to the Maven profile from the settings.xml file that you intend to use for a project.
 
 ``` xml
 <!-- (1)! -->
@@ -240,106 +242,108 @@ The following need to be added to the profile that you intend to use:
 
 1. {{ archetype.customer_project.maven_settings_location_hint}}
 
-<!-- this comment is used to properly visualize the unordered list below -->
-
-- `vrang.username` - For VCF 9 Automation - Classic organization instead of using <vrang.tenant>
-you need to provide username in the following format: user@domain. E.g.:
-    - admin@System - Provider admin (the "System" domain is used to identify the user as Provider admin)
-    - configurationadmin@Classic - Classic organization admin
-
-- `vrang.refresh.token` - uses the given refresh token instead of credentials.
-
-!!! note
-    Refresh token takes precedence over credentials.
-
-- `vrang.bp.unrelease.versions` - Defaults to `true`. Controls whether old versions of a blueprint should be unreleased.
-
-- `vrang.import.timeout` - Timeout in milliseconds when syncing from Content Source for Catalog Items to appear before performing additional operations (e.g. attaching Custom Forms, Icons, etc.). Default value is 6000.
-
-- `vrang.data.collection.delay.seconds` - Delay in seconds to wait for vRA data collection to pass before importing data. Can also be passed as an interactive parameter `-Dvrang.data.collection.delay.seconds=600`. useful when Dynamic types and custom resources are used in the projects and vRO content is imported, however vRA needs to then retrieve it in order to be able to create the custom Resource and use the Create/Delete Workflows. This only happens after a short delay and the vRA data collector scrapes vRO. Defaults to no delay.
-    - if a value is provided data collection is forced via REST API and if it completes successfully the provided delay time is skipped. In case the data collection fails, the delay is triggered.
-
-- `vrang.org.name` - needs to be specified. The `vra-ng` project is scoped to a single organization.
-
-Use the profile by passing it with `-P`, e.g.:
+To specify the Maven profile that you want to use for an operation, pass its name with the `-P` options as shown in the following example.
 
 ``` bash
-mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
+mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
+
+Following is a list of elements from the profile configuration with further description of their values and the behavior they cause.
+
+- In the `vrang.username` element for VCF Automation VM Apps organizations, instead of using the <vrang.tenant> element, you can provide the user name in the following format `user@domain`. For example, use `admin@System` for the `admin` user from the Provider organization (the "System" domain identifies the Provider organization) or use `configurationadmin@Classic` for a `configurationadmin` user from an organization with the name `Classic`.
+
+- In the `vrang.refresh.token` element, provide a refresh token that you want to use instead of user credentials for authentication.
+
+    !!! note
+        Refresh token takes precedence over credentials.
+
+- In the `vrang.bp.unrelease.versions` optional element, specify whether old versions of a blueprint should be unreleased. The default value is `true`.
+
+- In the `vrang.import.timeout` optional element, specify the timeout in milliseconds for syncing Catalog Item objects before performing additional operations (such as attaching Custom Forms, Icons, etc.). The default value is `6000`.
+
+- In the `vrang.data.collection.delay.seconds` optional element, specify the delay in seconds for waiting for the data collection from the Orchestrator instance to {{ products.vra_9_short_name }} before importing data. You can also pass this configuration as an interactive parameter with the `-D` option as `-Dvrang.data.collection.delay.seconds=600`.
+
+    Use this configuration when the {{ products.vra_9_short_name }} project contains references to Orchestrator workflows and dynamic types that you are importing together with the {{ products.vra_9_short_name }} content for the project since {{ products.vra_9_full_name }} needs to retrieve the details of the Orchestrator content first before it can create the {{ products.vra_9_short_name }} objects that point to the Orchestrator content. The default value is `0` or no delay.
+
+    !!! Note
+
+        Note that if you provide a delay value, {{ general.bta_name }} forces data collection via REST API and if it completes successfully, the delay is skipped and the provided delay time is disregarded. In case the data collection fails, however, the delay time is used and a wait timer is triggered.
+
+- In the `vrang.org.name` element, you always need to specify the organization name. The `vra-ng` project is scoped to a single organization.
 
 ## Operations
 
+This section describes the operations that you can perform with the VCF Automation project for a VM Apps organization.
+
 <!-- Build Project Section -->
 {% include-markdown "../../../../assets/docs/mvn/build-project.md" %}
-The output of the command will result in **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vra-ng** file generated in the target folder of the project.
 
-<!-- Bundle Project Section -->
-{% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
+The result of the command is a file with the name **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vra-ng** that is generated in the `target` directory of the project.
 
 ### Pull Content
 
+This section describes the pulling of content for the project.
+
 #### Overview
 
-When working on a {{ products.vra_9_short_name }} project, you mainly make changes on a live server using the {{ products.vra_9_short_name }} UI (Service Broker, Cloud Assembly, etc.) and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.
+When working with a {{ products.vra_9_full_name }} project for a VM Apps organization, you mainly make content changes on a live server using the {{ products.vra_9_short_name }} user interface and then you capture those changes in the Maven project on your filesystem so that you can store the content, track changes, collaborate, etc.
 
 #### Usage
 
-To support this use case, a custom maven goal `vra-ng:pull` is used. The following command will `pull` the content outlined into *Content Descriptor* file to the current project from a specified server and expand its content in the local filesystem overriding any local content:
+To pull content from a remote server, use the `vra-ng:pull` custom Maven goal. The following command pulls the content defined in the *Content Descriptor* file to the current project from a specified server and expands its content in the local filesystem by overriding any local content.
 
 ```bash
-mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}}
+mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
 
 !!! warning
-    The command will fail if the `content.yaml` is empty or it cannot find some of the described content on the target {{ products.vra_9_short_name }} server.
+    The command fails if the `content.yaml` content descriptor file is empty or if {{ general.bta_name }} cannot find any of the described content on the target {{ products.vra_9_short_name }} server.
 
 !!! note
-    If a catalog item has a custom form and/or an icon they will be exported in subdirectories of the catalog-items directory
+    If a catalog item has a custom form and/or an icon, they are exported in subdirectories of the `catalog-items` directory of the project.
 
 !!! note
-    The value of the `<vrang.vro.integration>` is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used.
+    Use the value of the `<vrang.vro.integration>` element in the Maven profile to specify the integration endpoint that you want to use for Orchestrator resources in the project (such as workflows exposed as catalog items). If the property is missing, the default name `embedded-VRO` is used.
 
 #### Additional Parameters
 
-Additional parameters that can be passed as flags to the maven command, e.g. `mvn vra-ng:pull -Dbp.ignore.versions=true`.
-
-- `bp.ignore.versions` - ignores blueprint versioning  (refer to the *Blueprint Versioning* section). This option defaults to `false`. When dealing with blueprint development, you might want to set this to `true` in order to avoid unnecessary blueprint versions.
+In the Maven command, you can pass additional parameters as flags with the `-D` option to override profile properties, such as `mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}} -Dbp.ignore.versions=true`, where the value of the `bp.ignore.versions` parameter ignores blueprint versioning (for details, see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `false` but when dealing with blueprint development, you can set this option to `true` to avoid unnecessary blueprint versions.
 
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
 
 #### Additional Parameters
 
-Additional parameters that can be passed as flags to the maven command, e.g. `mvn clean package -Dvrang.bp.release=true`.
-
-- `vrang.bp.release` - create a new version for already released blueprint (refer to the *Blueprint Versioning* section). This option defaults to `true`. When dealing with blueprint development, you might want to set this to `false`
-in order to avoid unnecessary blueprint versions.
+In the Maven command, you can pass additional parameters as flags with the `-D` option, such as `mvn clean package -P{{ archetype.customer_project.maven_profile_name}} -Dvrang.bp.release=false`, where the `Dvrang.bp.release` parameter creates a new version of an already-released blueprint (see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `true` but when dealing with blueprint development, you can set this option to `false` to avoid unnecessary blueprint versions.
 
 !!! note
-    If there are any custom forms or icons associated with a catalog-item they will also be imported.
+    If there are any custom forms or icons associated with a catalog item, they are also imported.
 
 !!! note
-    If there are custom forms in the custom-forms directory that are associated with workflows, they will be imported to the {{ products.vra_9_short_name }} server as well.
+    If there are custom forms in the `custom-forms` directory that are associated with workflows, they are imported to the {{ products.vra_9_short_name }} server as well.
 
 !!! note
-    If there are custom forms in the custom-forms directory that are associated with workflows, the content-sources that are associated with them will be imported as well (they will be read from the content-sources directory).
+    If there are custom forms in the `custom-forms` directory that are associated with workflows, the content-sources that are associated with them are also imported (they are read from the `content-sources` directory).
+
+<!-- Bundle Project Section -->
+{% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
 
 ### Release
 
-To release a specific content uploaded on a live server, you can use the ```vrealize:release``` command:
+To release specific content that is available on a live server, you can use the `vrealize:release` command as shown in the following example.
 
 ```bash
 mvn clean package vrealize:release -P{{ archetype.customer_project.maven_profile_name}} -Dvrang.contentType=blueprint -Dvrang.contentNames=testBlueprint -Dvrang.version=1 -DreleaseIfNotUpdated=false
 ```
 
-Only parameter vrang.version is required.
-Default behavior for other parameters:
-    - vrang.contentType: default value "all". Releases all supported content types.
-    - vrang.contentNames: default value "[]". Releases all content of given types on server.
-    - vrang.releaseIfNotUpdated: default value "false". Skips content if there are no updates since latest version.
+Note that the only required parameter in this command is `vrang.version`. The following list explains the default behavior for other parameters from the command.
+
+- The `vrang.contentType` parameter defaults to the value `all` that releases all supported content types.
+- The `vrang.contentNames` parameter defaults to the value `[]` that releases all content of the given types on the server.
+- The `vrang.releaseIfNotUpdated` parameter defaults to the value `false` that skips content if there are no updates since latest version.
 
 !!! note
-    Nothing will be released if any of the content already has the given version existing.
+    Nothing will be released if any of the content on the server already has a release with the version that you specify in the `vcfa.version` parameter.
 
 <!-- Clean Up Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/clean-up-content.md" %}

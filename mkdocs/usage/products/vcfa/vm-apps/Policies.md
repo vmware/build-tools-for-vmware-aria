@@ -4,7 +4,7 @@ title: Content Policies
 
 ## Overview
 
-There are 6 types of content policies:
+There are six types of policies:
 
 - Approval
 - Content Sharing

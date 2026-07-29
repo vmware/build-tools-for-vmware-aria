@@ -2,6 +2,10 @@ title: All Apps
 nav:
     - index.md
     - Blueprints.md
-    - Policies.md
     - Custom Resources.md
+    - Event Subscriptions.md
+    - Scenarios.md
+    - Policies.md
+    - Property Groups.md
+    - Resource Actions.md
     - Workflows.md
