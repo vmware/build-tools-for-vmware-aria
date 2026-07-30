@@ -14,14 +14,14 @@ title: VM Apps Organization Project
 | Product compatibility   | {{ extra.products.vra_9_classic_full_name }} (9.x)<br>{{ extra.products.vra_8_full_name }} (8.x)  |
 <!-- markdownlint-enable MD033 -->
 
-{{ products.vra_9_full_name }} projects (for VM Apps organizations and in Aria Automation) are called `vra-ng` (New Generation) projects in **{{ general.bta_name }}**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
+{{ products.vra_9_full_name }} projects (for VM Apps organizations and in {{ products.vra_8_full_name }}) are called `vra-ng` (New Generation) projects in **{{ general.bta_name }}**. The project type is a representation of {{ products.vra_9_short_name }} content in human-friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
 
-- The *Content Descriptor* defines what part of {{ products.vra_9_short_name }} content is part of this project in the `content.yaml` file.
+- The *Content Descriptor* defines what part of {{ products.vra_9_short_name }} content is part of the project in the `content.yaml` file.
 - The *Content Container* holds the actual content representation in the `./src` directory.
 
 ## Supported Content
 
-Following is a list of the supported content for VM Apps organization projects.
+Following is a list of the supported content for {{ products.vra_9_full_name }} VM Apps organization (and {{ products.vra_8_full_name }}) projects.
 
 | Content Type                  | Attribute key in [Content Descriptor](#content-descriptor)    | Comment                                               |
 |-------------------------------|---------------------------------------------------------------|-------------------------------------------------------|
@@ -29,7 +29,7 @@ Following is a list of the supported content for VM Apps organization projects.
 | Content (Catalog) Items       | `catalog-item`                                                | See [Catalog Items](./Catalog%20Items.md) page.       |
 | Content Sources               | `content-source`                                              | N/A                                                   |
 | Custom Resources              | `custom-resource`                                             | See [Custom Resources](./Custom%20Resources.md) page. |
-| Entitlements (Catalog)        | `catalog-entitlement`                                         | Starting with version 8.8 of Aria Automation, catalog entitlements are replaced by content sharing policies. |
+| Entitlements (Catalog)        | `catalog-entitlement`                                         | Starting with version 8.8 of {{ products.vra_8_full_name }}, catalog entitlements are replaced by content sharing policies. |
 | Policies                      | `policy`                                                      | See [Policies](./Policies.md) page.                   |
 | Property Groups               | `property-group`                                              | N/A                                                   |
 | Resource Actions              | `resource-action`                                             | N/A                                                   |
@@ -38,7 +38,7 @@ Following is a list of the supported content for VM Apps organization projects.
 
 ## Create New {{ products.vra_9_short_name }} Project for VM Apps Organizations
 
-{{ general.bta_name }} provides ready-to-use {{ products.vra_9_short_name }} project templates (*maven archetypes*) for VM Apps organizations.
+{{ general.bta_name }} provides ready-to-use {{ products.vra_9_short_name }} project templates (*maven archetypes*) for VM Apps organizations (and {{ products.vra_8_full_name }}).
 
 To create a new {{ products.vra_9_short_name }} project for VM Apps from the archetype, use the following command.
 
@@ -49,7 +49,7 @@ To create a new {{ products.vra_9_short_name }} project for VM Apps from the arc
 The command for creating a project produces the following project file structure.
 
 ```ascii
-vrang-project
+{{ page.meta.vars.project.artifact_id }}
 ├── README.md
 ├── content.yaml
 ├── pom.xml
@@ -58,9 +58,10 @@ vrang-project
     └── main
         └── resources
             └── blueprints
-                └── blueprint.yaml
-                └── content.yaml
-                └── versions.yaml
+                └── Example Blueprint/
+                    └── blueprint.yaml
+                    └── content.yaml
+                    └── versions.yaml
             └── content-sources
                 └── source.json
             └── property-group
@@ -132,11 +133,11 @@ policy:
 ```
 
 !!! note
-    {{ products.vra_9_short_name }} Project for VM Apps supports only the content types outlined into Content Descriptor.
+    {{ products.vra_9_short_name }} Project for VM Apps and {{ products.vra_8_full_name }} supports only the content types outlined into Content Descriptor.
 
 To capture the state of your {{ products.vra_9_short_name }} environment, fill in the names of the content objects and use the commands described in the [Pull Content](#pull-content) section.
 
-For more information on each component, please refer to the corresponding sub-section page.
+For more information on each component, see the corresponding sub-section page.
 
 #### Content Filtering
 
@@ -144,7 +145,7 @@ The rules for project contents management depend on the operation.
 
 ##### Import Rules for Content Types
 
-For import operations (pushing content), all local objects that are available in the `./src` directory are imported and the `content.yaml` file is not taken into consideration.
+For import operations (pushing content), all local objects that are available in the `./src` directory of the project are imported and the content descriptor from the `content.yaml` file is not taken into consideration.
 
 ##### Export Rules for Content Types
 
@@ -163,7 +164,7 @@ Following is a sample listing of a content descriptor for a project with example
     blueprint:                # exports all blueprint/cloud template objects
     subscription:             # exports all EBS subscription objects
     catalog-item:             # exports catalog item objects listed in the filter
-      # note that the notation is <content-source-name>__<catalog-item-name>
+      # note that the notation is <content source name>__<catalog item name>
       - Project Blueprints__WindowsVM
       - Project Blueprints__LinuxVm
       - Main Workflows__ConfigureVM
@@ -191,33 +192,36 @@ Following is a sample listing of a content descriptor for a project with example
     ```
 
 !!! note
-    Unreleased blueprints that have custom form will be automatically released with version 1.
+    Unreleased blueprints that have a custom form are automatically released with version 1.
 
 !!! note
-    To import / export custom forms and/or icons, you need to specify the associated catalog-item name in `catalog-item` category. The naming convention for this is `CONTENT_SOURCE_NAME__CATALOG_ITEM_NAME`.
+    To export custom forms and/or icons, you need to specify the associated catalog item name in the `catalog-item` element. The naming convention for this is `<content source name>__<catalog item name>`.
 
     The integration endpoint data for each Orchestrator workflow that is associated with the content source is also updated with the one fetched from the {{ products.vra_9_short_name }} server.
 
 ### ID handling
 
-You should not rely on IDs exported by {{ general.bta_name }}. Where needed, {{ general.bta_name }} removes such IDs or in some cases, it fetches data from the remote server, modifies it in flight, and pushes to the server (in cases where an import is needed).
+You should not rely on IDs exported by {{ general.bta_name }}. Where needed, {{ general.bta_name }} removes such IDs or in some cases, it fetches data from the remote server, modifies it in flight, and pushes it to the server (in cases where an import is needed).
 
 ### Single Project And Single Organization
 
-When working with the `vra-ng` project type, each project that you generate is intended to work with *a single project and a single organization only*. In case you need to work with more that one project or organization, you need to generate a separate Maven project for each of them.
+When you are working with the `vra-ng` project type, each project that you generate is intended to work with *a single project and a single organization only*. In case you need to work with more that one project or organization, you need to generate a separate Maven project for each of them.
 
-For every object type that contains the `organization` or the `projectId` key in the JSON definition (such as policies), the following behavior applies.
+For every object type that contains the `organization` or the `projectId` key in the JSON definition (such as {{ products.vra_9_short_name }} policies), the following behavior applies.
 
 - If the JSON definition contains the `projectId` key with a value, the value is replaced by the project defined in one of the following sources (based on import mechanism that you use).
+
     - The `<vrang.project.name>` attribute from the `settings.xml` Maven profile that you are using.
     - The `vrang_project_name` property that you provide to the `installer` script.
-- If the JSON definition contains the `organization` key with a value, the object is imported with the scope option **Available for any project** or **Organization** (the exact option name differs in the user interface of based on product version) defined in one of the following sources (based on import mechanism that you use).
+
+- If the JSON definition contains the `organization` key with a value, the object is imported with the scope option **Available for any project** or **Organization** (the exact option name differs in the user interface based on product version) that you defined in one of the following sources (based on import mechanism that you use).
+
     - The `<vrang.org.name>` attribute from the `settings.xml` Maven profile that you are using.
     - The `vrang_org_name` property that you provide to the `installer` script.
 
 ## Environment Connection Parameters
 
-You need to add the following configurations to the Maven profile from the settings.xml file that you intend to use for a project.
+You need to add the following configurations to the Maven profile from the `settings.xml` file that you intend to use for a project.
 
 ``` xml
 <!-- (1)! -->
@@ -244,13 +248,13 @@ You need to add the following configurations to the Maven profile from the setti
 
 To specify the Maven profile that you want to use for an operation, pass its name with the `-P` options as shown in the following example.
 
-``` bash
+```bash
 mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
 
 Following is a list of elements from the profile configuration with further description of their values and the behavior they cause.
 
-- In the `vrang.username` element for VCF Automation VM Apps organizations, instead of using the <vrang.tenant> element, you can provide the user name in the following format `user@domain`. For example, use `admin@System` for the `admin` user from the Provider organization (the "System" domain identifies the Provider organization) or use `configurationadmin@Classic` for a `configurationadmin` user from an organization with the name `Classic`.
+- In the `vrang.username` element for VCF Automation VM Apps organizations, instead of using the `<vrang.tenant>` element for the organization, you can provide the user name in the format `user@domain` (or more precisely, `user@organization`). For example, use `admin@System` for the `admin` user from the Provider organization (the `System` domain identifies the Provider organization) or use `configurationadmin@Classic` for a `configurationadmin` user from an organization with the name `Classic`.
 
 - In the `vrang.refresh.token` element, provide a refresh token that you want to use instead of user credentials for authentication.
 
@@ -303,11 +307,11 @@ mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_p
     If a catalog item has a custom form and/or an icon, they are exported in subdirectories of the `catalog-items` directory of the project.
 
 !!! note
-    Use the value of the `<vrang.vro.integration>` element in the Maven profile to specify the integration endpoint that you want to use for Orchestrator resources in the project (such as workflows exposed as catalog items). If the property is missing, the default name `embedded-VRO` is used.
+    Use the value of the `<vrang.vro.integration>` element in the Maven profile to specify the integration endpoint that you want to use for Orchestrator resources in the project (such as workflows exposed as catalog items). If the property is missing, {{ general.bta_name }} uses the default name `embedded-VRO`.
 
 #### Additional Parameters
 
-In the Maven command, you can pass additional parameters as flags with the `-D` option to override profile properties, such as `mvn vra-ng:pull -P{{ archetype.customer_project.maven_profile_name}} -Dbp.ignore.versions=true`, where the value of the `bp.ignore.versions` parameter ignores blueprint versioning (for details, see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `false` but when dealing with blueprint development, you can set this option to `true` to avoid unnecessary blueprint versions.
+In the Maven command, you can pass additional parameters as flags with the `-D` option to override profile properties, such as `mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}} -Dbp.ignore.versions=true`, where the value of the `bp.ignore.versions` parameter ignores blueprint versioning (for details, see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `false` but when dealing with blueprint development, you can set this option to `true` to avoid unnecessary blueprint versions.
 
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
@@ -317,13 +321,7 @@ In the Maven command, you can pass additional parameters as flags with the `-D` 
 In the Maven command, you can pass additional parameters as flags with the `-D` option, such as `mvn clean package -P{{ archetype.customer_project.maven_profile_name}} -Dvrang.bp.release=false`, where the `Dvrang.bp.release` parameter creates a new version of an already-released blueprint (see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `true` but when dealing with blueprint development, you can set this option to `false` to avoid unnecessary blueprint versions.
 
 !!! note
-    If there are any custom forms or icons associated with a catalog item, they are also imported.
-
-!!! note
-    If there are custom forms in the `custom-forms` directory that are associated with workflows, they are imported to the {{ products.vra_9_short_name }} server as well.
-
-!!! note
-    If there are custom forms in the `custom-forms` directory that are associated with workflows, the content-sources that are associated with them are also imported (they are read from the `content-sources` directory).
+    If there are custom forms in the `custom-forms` directory that are associated with workflows and catalog items, they are imported to the {{ products.vra_9_short_name }} server as well along with the content sources that are associated with them (they are read from the `content-sources` directory).
 
 <!-- Bundle Project Section -->
 {% include-markdown "../../../../assets/docs/mvn/bundle-project.md" %}
@@ -343,7 +341,7 @@ Note that the only required parameter in this command is `vrang.version`. The fo
 - The `vrang.releaseIfNotUpdated` parameter defaults to the value `false` that skips content if there are no updates since latest version.
 
 !!! note
-    Nothing will be released if any of the content on the server already has a release with the version that you specify in the `vcfa.version` parameter.
+    Nothing will be released if any of the content on the server already has a release with the version that you specify in the `vrang.version` parameter.
 
 <!-- Clean Up Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/clean-up-content.md" %}

@@ -14,14 +14,14 @@ Following is a sample listing of the local filesystem for a blueprint with the n
 
 ```ascii title="Local Project Content"
 src/
-└─ main/
-   └─ resources/
-      └─ blueprints/
-         └─ Example Blueprint/
-            ├─ content.yaml
-            ├─ details.json
-            ├─ Example Blueprint__FormData.json
-            └─ styles.css
+└── main/
+    └── resources/
+        └── blueprints/
+            └── Example Blueprint/
+                ├─ content.yaml
+                ├─ details.json
+                ├─ Example Blueprint__FormData.json
+                └─ styles.css
 ```
 
 Following is a list of the files for each blueprint object with a short description of their content and purpose.
@@ -114,7 +114,7 @@ The following table lists the supported version formats that {{ general.bta_shor
 | 1.0.0          | 1.0.1               | Major, minor, and patch version detected - increment the patch version.    |
 | 1.0.0-alpha    | 2026-07-27-14-36-42 | Arbitrary version detected - generate a new version based on date-time.    |
 
-### Handling of Previously-Release Blueprint Versions
+### Handling of Previously-Released Blueprint Versions
 
 By default, {{ general.bta_short_name }} unreleases all released versions of the blueprint that are not the latest one.
 

@@ -19,9 +19,9 @@ Following is a sample listing of the local filesystem for a workflow catalog ite
 ```ascii title="Local Project Content"
 src/
 └─ main/
-   └─ resources/
-      └─ workflows/
-         └─ Add a user to a user group.json
+    └── resources/
+        └── workflows/
+            └── Add a user to a user group.json
 ```
 
 ### Sample Project File Content

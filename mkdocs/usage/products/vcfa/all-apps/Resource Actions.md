@@ -16,12 +16,12 @@ Following is a sample listing of the local filesystem for a resource action with
 ```ascii title="Local Project Content"
 src/
 └─ main/
-   └─ resources/
-      └─ resource-actions/
-         └─ Add CD-ROM to Deployment/
-            ├─ Add CD-ROM to Deployment__FormData.json
-            ├─ details.json
-            └─ styles.css
+    └── resources/
+        └── resource-actions/
+            └── Add CD-ROM to Deployment/
+                ├── Add CD-ROM to Deployment__FormData.json
+                ├── details.json
+                └── styles.css
 ```
 
 Following is a list of the files for each resource action object with a short description of their content and purpose.

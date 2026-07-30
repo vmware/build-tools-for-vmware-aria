@@ -19,10 +19,10 @@ Following is a sample listing of the local filesystem for a property group with 
 
 ```ascii title="Local Project Content"
 src/
-└─ main/
-   └─ resources/
-      └─ property-groups/
-         └─ Custom VM Properties.json
+└── main/
+    └── resources/
+        └── property-groups/
+            └── Custom VM Properties.json
 ```
 
 ### Sample Project File Content

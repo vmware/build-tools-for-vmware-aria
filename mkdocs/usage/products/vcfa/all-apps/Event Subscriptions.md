@@ -14,10 +14,10 @@ Following is a sample listing of the local filesystem for an event subscription 
 
 ```ascii title="Local Project Content"
 src/
-└─ main/
-   └─ resources/
-      └─ subscriptions/
-         └─ Add user to deployment.json
+└── main/
+    └── resources/
+        └── subscriptions/
+            └── Add user to deployment.json
 ```
 
 ### Sample Project File Content

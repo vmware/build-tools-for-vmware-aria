@@ -16,11 +16,11 @@ Following is a sample listing of the local filesystem for a notification with th
 ```ascii title="Local Project Content"
 src/
 └─ main/
-   └─ resources/
-      └─ scenarios/
-         └─ Deployment Lease Expired/
-            ├─ details.json
-            └─ template.html
+    └── resources/
+        └── scenarios/
+            └── Deployment Lease Expired/
+                ├── details.json
+                └── template.html
 ```
 
 Following is a list of the files for each blueprint object with a short description of their content and purpose.

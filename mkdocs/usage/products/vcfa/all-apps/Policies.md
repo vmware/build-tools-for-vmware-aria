@@ -4,7 +4,7 @@ title: Policies
 
 ## Overview
 
-A policy (or a policy template) in {{ products.vra_9_full_name }} is a set of rules or parameters that are applied to VCF Automation projects to govern deployment requests from entitled users and impose guardrails around provisioning requests.
+A policy (or a policy template) in {{ products.vra_9_full_name }} is a set of rules or parameters that are applied to {{ products.vra_9_full_name }} projects to govern deployment requests from entitled users and impose guardrails around provisioning requests.
 
 In {{ products.vra_9_full_name }} All Apps organizations, there are four types of policy templates.
 
@@ -25,17 +25,17 @@ Following is a sample listing of the local filesystem for a four policies (one o
 
 ```ascii title="Local Project Content"
 src/
-└─ main/
-   └─ resources/
-      └─ policies/
-         └─ approval/
-            └─ vm_resize_approval.json
-         └─ day2-actions/
-            └─ vm_remove_disk.json
-         └─ iaas-resource/
-            └─ large-namespace-policy.json
-         └─ lease/
-            └─ short_lease.json
+└── main/
+    └── resources/
+        └── policies/
+            └── approval/
+                └── vm_resize_approval.json
+            └── day2-actions/
+                └── vm_remove_disk.json
+            └── iaas-resource/
+                └── large-namespace-policy.json
+            └── lease/
+                └── short_lease.json
 ```
 
 ### Sample Project File Content

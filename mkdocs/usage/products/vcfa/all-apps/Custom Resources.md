@@ -14,11 +14,11 @@ Following is a sample listing of the local filesystem for a custom resource with
 
 ```ascii title="Local Project Content"
 src/
-└─ main/
-   └─ resources/
-      └─ custom-resources/
-         └─ Custom REST Host/
-            └─ details.json
+└── main/
+    └── resources/
+        └── custom-resources/
+            └── Custom REST Host/
+                └── details.json
 ```
 
 ### Sample Project File Content

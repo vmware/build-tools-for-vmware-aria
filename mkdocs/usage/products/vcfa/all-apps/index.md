@@ -12,7 +12,7 @@ title: All Apps Organization Project
 | Package extension      | vcfaa                                                 |
 | Product compatibility  | {{ extra.products.vra_9_all_apps_full_name }} (9.x)   |
 
-{{ products.vra_9_full_name }} projects for All Apps organizations are called `vcfa-all-apps` projects in **{{ general.bta_name }}**. The project type is a representation of {{ products.vra_9_short_name }} content into human friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
+{{ products.vra_9_full_name }} projects for All Apps organizations are called `vcfa-all-apps` projects in **{{ general.bta_name }}**. The project type is a representation of {{ products.vra_9_short_name }} content in human-friendly YAML and/or JSON format. The project consist of a content descriptor and a content container.
 
 - The *Content Descriptor* defines what part of {{ products.vra_9_short_name }} content is part of the project in the `content.yaml` file.
 - The *Content Container* holds the actual content representation in the `./src` directory.
@@ -116,7 +116,7 @@ scenario:
 
 To capture the state of your {{ products.vra_9_short_name }} environment, fill in the names of the content objects and use the commands described in the [Pull Content](#pull-content) section.
 
-For more information on each component, please refer to the corresponding sub-section.
+For more information on each component, see the corresponding sub-section.
 
 #### Content Filtering
 
@@ -151,7 +151,7 @@ Following is a sample listing of a content descriptor for a project with example
 
 ### ID Handling
 
-You should not rely on IDs exported by Build Tools for VMware Aria. Where needed, Build Tools for VMware Aria removes such IDs or in some cases it fetches data from the remote server, modifies it in flight, and pushes to the server (in case an import is needed).
+You should not rely on IDs exported by {{ general.bta_name }}. Where needed, {{ general.bta_name }} removes such IDs or in some cases it fetches data from the remote server, modifies it in flight, and pushes it to the server (in case an import is needed).
 
 ### Single Project And Single Organization
 
@@ -198,16 +198,14 @@ You need to add the following configurations to the Maven profile from the `sett
 To specify the Maven profile that you want to use for an operation, pass its name with the `-P` options as shown in the following example.
 
 ``` bash
-mvn vcfa-all-apps:pull -P{{ archetype.customer_project.maven_profile_name}}
+mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
-
-<!-- this comment is used to properly visualize the unordered list below -->
 
 Following is a list of elements from the profile configuration with further description of their values and the behavior they cause.
 
-- In the `vcfa.username` element for VCF Automation All Apps organizations, you need to provide the user name in the format `user@domain`, or more precisely, `user@organization`. For example, use `admin@System` for the `admin` user from the Provider organization (the "System" domain identifies the Provider organization) or use `configurationadmin@AllApps` for a `configurationadmin` user from an organization with the name `AllApps`.
+- In the `vcfa.username` element for VCF Automation All Apps organizations, you need to provide the user name in the format `user@domain`, or more precisely, `user@organization`. For example, use `admin@System` for the `admin` user from the Provider organization (the `System` domain identifies the Provider organization) or use `configurationadmin@AllApps` for a `configurationadmin` user from an organization with the name `AllApps`.
 
-- In the `vcfa.refresh.token` element, provide a refresh token that you want to use instead of user credentials.
+- In the `vcfa.refresh.token` element, provide a refresh token that you want to use instead of user credentials for authentication.
 
     !!! note
         Refresh token takes precedence over credentials.
@@ -247,18 +245,18 @@ When working with a {{ products.vra_9_full_name }} project for an All Apps organ
 To pull content from a remote server, use the `vcfa-all-apps:pull` custom Maven goal. The following command pulls the content defined in the *Content Descriptor* file to the current project from a specified server and expands its content on the local filesystem by overriding any local content.
 
 ```bash
-mvn vcfa-all-apps:pull -P{{ archetype.customer_project.maven_profile_name}}
+mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```
 
 !!! warning
-    The command fails if the `content.yaml` content descriptor file is empty or if Build Tools for VMware Aria cannot find any of the described content on the target {{ products.vra_9_short_name }} server.
+    The command fails if the `content.yaml` content descriptor file is empty or if {{ general.bta_name }} cannot find any of the described content on the target {{ products.vra_9_short_name }} server.
 
 !!! note
-    Use the `<vcfa.vro.integration>` element in the Maven profile to specify the integration endpoint that you want to use for Orchestrator resources in the project (such as workflows exposed as catalog items). If the property is missing, the default name `embedded-VRO` is used.
+    Use the value of the `<vcfa.vro.integration>` element in the Maven profile to specify the integration endpoint that you want to use for Orchestrator resources in the project (such as workflows exposed as catalog items). If the property is missing, {{ general.bta_name }} uses the default name `embedded-VRO`.
 
 #### Additional Parameters
 
-In the Maven command, you can pass additional parameters as flags with the `-D` option to override profile properties, such as `mvn vcfa-all-apps:pull -P{{ archetype.customer_project.maven_profile_name}} -Dbp.ignore.versions=true`, where the value of the `bp.ignore.versions` parameter ignores blueprint versioning (for details, see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `false` but when dealing with blueprint development, you can set this option to `true` to avoid unnecessary blueprint versions.
+In the Maven command, you can pass additional parameters as flags with the `-D` option to override profile properties, such as `mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}} -Dbp.ignore.versions=true`, where the value of the `bp.ignore.versions` parameter ignores blueprint versioning (for details, see the *Version Management* section in [Blueprints](Blueprints.md#version-management)). This option defaults to `false` but when dealing with blueprint development, you can set this option to `true` to avoid unnecessary blueprint versions.
 
 <!-- Push Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/push-content.md" %}
