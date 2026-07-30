@@ -26,7 +26,7 @@ Following is a list of the supported content for All Apps organization projects.
 | Blueprints                    | `blueprint`                                                   | See [Blueprints](./Blueprints.md).                    |
 | Custom Resources              | `custom-resource`                                             | See [Custom Resources](./Custom%20Resources.md).      |
 | Event Subscriptions           | `subscription`                                                | See [Event Subscriptions](./Event%20Subscriptions.md).|
-| Notifications (Configuration) | `scenario`                                                    | See [Notifications](./Scenarios.md).                  |
+| Notifications (Templates)     | `scenario`                                                    | See [Notifications](./Scenarios.md).                  |
 | Policies                      | `policy`                                                      | See [Policies](./Policies.md).                        |
 | Property Groups               | `property-group`                                              | See [Property Groups](./Property%20Groups.md).        |
 | Resource Actions              | `resource-action`                                             | See [Resource Actions](./Resource%20Actions.md).      |
@@ -45,7 +45,7 @@ To create a new {{ products.vra_9_short_name }} project for All Apps from the ar
 The command for creating a project produces the following project file structure.
 
 ```ascii
-vcfa-project
+{{ page.meta.vars.project.artifact_id }}
 ├── README.md
 ├── content.yaml
 ├── pom.xml
@@ -54,38 +54,38 @@ vcfa-project
     └── main
         └── resources
             └── blueprints
-                └── Blueprint1
+                └── Small VM
                     └── content.yaml
                     └── details.json
-                    └── Blueprint1__FormData.json
+                    └── Small VM__FormData.json
                     └── styles.css
             └── custom-resources
-                └── CustomResource1
+                └── Custom REST Host
                     └── details.json
             └── policies
                 └── approval
-                    └── ApprovalPolicy1.json
+                    └── vm_resize_approval.json
                 └── day2-actions
-                    └── Day2ActionsPolicy1.json
+                    └── vm_remove_disk.json
                 └── iaas-resource
-                    └── IaasResourcePolicy1.json
+                    └── large-namespace-policy.json
                 └── lease
-                    └── LeasePolicy1.json
+                    └── short_lease.json
             └── property-groups
-                └── PropertyGroup1.json
+                └── Custom VM Properties.json
             └── resource-actions
-                └── ResourceAction1
+                └── Add CD-ROM to Deployment
+                    └── Add CD-ROM to Deployment__FormData.json
                     └── details.json
-                    └── ResourceAction1__FormData.json
                     └── styles.css
             └── scenarios
-                └── Scenario1
+                └── Deployment Lease Expired
                     └── details.json
                     └── template.html
             └── subscriptions
-                └── Subscription1.json
+                └── Add user to deployment.json
             └── workflows
-                └── Workflow1.json
+                └── Add a user to a user group.json
 ```
 
 ## Project Content
