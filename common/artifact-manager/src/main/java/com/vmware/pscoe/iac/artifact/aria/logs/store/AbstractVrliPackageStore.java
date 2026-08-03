@@ -21,7 +21,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -180,6 +183,15 @@ public abstract class AbstractVrliPackageStore extends GenericPackageStore<VrliP
 			logger.error("Unable to extract package '{}' in temporary directory.", pkg.getFQName());
 			throw new RuntimeException("Unable to extract pacakge.", e);
 		}
+
+		// If content.yaml is present in the package, validate its content against the unpacked files
+		File contentYamlFile = new File(tmp, "content.yaml");
+		if (contentYamlFile.exists()) {
+			logger.info("Validating package content against content.yaml descriptor.");
+			VrliPackageDescriptor descriptor = VrliPackageDescriptor.getInstance(contentYamlFile);
+			validateContentMatchesDescriptor(tmp, descriptor);
+		}
+
 		importAlerts(tmp);
 		importContentPacks(tmp);
 
@@ -293,4 +305,87 @@ public abstract class AbstractVrliPackageStore extends GenericPackageStore<VrliP
 	 * @param contentPackNames the content pack names to export
 	 */
 	protected abstract void exportContentPacks(Package vrliPakage, List<String> contentPackNames);
+
+	/**
+	 * Validates that the content in the given directory matches the content described in the package descriptor.
+	 * Both directions are checked: items in the descriptor must have corresponding files on disk,
+	 * and files on disk must be listed in the descriptor.
+	 *
+	 * @param directory  the directory containing the unpacked package content
+	 * @param descriptor the package descriptor loaded from content.yaml
+	 * @throws RuntimeException if the content does not match the descriptor
+	 */
+	private void validateContentMatchesDescriptor(final File directory, final VrliPackageDescriptor descriptor) {
+		List<String> errors = new ArrayList<>();
+
+		// Validate alerts
+		List<String> alertsInDescriptor = descriptor.getAlerts() != null
+				? descriptor.getAlerts() : Collections.emptyList();
+		File alertsDir = new File(directory, DIR_ALERTS);
+		List<String> alertsOnDisk = getFilesWithoutExtension(alertsDir, "json");
+		reportMismatches("alerts", alertsInDescriptor, alertsOnDisk, errors);
+
+		// Validate content packs
+		List<String> contentPacksInDescriptor = descriptor.getContentPacks() != null
+				? descriptor.getContentPacks() : Collections.emptyList();
+		File contentPacksDir = new File(directory, dirContentPacks);
+		List<String> contentPacksOnDisk = getFilesWithoutExtension(contentPacksDir, "json");
+		reportMismatches("content-packs", contentPacksInDescriptor, contentPacksOnDisk, errors);
+
+		if (!errors.isEmpty()) {
+			throw new RuntimeException(
+				"Package content does not match content.yaml descriptor. Please update either the package "
+					+ "content or content.yaml to match the existing state:\n" + String.join("\n", errors));
+		}
+	}
+
+	/**
+	 * Returns a sorted list of file names (without extension) in the given directory.
+	 *
+	 * @param dir       the directory to scan
+	 * @param extension the file extension to filter by (without the leading dot)
+	 * @return a sorted list of file names without the extension
+	 */
+	private List<String> getFilesWithoutExtension(final File dir, final String extension) {
+		if (!dir.exists() || !dir.isDirectory()) {
+			return Collections.emptyList();
+		}
+		File[] files = dir.listFiles(f -> f.isFile() && f.getName().endsWith("." + extension));
+		if (files == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.stream(files)
+				.map(f -> f.getName().substring(0, f.getName().length() - extension.length() - 1))
+				.sorted()
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Compares two lists and adds error messages to the errors list if they differ.
+	 *
+	 * @param contentType  the label of the content type (used in messages)
+	 * @param inDescriptor the items listed in the descriptor
+	 * @param onDisk       the items found on disk
+	 * @param errors       the list to append error messages to
+	 */
+	private void reportMismatches(final String contentType, final List<String> inDescriptor,
+			final List<String> onDisk, final List<String> errors) {
+		List<String> missingOnDisk = inDescriptor.stream()
+				.filter(name -> !onDisk.contains(name))
+				.sorted()
+				.collect(Collectors.toList());
+		List<String> missingInDescriptor = onDisk.stream()
+				.filter(name -> !inDescriptor.contains(name))
+				.sorted()
+				.collect(Collectors.toList());
+
+		if (!missingOnDisk.isEmpty()) {
+			errors.add(String.format("  [%s] Listed in content.yaml but missing on disk: %s",
+					contentType, missingOnDisk));
+		}
+		if (!missingInDescriptor.isEmpty()) {
+			errors.add(String.format("  [%s] Found on disk but not listed in content.yaml: %s",
+					contentType, missingInDescriptor));
+		}
+	}
 }
