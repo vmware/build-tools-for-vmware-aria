@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0 # CRITICAL: mike needs full history to fetch the gh-pages branch and git tags
 
       - name: Install Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.10"
           cache: "pip"
