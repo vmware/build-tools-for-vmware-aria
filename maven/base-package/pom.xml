@@ -602,7 +602,7 @@ for (String definition : checksumDefs.split(',')) {
 					<dependency>
 						<groupId>org.apache.groovy</groupId>
 						<artifactId>groovy</artifactId>
-						<version>5.0.0</version>
+						<version>5.0.8</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
