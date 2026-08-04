@@ -14,7 +14,34 @@
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
 	<dependencies>
-		<!-- Plugin jar dependency (not tgz - always needed for POM resolution) -->
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vrotsc</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vropkg</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vrotest</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vro-scripting-api</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.maven.plugins</groupId>
 			<artifactId>o11n-typescript-package-maven-plugin</artifactId>
@@ -26,7 +53,7 @@
 			<id>js-class-library</id>
 			<activation>
 				<file>
-					<exists>${basedir}/tsconfig.json</exists>
+					<missing>${basedir}/.skip-js-class-lib-dep</missing>
 				</file>
 			</activation>
 			<dependencies>
@@ -35,50 +62,6 @@
 					<artifactId>class</artifactId>
 					<type>package</type>
 					<version>${revision}</version>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<!--
-				Activated only in actual TypeScript VRO child projects (which have a tsconfig.json).
-				Keeps the tgz tool SNAPSHOTs out of the parent-module dependency resolution
-				so that building base-packages-parent without the typescript tools pre-installed
-				does not fail with "artifact not found".
-			-->
-			<id>ts-tools</id>
-			<activation>
-				<file>
-					<exists>${basedir}/tsconfig.json</exists>
-				</file>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>com.vmware.pscoe.iac</groupId>
-					<artifactId>vrotsc</artifactId>
-					<type>tgz</type>
-					<version>${revision}</version>
-					<scope>compile</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.vmware.pscoe.iac</groupId>
-					<artifactId>vropkg</artifactId>
-					<type>tgz</type>
-					<version>${revision}</version>
-					<scope>compile</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.vmware.pscoe.iac</groupId>
-					<artifactId>vrotest</artifactId>
-					<type>tgz</type>
-					<version>${revision}</version>
-					<scope>compile</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.vmware.pscoe.iac</groupId>
-					<artifactId>vro-scripting-api</artifactId>
-					<type>tgz</type>
-					<version>${revision}</version>
-					<scope>compile</scope>
 				</dependency>
 			</dependencies>
 		</profile>

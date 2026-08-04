@@ -12,12 +12,21 @@
 	<artifactId>xml-package</artifactId>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>com.vmware.pscoe.iac</groupId>
+			<artifactId>vropkg</artifactId>
+			<type>tgz</type>
+			<version>${revision}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 	<profiles>
 		<profile>
 			<id>js-class-library</id>
 			<activation>
 				<file>
-					<exists>${basedir}/src/main/resources</exists>
+					<missing>${basedir}/.skip-js-class-lib-dep</missing>
 				</file>
 			</activation>
 			<dependencies>
@@ -29,24 +38,8 @@
 				</dependency>
 			</dependencies>
 		</profile>
-		<profile>
-			<id>vro-tools</id>
-			<activation>
-				<file>
-					<exists>${basedir}/src/main/resources</exists>
-				</file>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>com.vmware.pscoe.iac</groupId>
-					<artifactId>vropkg</artifactId>
-					<type>tgz</type>
-					<version>${revision}</version>
-					<scope>compile</scope>
-				</dependency>
-			</dependencies>
-		</profile>
 	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
