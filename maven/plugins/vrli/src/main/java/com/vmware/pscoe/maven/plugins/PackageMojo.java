@@ -28,6 +28,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.pscoe.iac.artifact.aria.logs.store.models.VrliPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
@@ -97,6 +99,9 @@ public class PackageMojo extends AbstractVroMojo {
 	 * Validates that the local content in the source directory matches the content described in content.yaml.
 	 * Both directions are checked: items in content.yaml must have corresponding files on disk,
 	 * and files on disk must be listed in content.yaml.
+	 * <p>
+	 * For alerts, the {@code "name"} field inside each JSON file is used for comparison.
+	 * For content packs, the file name (without extension) is used.
 	 *
 	 * @param sourceDirectory the project source directory (src/main/resources)
 	 * @param descriptor      the package descriptor loaded from content.yaml
@@ -106,14 +111,14 @@ public class PackageMojo extends AbstractVroMojo {
 			throws MojoExecutionException {
 		List<String> errors = new ArrayList<>();
 
-		// Validate alerts
+		// Validate alerts – compare against the "name" field inside each JSON file
 		List<String> alertsInDescriptor = descriptor.getAlerts() != null
 				? descriptor.getAlerts() : Collections.emptyList();
 		File alertsDir = new File(sourceDirectory, DIR_ALERTS);
-		List<String> alertsOnDisk = getFilesWithoutExtension(alertsDir, JSON_EXTENSION);
+		List<String> alertsOnDisk = getAlertNamesFromJsonFiles(alertsDir);
 		reportMismatches("alerts", alertsInDescriptor, alertsOnDisk, errors);
 
-		// Validate content packs
+		// Validate content packs – compare against file names (without extension)
 		List<String> contentPacksInDescriptor = descriptor.getContentPacks() != null
 				? descriptor.getContentPacks() : Collections.emptyList();
 		File contentPacksDir = new File(sourceDirectory, DIR_CONTENT_PACKS);
@@ -125,6 +130,49 @@ public class PackageMojo extends AbstractVroMojo {
 				"Local content does not match content.yaml descriptor. Please update either the local files "
 					+ "or content.yaml to match the existing state:\n" + String.join("\n", errors));
 		}
+	}
+
+	/**
+	 * Returns a sorted list of alert names extracted from the {@code "name"} field of each
+	 * JSON file in the given directory. If a file cannot be parsed or does not contain a
+	 * {@code "name"} field, the file name without extension is used as a fallback so that
+	 * validation still runs.
+	 *
+	 * @param dir the alerts directory to scan for {@code *.json} files
+	 * @return a sorted list of alert names
+	 */
+	private List<String> getAlertNamesFromJsonFiles(final File dir) {
+		if (!dir.exists() || !dir.isDirectory()) {
+			return Collections.emptyList();
+		}
+		File[] files = dir.listFiles(f -> f.isFile() && f.getName().endsWith("." + JSON_EXTENSION));
+		if (files == null || files.length == 0) {
+			return Collections.emptyList();
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return Arrays.stream(files)
+				.map(f -> {
+					try {
+						JsonNode root = mapper.readTree(f);
+						JsonNode nameNode = root.get("name");
+						if (nameNode != null && !nameNode.isNull() && nameNode.isTextual()) {
+							return nameNode.asText();
+						}
+						String fallback = f.getName().substring(0, f.getName().length() - JSON_EXTENSION.length() - 1);
+						getLog().warn(String.format(
+								"Alert JSON file '%s' has no 'name' field; using file name '%s' for validation.",
+								f.getName(), fallback));
+						return fallback;
+					} catch (IOException e) {
+						String fallback = f.getName().substring(0, f.getName().length() - JSON_EXTENSION.length() - 1);
+						getLog().warn(String.format(
+								"Unable to parse alert JSON file '%s': %s. Using file name '%s' for validation.",
+								f.getName(), e.getMessage(), fallback));
+						return fallback;
+					}
+				})
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**
