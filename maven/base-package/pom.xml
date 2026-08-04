@@ -180,6 +180,39 @@
 			<properties>
 				<assembly.skipAssembly>false</assembly.skipAssembly>
 			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>3.8.0</version>
+						<dependencies>
+							<dependency>
+								<groupId>com.vmware.pscoe.maven</groupId>
+								<artifactId>iac-assembly</artifactId>
+								<version>${revision}</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>
+										${project.groupId}.${project.artifactId}-${project.version}-${build.number}
+									</finalName>
+									<descriptorRefs>
+										<descriptorRef>iac-assembly</descriptorRef>
+									</descriptorRefs>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<id>bundle-with-installer</id>
@@ -214,6 +247,35 @@
 											<type>zip</type>
 										</artifactItem>
 									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>3.8.0</version>
+						<dependencies>
+							<dependency>
+								<groupId>com.vmware.pscoe.maven</groupId>
+								<artifactId>iac-assembly</artifactId>
+								<version>${revision}</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>
+										${project.groupId}.${project.artifactId}-${project.version}-${build.number}
+									</finalName>
+									<descriptorRefs>
+										<descriptorRef>iac-assembly</descriptorRef>
+									</descriptorRefs>
 								</configuration>
 							</execution>
 						</executions>
@@ -351,35 +413,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.8.0</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.vmware.pscoe.maven</groupId>
-						<artifactId>iac-assembly</artifactId>
-						<version>${revision}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>
-								${project.groupId}.${project.artifactId}-${project.version}-${build.number}
-							</finalName>
-							<descriptorRefs>
-								<descriptorRef>iac-assembly</descriptorRef>
-							</descriptorRefs>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>3.3.1</version>
 				<configuration>
@@ -505,7 +538,7 @@
 			<plugin>
 				<groupId>org.codehaus.gmavenplus</groupId>
 				<artifactId>gmavenplus-plugin</artifactId>
-				<version>1.13.0</version>
+				<version>3.0.2</version>
 				<executions>
 					<execution>
 						<id>calculate-checksums</id>
@@ -600,9 +633,9 @@ for (String definition : checksumDefs.split(',')) {
 				</configuration>
 				<dependencies>
 					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
+						<groupId>org.apache.groovy</groupId>
 						<artifactId>groovy</artifactId>
-						<version>3.0.25</version>
+						<version>5.0.0</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>

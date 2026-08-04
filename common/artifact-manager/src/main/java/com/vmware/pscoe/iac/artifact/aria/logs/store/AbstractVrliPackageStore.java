@@ -1,4 +1,5 @@
 /*-
+
  * #%L
  * artifact-manager
  * %%
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.pscoe.iac.artifact.aria.logs.store.models.VrliPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.common.store.GenericPackageStore;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
@@ -322,14 +325,14 @@ public abstract class AbstractVrliPackageStore extends GenericPackageStore<VrliP
 		List<String> alertsInDescriptor = descriptor.getAlerts() != null
 				? descriptor.getAlerts() : Collections.emptyList();
 		File alertsDir = new File(directory, DIR_ALERTS);
-		List<String> alertsOnDisk = getFilesWithoutExtension(alertsDir, "json");
+		List<String> alertsOnDisk = getNamesFromJsonFiles(alertsDir);
 		reportMismatches("alerts", alertsInDescriptor, alertsOnDisk, errors);
 
 		// Validate content packs
 		List<String> contentPacksInDescriptor = descriptor.getContentPacks() != null
 				? descriptor.getContentPacks() : Collections.emptyList();
 		File contentPacksDir = new File(directory, dirContentPacks);
-		List<String> contentPacksOnDisk = getFilesWithoutExtension(contentPacksDir, "json");
+		List<String> contentPacksOnDisk = getNamesFromJsonFiles(contentPacksDir);
 		reportMismatches("content-packs", contentPacksInDescriptor, contentPacksOnDisk, errors);
 
 		if (!errors.isEmpty()) {
@@ -340,22 +343,43 @@ public abstract class AbstractVrliPackageStore extends GenericPackageStore<VrliP
 	}
 
 	/**
-	 * Returns a sorted list of file names (without extension) in the given directory.
+	 * Returns a sorted list of {@code "name"} field values parsed from each JSON file in the
+	 * given directory. If a file cannot be parsed or does not contain a {@code "name"} field,
+	 * the file name without extension is used as a fallback so that validation still runs.
 	 *
-	 * @param dir       the directory to scan
-	 * @param extension the file extension to filter by (without the leading dot)
-	 * @return a sorted list of file names without the extension
+	 * @param dir the directory to scan for {@code *.json} files
+	 * @return a sorted list of names extracted from the JSON files
 	 */
-	private List<String> getFilesWithoutExtension(final File dir, final String extension) {
+	private List<String> getNamesFromJsonFiles(final File dir) {
 		if (!dir.exists() || !dir.isDirectory()) {
 			return Collections.emptyList();
 		}
-		File[] files = dir.listFiles(f -> f.isFile() && f.getName().endsWith("." + extension));
-		if (files == null) {
+		File[] files = dir.listFiles(f -> f.isFile() && f.getName().endsWith(".json"));
+		if (files == null || files.length == 0) {
 			return Collections.emptyList();
 		}
+		ObjectMapper mapper = new ObjectMapper();
 		return Arrays.stream(files)
-				.map(f -> f.getName().substring(0, f.getName().length() - extension.length() - 1))
+				.map(f -> {
+					try {
+						JsonNode root = mapper.readTree(f);
+						JsonNode nameNode = root.get("name");
+						if (nameNode != null && !nameNode.isNull() && nameNode.isTextual()) {
+							return nameNode.asText();
+						}
+						String fallback = f.getName().substring(0, f.getName().length() - ".json".length());
+						logger.warn(
+								"JSON file '{}' has no 'name' field; using file name '{}' for validation.",
+								f.getName(), fallback);
+						return fallback;
+					} catch (IOException e) {
+						String fallback = f.getName().substring(0, f.getName().length() - ".json".length());
+						logger.warn(
+								"Unable to parse JSON file '{}': {}. Using file name '{}' for validation.",
+								f.getName(), e.getMessage(), fallback);
+						return fallback;
+					}
+				})
 				.sorted()
 				.collect(Collectors.toList());
 	}

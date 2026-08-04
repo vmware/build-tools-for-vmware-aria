@@ -15,29 +15,39 @@
 	<artifactId>serverless-project</artifactId>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.vmware.pscoe.maven.plugins</groupId>
 			<artifactId>abx-package-maven-plugin</artifactId>
 			<version>${revision}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.vmware.pscoe.iac</groupId>
-			<artifactId>polyglotpkg</artifactId>
-			<type>tgz</type>
-			<version>${revision}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.vmware.pscoe.iac</groupId>
-			<artifactId>vropkg</artifactId>
-			<type>tgz</type>
-			<version>${revision}</version>
-			<scope>compile</scope>
-		</dependency>
 	</dependencies>
-
+	<profiles>
+		<profile>
+			<id>vro-tools</id>
+			<activation>
+				<file>
+					<exists>${basedir}/package.json</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.vmware.pscoe.iac</groupId>
+					<artifactId>polyglotpkg</artifactId>
+					<type>tgz</type>
+					<version>${revision}</version>
+					<scope>compile</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.vmware.pscoe.iac</groupId>
+					<artifactId>vropkg</artifactId>
+					<type>tgz</type>
+					<version>${revision}</version>
+					<scope>compile</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 	<build>
 		<pluginManagement>
 			<plugins>
