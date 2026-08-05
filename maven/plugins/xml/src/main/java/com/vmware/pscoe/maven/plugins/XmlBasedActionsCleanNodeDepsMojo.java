@@ -14,8 +14,9 @@
  */
 package com.vmware.pscoe.maven.plugins;
 
-import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 
 @Mojo(name = "clean", defaultPhase = LifecyclePhase.CLEAN)
-public class XmlBasedActionsCleanNodeDepsMojo extends CleanNodeDepsMojo {
+public class XmlBasedActionsCleanNodeDepsMojo extends AbstractCleanNodeDepsMojo {
 }
