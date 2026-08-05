@@ -74,6 +74,9 @@
 		"xmlbuilder2": "^4.0.0",
 		"xmldoc": "^1.3.0"
 	},
+	"overrides": {
+		"lodash": "^4.18.1"
+	},
 	"bundleDependencies": [
 		"abstract-syntax-tree",
 		"archiver",
