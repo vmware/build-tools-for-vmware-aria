@@ -81,6 +81,9 @@
                             </goals>
                             <phase>compile</phase>
                             <configuration>
+                                <environmentVariables>
+                                    <SKIP_NPM_TESTS>${skipTests}</SKIP_NPM_TESTS>
+                                </environmentVariables>
                                 <executable>npm</executable>
                                 <arguments>
                                     <argument>run</argument>

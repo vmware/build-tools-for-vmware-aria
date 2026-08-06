@@ -45,17 +45,17 @@ catalog
     ├── variable
     |   └── variables.yaml
     ├── custom-integrations
-    |   └── <custom-integration>.yaml  
+    |   └── <custom-integration>.yaml
     ├── git-webhooks
-    |   └── <git-webhook>.yaml  
+    |   └── <git-webhook>.yaml
     ├── docker-webhook
-    |   └── <docker-webhook>.yaml  
+    |   └── <docker-webhook>.yaml
     ├── gerrit-listeners
-    |   └── <gerrit-listener>.yaml  
+    |   └── <gerrit-listener>.yaml
     ├── gerrit-triggers
-    |   └── <gerrit-trigger>.yaml  
+    |   └── <gerrit-trigger>.yaml
     └── endpoints
-        └── <endpoint>.yaml 
+        └── <endpoint>.yaml
 ```
 
 Content Descriptor is implemented by content.yaml file with the following defaults.
@@ -65,8 +65,8 @@ Content Descriptor is implemented by content.yaml file with the following defaul
 ```yaml
 
 ---
-# Example describes export of: 
-#   
+# Example describes export of:
+#
 # Example pipelines:
 # pipeline:
 #  - Pipeline
@@ -144,9 +144,9 @@ A better approach is to have the different connection properties configured in d
         <vrang.cloud.proxy.name>{cloud+proxy+name}</vrang.cloud.proxy.name>
         <vrang.org.id>{org+id}</vrang.org.id>
         <vrang.org.name>{org+name}</vrang.org.name>
-     
+
         <vrang.proxy>{proxy+url}</vrang.proxy>
-  
+
     </properties>
 </profile>
 ```
@@ -260,4 +260,3 @@ Clean up is currently not supported
   ```Bash
   mvn -U <rest of the command>
   ```
-  

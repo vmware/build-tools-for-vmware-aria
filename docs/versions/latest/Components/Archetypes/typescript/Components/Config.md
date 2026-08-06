@@ -138,15 +138,15 @@ attributes:
         - test1
         - test2
         - test3
-  field2: 
+  field2:
     type: number
     value: 123
     description: "Some number"
-  field3: 
+  field3:
     type: boolean
     value: true
     description: "Some boolean"
-  field4: 
+  field4:
     type: string
     description: "Some string"
 ```

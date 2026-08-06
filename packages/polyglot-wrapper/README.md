@@ -98,8 +98,8 @@ export class SampleWorkflow {
 }
 
 ```
-**Note**:  
+**Note**:
 The **@Polyglot** decorator is not equal to **@polyglot** decorator.
-Differences:  
+Differences:
 1. **@polyglot** depends of **polyglot-wrapper** can only be used in actions definitions.
 2. **@Polyglot** is internal, the code is inside **vrotsc-annotation** and the source code corresponding to the decorator is generated on compilation time.

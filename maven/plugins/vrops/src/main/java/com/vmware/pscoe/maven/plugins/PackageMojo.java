@@ -19,6 +19,7 @@ import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,8 +38,6 @@ import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.PackageFactory;
 import com.vmware.pscoe.iac.artifact.common.store.PackageManager;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractVroMojo {
@@ -90,7 +89,7 @@ public class PackageMojo extends AbstractVroMojo {
 
 		getLog().info("vROps Package Plugin: Executing in Project Base: " + project.getBasedir());
 		File pkgFile = new File(directory,
-				pkgInfoProvider.getPackageName() + "." + PackageType.VROPS.getPackageExtention());
+				pkgInfoProvider.getPackageName() + "." + PackageType.VROPS.getPackageExtension());
 		getLog().info("vROps Package Plugin: Target Package File:      \"" + pkgFile.getAbsolutePath() + "\"");
 
 		File filteredDir = new File(pkgInfoProvider.getTargetDirectory(), "vrops");

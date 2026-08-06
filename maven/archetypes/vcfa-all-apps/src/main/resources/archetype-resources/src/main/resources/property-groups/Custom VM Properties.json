@@ -1,0 +1,20 @@
+{
+  "name" : "custom_vm_properties",
+  "displayName" : "Custom VM Properties",
+  "description" : "Sample Property Group",
+  "type" : "INPUT",
+  "properties" : {
+    "cpu_count" : {
+      "type" : "integer",
+      "encrypted" : false,
+      "minimum" : 1,
+      "maximum" : 8,
+      "title" : "CPU Count"
+    },
+    "notification_email" : {
+      "type" : "string",
+      "encrypted" : false,
+      "title" : "Notification Email"
+    }
+  }
+}

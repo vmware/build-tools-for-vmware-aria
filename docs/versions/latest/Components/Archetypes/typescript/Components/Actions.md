@@ -82,10 +82,10 @@ the typescript hints will be used.
 #### Native vRO Action
 
 ```javascript
-/**  
- * @param {Any} args  
- * @param {number} test  
- */  
+/**
+ * @param {Any} args
+ * @param {number} test
+ */
 (function (args, test, willBeAnyType) {
    return args.url;
 });

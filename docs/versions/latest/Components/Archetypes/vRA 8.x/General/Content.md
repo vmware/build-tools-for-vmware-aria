@@ -42,32 +42,32 @@ Contents are exported by different rules.
 
 ##### Export Rules for content types
 
-- Empty array [] - nothing is exported  
-- List of items - the given items are exported. If they are not present on the server an Exception is thrown.  
+- Empty array [] - nothing is exported
+- List of items - the given items are exported. If they are not present on the server an Exception is thrown.
 - Null (nothing given) - everything is being exported
-  - blueprints
-  - catalog-item
-  - content-source
-  - custom-resource
-  - catalog-entitlement
-  - property-group
-  - subscription
-  - scenario
-  - policies
+    - blueprints
+    - catalog-item
+    - content-source
+    - custom-resource
+    - catalog-entitlement
+    - property-group
+    - subscription
+    - scenario
+    - policies
 
 #### Examples
 
 Example of `content.yaml` file.
 
 ```yaml
-blueprint: # will export all 
-subscription: # will export all 
+blueprint: # will export all
+subscription: # will export all
 catalog-item:  # export according to filter
   - Project Blueprints__WindowsVM
   - Project Blueprints__LinuxVm
   - Main Workflows__ConfigureVM
-custom-resource: # will export all 
-resource-action: # will export all 
+custom-resource: # will export all
+resource-action: # will export all
 property-group:  # export according to filter
   - memory
 catalog-entitlement:  # export according to filter

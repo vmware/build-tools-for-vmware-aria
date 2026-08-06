@@ -221,4 +221,113 @@ describe("Module", () => {
 		expect(global.__classes__["com.vmware.pscoe.test/TestClass"]).toBeDefined();
 		expect(global.__classes__["com.vmware.pscoe.test/TestClass"]).toBe(TestClass);
 	})
+
+	describe("Constructor Identity Validation", () => {
+		let vroes: any;
+		let systemWarnOriginal: any;
+		const loggedWarnings: string[] = [];
+
+		beforeAll(() => {
+			systemWarnOriginal = System.warn;
+			System.warn = function (msg: string) {
+				loggedWarnings.push(msg);
+			}
+			vroes = (System.getContext() as any).__vroes__;
+		});
+
+		afterAll(() => {
+			System.warn = systemWarnOriginal;
+		});
+
+		beforeEach(() => loggedWarnings.length = 0);
+
+		it("registerConstructor should track function constructors", () => {
+			const TestClass = function TestClass() { };
+			const result = vroes.registerConstructor("com.test.TestClass", TestClass);
+			expect(result.registered).toBe(true);
+			expect((TestClass as any).__id__).toBeDefined();
+		});
+
+		it("registerConstructor should reject non-function values", () => {
+			const result = vroes.registerConstructor("com.test.NonFunction", "not a function");
+			expect(result.registered).toBe(false);
+		});
+
+		it("normalizeConstructorKey should extract last component", () => {
+			expect(vroes.normalizeConstructorKey("com.vmware.pscoe.library.Foo")).toBe("Foo");
+			expect(vroes.normalizeConstructorKey("com.vmware.pscoe.library.ts.Foo")).toBe("Foo");
+			expect(vroes.normalizeConstructorKey("SingleName")).toBe("SingleName");
+		});
+
+		it("validateConstructorIdentity should pass for same constructor", () => {
+			const TestClass = function TestClass() { };
+			const instance = new TestClass();
+			const result = vroes.validateConstructorIdentity(instance, TestClass);
+			expect(result.valid).toBe(true);
+		});
+
+		it("validateConstructorIdentity should fail for different constructor", () => {
+			const TestClass1 = function TestClass1() { };
+			const TestClass2 = function TestClass2() { };
+			const instance = new TestClass1();
+			const result = vroes.validateConstructorIdentity(instance, TestClass2);
+			expect(result.valid).toBe(false);
+			expect(result.reason).toBe("instanceof check failed");
+		});
+
+		it("registerConstructor should warn on identity mismatch", () => {
+			const TestClass1 = function TestClass1() { };
+			const TestClass2 = function TestClass2() { };
+			vroes.registerConstructor("com.test.Sample", TestClass1);
+			loggedWarnings.length = 0;
+			const result = vroes.registerConstructor("com.other.Sample", TestClass2);
+			expect(result.registered).toBe(false);
+			expect(result.isIdentityMismatch).toBe(true);
+			expect(loggedWarnings.length).toBeGreaterThan(0);
+			expect(loggedWarnings[0]).toContain("Constructor identity mismatch");
+		});
+
+		it("diagnoseModule should report constructor info", () => {
+			const TestClass = function TestClass() { };
+			const instance = new TestClass();
+			vroes.registerConstructor("com.test.Diagnostic", TestClass);
+			const diagnostics = vroes.diagnoseModule(instance);
+			expect(diagnostics.instanceConstructorName).toBe("TestClass");
+			expect(diagnostics.registeredConstructors).toBeDefined();
+			expect(Array.isArray(diagnostics.registeredConstructors)).toBe(true);
+		});
+
+		it("validateModuleConfiguration should check module consistency", () => {
+			const report = vroes.validateModuleConfiguration();
+			expect(report.timestamp).toBeDefined();
+			expect(report.modules).toBeDefined();
+			expect(Array.isArray(report.modules)).toBe(true);
+			expect(report.issues).toBeDefined();
+			expect(Array.isArray(report.issues)).toBe(true);
+		});
+
+		it("validateExportShape should pass for constructor function", () => {
+			const TestClass = function TestClass() { };
+			const report = vroes.validateExportShape(TestClass, "com.test.Module", "TestClass");
+			expect(report.isFunction).toBe(true);
+			expect(report.isConstructor).toBe(true);
+			expect(report.issues.length).toBe(0);
+		});
+
+		it("validateExportShape should fail for object export", () => {
+			const objExport = { BaseAppender: function BaseAppender() { } };
+			const report = vroes.validateExportShape(objExport, "com.vmware.pscoe.library.logging.appenders", "BaseAppender");
+			expect(report.isFunction).toBe(false);
+			expect(report.exportType).toBe("object");
+			expect(report.exportKeys).toContain("BaseAppender");
+			expect(report.issues.length).toBeGreaterThan(0);
+			expect(report.issues[0]).toContain("E_EXPORT_SHAPE_MISMATCH");
+		});
+
+		it("validateExportShape should detect non-function/non-object exports", () => {
+			const report = vroes.validateExportShape(null, "com.test.Module", "NullExport");
+			expect(report.isFunction).toBe(false);
+			expect(report.issues.length).toBeGreaterThan(0);
+		});
+	})
 })

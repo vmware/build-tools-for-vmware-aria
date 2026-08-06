@@ -27,6 +27,7 @@
 		<module>serverless</module>
 		<module>bsc-package</module>
 		<module>cs-package</module>
+		<module>vcfa-all-apps-package</module>
 	</modules>
 	<properties>
 		<build.number>local</build.number>
@@ -274,6 +275,23 @@
 						<proxy>${vrang.proxy}</proxy>
 						<cloud.proxy.name>${vrang.cloud.proxy.name}</cloud.proxy.name>
 					</vrang>
+					<vcfa>
+						<host>${vcfa.host}</host>
+						<csp.host>${vcfa.csp.host}</csp.host>
+						<port>${vcfa.port}</port>
+						<username>${vcfa.username}</username>
+						<password>${vcfa.password}</password>
+						<serverId>${vcfa.serverId}</serverId>
+						<project.name>${vcfa.project.name}</project.name>
+						<org.name>${vcfa.org.name}</org.name>
+						<refresh.token>${vcfa.refresh.token}</refresh.token>
+						<bp.release>${vcfa.bp.release}</bp.release>
+						<vro.integration>${vcfa.vro.integration}</vro.integration>
+						<import.timeout>${vcfa.import.timeout}</import.timeout>
+						<data.collection.delay.seconds>${vcfa.data.collection.delay.seconds}</data.collection.delay.seconds>
+						<proxy>${vcfa.proxy}</proxy>
+						<cloud.proxy.name>${vcfa.cloud.proxy.name}</cloud.proxy.name>
+					</vcfa>
 					<vcd>
 						<host>${vcd.host}</host>
 						<port>${vcd.port}</port>
@@ -407,6 +425,18 @@
 						<configuration>
 							<outputDirectory>target/dependency/vra-ng</outputDirectory>
 							<includeTypes>vra-ng,vrang</includeTypes>
+							<prependGroupId>true</prependGroupId>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-vcfa-all-apps-dependencies</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/dependency/vcfa-all-apps</outputDirectory>
+							<includeTypes>vcfa-all-apps</includeTypes>
 							<prependGroupId>true</prependGroupId>
 						</configuration>
 					</execution>

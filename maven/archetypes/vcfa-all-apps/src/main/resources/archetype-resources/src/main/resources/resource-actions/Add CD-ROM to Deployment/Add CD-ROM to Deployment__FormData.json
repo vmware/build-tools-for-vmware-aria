@@ -1,0 +1,89 @@
+{
+  "tenant" : "457e4ab6-727f-446c-9d20-ba150e18950b",
+  "id" : "37f28d52-48ec-409b-a899-9efeb046c43e",
+  "name" : "add_cdrom",
+  "form" : {
+    "layout" : {
+      "pages" : [ {
+        "id" : "page_1",
+        "title" : "VM",
+        "sections" : [ {
+          "id" : "section_0",
+          "fields" : [ {
+            "id" : "vm",
+            "display" : "valuePicker"
+          } ]
+        } ]
+      }, {
+        "id" : "page_2",
+        "title" : "CD-ROM",
+        "sections" : [ {
+          "id" : "section_2",
+          "fields" : [ {
+            "id" : "connectAtPowerOn",
+            "display" : "checkbox"
+          } ]
+        }, {
+          "id" : "section_3",
+          "fields" : [ {
+            "id" : "deviceType",
+            "display" : "dropDown"
+          } ]
+        }, {
+          "id" : "section_4",
+          "fields" : [ {
+            "id" : "filePath",
+            "display" : "textField"
+          } ]
+        } ]
+      } ]
+    },
+    "schema" : {
+      "deviceType" : {
+        "label" : "Device type\n",
+        "type" : {
+          "dataType" : "string",
+          "isMultiple" : false
+        },
+        "default" : "Client Device",
+        "valueList" : [ "Client Device", "Host Device", "Datastore ISO File" ],
+        "constraints" : {
+          "required" : true
+        }
+      },
+      "connectAtPowerOn" : {
+        "label" : "Connect the CD-ROM when the virtual machine powers on\n",
+        "type" : {
+          "dataType" : "boolean",
+          "isMultiple" : false
+        },
+        "default" : false,
+        "constraints" : { }
+      },
+      "vm" : {
+        "label" : "Virtual machine on which to mount a CD-ROM\n",
+        "type" : {
+          "dataType" : "reference",
+          "referenceType" : "VC:VirtualMachine",
+          "isMultiple" : false
+        },
+        "constraints" : {
+          "required" : true
+        }
+      },
+      "filePath" : {
+        "label" : "ISO file path in datastore file format, for example [MY_DATASTORE] data/image.iso\n",
+        "type" : {
+          "dataType" : "string",
+          "isMultiple" : false
+        },
+        "constraints" : { }
+      }
+    }
+  },
+  "sourceType" : "resource.action",
+  "sourceId" : "Deployment.custom.add_cdrom",
+  "type" : "requestForm",
+  "status" : "ON",
+  "formFormat" : "JSON"
+}

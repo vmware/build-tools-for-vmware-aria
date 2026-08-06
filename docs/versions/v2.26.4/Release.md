@@ -3,13 +3,10 @@
 ## Breaking Changes
 
 
-
 ## Deprecations
 
 
-
-## Features:
-
+## Features
 
 
 ## Improvements
@@ -25,21 +22,21 @@ When there is a dashboardSharingMetadata.vrops.json file in the dashboards direc
 for all of the listed dashboards within 'share' section of the file with the groups listed for each of the dashboard during vrealize:push action
 (or installer).
 
-#### Relevant Documentation:
+#### Relevant Documentation
 The dashboardSharingMetadata.vrops.json needs to be adjusted manually prior making vrealize:push of vROPs dashboards.
 
 The file format is as follows:
 
 ```typescript
 {
-	"share": {
-		"dashboard 1": [ "group1", "group2" ],
-		"dashboard 2": [ "group1", "group2" ]
-	},
-	"unshare" [
-		"dashboard 1": [ "group3" ],
-		"dashboard 2": [ "group3" ]
-	]
+    "share": {
+        "dashboard 1": [ "group1", "group2" ],
+        "dashboard 2": [ "group1", "group2" ]
+    },
+    "unshare" [
+        "dashboard 1": [ "group3" ],
+        "dashboard 2": [ "group3" ]
+    ]
 }
 ```
 During vrops:pull action a file dashboardSharingMetadata.vrops.json will be created in the dashboard directory with all listed dashboards
@@ -59,10 +56,10 @@ When we try to update a CR that is in use by a deployment and if the deletion fa
 Once we have the ID, we would remove it from the CR and re-assigned it again before the importing process is initiated. This would
 allow us to create an updated CR that would be imported to vRA no matter if it is used by a deployment.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
-### *Exports now have local variables so they can be used in the module* 
+### *Exports now have local variables so they can be used in the module*
 Typescript export variables are not available locally.
 
 #### Previous Behavior
@@ -73,22 +70,22 @@ import * as keys from "./constants/metadata_keys";
 export const METADATA_KEY = keys;
 
 export const META_TEST = {
-	metaTestKey: METADATA_KEY
+    metaTestKey: METADATA_KEY
 }
 ```
-After compilation, the code would look like: 
+After compilation, the code would look like:
 ```javascript
 (function () {
-	var __global = System.getContext() || (function () {
-		return this;
-	}).call(null);
-	var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES()), exports = {};
-	var metadata_keys_1 = VROES.importLazy("com.vmware.pscoe.test/import-star/constants/metadata_keys");
-	exports.METADATA_KEY = metadata_keys_1._;
-	exports.META_TEST = {
-		metaTestKey: METADATA_KEY
-	};
-	return exports;
+    var __global = System.getContext() || (function () {
+        return this;
+    }).call(null);
+    var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES()), exports = {};
+    var metadata_keys_1 = VROES.importLazy("com.vmware.pscoe.test/import-star/constants/metadata_keys");
+    exports.METADATA_KEY = metadata_keys_1._;
+    exports.META_TEST = {
+        metaTestKey: METADATA_KEY
+    };
+    return exports;
 });
 ```
 Effectively making it so `METADATA_KEY` referenced in the `META_TEST` would NOT be resolved.
@@ -101,7 +98,7 @@ import * as keys from "./constants/metadata_keys";
 export const METADATA_KEY = keys;
 
 export const META_TEST = {
-	metaTestKey: METADATA_KEY
+    metaTestKey: METADATA_KEY
 }
 ```
 Is now compiled to:
@@ -123,11 +120,11 @@ Is now compiled to:
 ```
 Notice the local variables METADATA_KEY and META_TEST.
 
-#### Relevant Documentation:
-* **NONE**
+#### Relevant Documentation
+NONE
 
-### *Custom Resources will now correctly set the orgId if the orgId is not passed in the configuration but orgName is* 
-Custom Resources attempt to set the correct orgId when importing/exporting. If orgId is not present in the configuration, 
+### *Custom Resources will now correctly set the orgId if the orgId is not passed in the configuration but orgName is*
+Custom Resources attempt to set the correct orgId when importing/exporting. If orgId is not present in the configuration,
 orgName can be passed instead.
 
 #### Previous Behavior
@@ -136,8 +133,8 @@ orgName can be passed instead.
 #### New Behavior
 `orgName` is now respected and you can pass it without passing the orgId, the orgId will be retrieved from the name.
 
-#### Relevant Documentation:
-* **NONE**
+#### Relevant Documentation
+NONE
 
 ### Property groups are now correctly updated
 Property groups are not being updated. There is no error message and the `vrealize:push` passes successfully.
@@ -148,8 +145,8 @@ PGs were not being updated because the already existing PG was being passed.
 #### New Behavior
 When updating a PG, the existing PG id is taken and inserted in the rawData of the PG being updated.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 ### [vro-types] Added distinguishedName property to the AD_Computer and AD_OrganizationalUnit interfaces
 * [vro-types] Added distinguishedName property to the AD_Computer and AD_OrganizationalUnit interfaces
@@ -160,8 +157,8 @@ distinguishedName was not present in the interface so in order to use it, it was
 #### New Behavior
 the property is present hence the casting `as any` or similar techniques are not needed.
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 ### Blueprints cannot be imported when they have "." in their names
 
@@ -171,8 +168,8 @@ Blueprints CANNOT be imported when they have "." in their names
 #### New Behavior
 Blueprints CAN be imported when they have "." in their names
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE
 
 ### Package-installer default prompts do not include prompt on vrang_proxy
 Currently when package-installer is run without environment.properties there is no prompt for vrang_proxy to be filed in.
@@ -187,29 +184,29 @@ If so, the user shall enter value for it and the value gets set in the generated
 Otherwise, no record is saved for the vrang_proxy and the property is not contained in the environment.properties file.
 Either way, a new property (vrang_proxy_required) is added to the environment.properties with the respective value of true/false.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
-## Upgrade procedure:
+## Upgrade procedure
 
 
 ### Custom Resource Second Day Action Name validation added
 
 #### Previous Behavior
-Custom Resource Second Day action CAN be imported when they have "_" in the strart of their names
-Custom Resource Second Day action CAN be imported when they have "_" in the end of their names
+Custom Resource Second Day action CAN be imported when they have "\_" in the strart of their names
+Custom Resource Second Day action CAN be imported when they have "\_" in the end of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have " " in their names
 Custom Resource Second Day action CANNOT be imported when they have any special characters exept ". : - _" in their names
 
 #### New Behavior
-Custom Resource Second Day action CANNOT be imported when they have "_" in the strart of their names
-Custom Resource Second Day action CANNOT be imported when they have "_" in the end of their names
+Custom Resource Second Day action CANNOT be imported when they have "\_" in the strart of their names
+Custom Resource Second Day action CANNOT be imported when they have "\_" in the end of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have "." in the strart of their names
 Custom Resource Second Day action CANNOT be imported when they have " " in their names
 Custom Resource Second Day action CANNOT be imported when they have any special characters exept ". : - _" in their names
 
-#### Relevant Documentation:
-*NONE*
+#### Relevant Documentation
+NONE

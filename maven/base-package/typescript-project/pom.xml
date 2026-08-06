@@ -48,6 +48,24 @@
 			<version>${revision}</version>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>js-class-library</id>
+			<activation>
+				<file>
+					<missing>${basedir}/.skip-js-class-lib-dep</missing>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.vmware.pscoe.library</groupId>
+					<artifactId>class</artifactId>
+					<type>package</type>
+					<version>${revision}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>

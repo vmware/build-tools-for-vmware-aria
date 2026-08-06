@@ -35,7 +35,7 @@ policy:
     - example policy
   lease:
     - example policy
-  resource-quota: 
+  resource-quota:
     - example policy
 
 # ...
@@ -67,7 +67,7 @@ src/
 Operations are invoked on policies based on filtering from content.yml file, according to the following rules:
 
 - Empty array [] - nothing is imported/exported.
-- List of items - the given items are imported/exported. If they are not present on the server an Exception is thrown.  
+- List of items - the given items are imported/exported. If they are not present on the server an Exception is thrown.
 - Null (nothing given) - everything is being imported/exported.
 
 #### Importing

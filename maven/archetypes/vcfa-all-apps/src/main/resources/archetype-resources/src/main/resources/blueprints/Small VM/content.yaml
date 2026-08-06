@@ -1,0 +1,52 @@
+formatVersion: 1
+inputs:
+  vmName:
+    type: string
+    title: VM name
+  vmSize:
+    type: string
+    title: VM size
+    oneOf:
+      - title: Small
+        const: best-effort-small
+      - title: Meduim
+        const: best-effort-medium
+      - title: Large
+        const: best-effort-large
+  emailList:
+    type: array
+    title: Notification email(s)
+    items:
+      type: string
+resources:
+  CCI_Supervisor_Namespace_1:
+    type: CCI.Supervisor.Namespace
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      name: vcf-ns-demo
+      existing: true
+  Virtual_Machine_1:
+    type: CCI.Supervisor.Resource
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      context: ${resource.CCI_Supervisor_Namespace_1.id}
+      manifest:
+        apiVersion: vmoperator.vmware.com/v1alpha3
+        kind: VirtualMachine
+        metadata:
+          name: ${input.vmName}-${env.shortDeploymentId}
+        spec:
+          className: ${input.vmSize}
+          imageName: vmi-0a0044d7c690bcbea
+          powerState: PoweredOn
+          storageClass: vsan-default-storage-policy
+      wait:
+        conditions:
+          - type: VirtualMachineCreated
+            status: 'True'

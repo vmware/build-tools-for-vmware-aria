@@ -39,7 +39,7 @@ public class VcdNgPackageMojo extends AbstractVroMojo {
 
 		getLog().info("basedir " + project.getBasedir());
 		File pkgFile = new File(directory,
-				pkgInfoProvider.getPackageName() + "." + PackageType.VCDNG.getPackageExtention());
+				pkgInfoProvider.getPackageName() + "." + PackageType.VCDNG.getPackageExtension());
 		getLog().info("Target vcd-ng package file " + pkgFile.getAbsolutePath());
 
 		Path zipBundle = Paths.get(directory.getAbsolutePath(), "bundle", "plugin.zip");

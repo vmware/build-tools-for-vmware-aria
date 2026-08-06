@@ -36,7 +36,7 @@ public class BasicPackageMojo extends AbstractVroMojo {
 
 		getLog().info("basedir " + project.getBasedir());
 		File pkgFile = new File(directory,
-				pkgInfoProvider.getPackageName() + "." + PackageType.BASIC.getPackageExtention());
+				pkgInfoProvider.getPackageName() + "." + PackageType.BASIC.getPackageExtension());
 		getLog().info("Target package file: " + pkgFile.getAbsolutePath());
 		File srcDir = new File(project.getBasedir(), "src");
 		Package pkg = PackageFactory.getInstance(PackageType.BASIC, pkgFile);

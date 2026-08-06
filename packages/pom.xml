@@ -15,6 +15,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>class</module>
 		<module>ecmascript</module>
 		<module>exec</module>
 		<module>polyglot-wrapper</module>

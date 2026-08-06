@@ -1,0 +1,19 @@
+{
+  "id" : "658b8ebf-e7da-4edd-b2f9-9e3838e3255e",
+  "name" : "short_lease",
+  "typeId" : "com.vmware.policy.deployment.lease",
+  "enforcementType" : "SOFT",
+  "description" : "Sample Lease policy",
+  "definition" : {
+    "leaseGrace" : 3,
+    "leaseTermMax" : 5,
+    "leaseTotalTermMax" : 14
+  },
+  "criteria" : {
+    "matchExpression" : [ {
+      "key" : "ownedBy",
+      "operator" : "contains",
+      "value" : "dummy"
+    } ]
+  }
+}

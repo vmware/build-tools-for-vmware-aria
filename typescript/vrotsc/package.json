@@ -16,7 +16,7 @@
         "vrotsc": "bin/vrotsc"
     },
     "dependencies": {
-        "brace-expansion": "^2.0.3",
+        "brace-expansion": "^2.1.3",
         "minimatch": "^10.2.3"
     },
     "devDependencies": {
@@ -36,7 +36,7 @@
         "gulp-help": "1.6.1",
         "gulp-typescript": "6.0.0-alpha.1",
         "is-keyword-js": "1.0.3",
-        "js-yaml": "4.1.1",
+        "js-yaml": "4.3.0",
         "merge2": "1.4.1",
         "minimatch": "10.2.3",
         "minimist": "1.2.8",

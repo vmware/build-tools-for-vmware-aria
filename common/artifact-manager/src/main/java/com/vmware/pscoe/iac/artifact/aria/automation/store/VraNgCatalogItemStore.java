@@ -102,6 +102,16 @@ public class VraNgCatalogItemStore extends AbstractVraNgStore {
 	protected static final String CUSTOM_RESOURCE_SUFFIX = ".json";
 
 	/**
+	 * Suffix of the custom form styles file that is stored in the same directory.
+	 */
+	protected static final String CUSTOM_FORM_STYLES_SUFFIX = "FormStyles";
+
+	/**
+	 * Extension used for CSS companion style files.
+	 */
+	protected static final String CSS_RESOURCE_SUFFIX = ".css";
+
+	/**
 	 * Amount of time in MS to wait before retrying to lookup if the Custom Forms
 	 * are synced.
 	 */

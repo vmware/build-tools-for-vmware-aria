@@ -5,7 +5,7 @@
     var __global = System.getContext() || (function () {
         return this;
     }).call(null);
-    var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES()), tslib_1 = VROES.tslib, exports = {};
+    var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES()), _$tslib_1 = VROES.tslib, exports = {};
     var Container = /** @class */ (function () {
         function Container() {
         }
@@ -14,9 +14,9 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 modules[_i] = arguments[_i];
             }
-            return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return _$tslib_1.__awaiter(this, void 0, void 0, function () {
                 var getHelpers, _a, modules_1, currentModule, containerModuleHelpers;
-                return tslib_1.__generator(this, function (_b) {
+                return _$tslib_1.__generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
                             getHelpers = function (id) { };

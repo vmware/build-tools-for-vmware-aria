@@ -5,7 +5,7 @@
     var __global = System.getContext() || (function () {
         return this;
     }).call(null);
-    var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES()), tslib_1 = VROES.tslib, exports = {};
+    var VROES = __global.__VROES || (__global.__VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES()), _$tslib_1 = VROES.tslib, exports = {};
     var Class1 = /** @class */ (function () {
         function Class1() {
             this.field1 = "test";
@@ -23,7 +23,7 @@
     }());
     exports.Class1 = Class1;
     var Class2 = /** @class */ (function (_super) {
-        tslib_1.__extends(Class2, _super);
+        _$tslib_1.__extends(Class2, _super);
         function Class2() {
             var _this = _super !== null && _super.apply(this, arguments) || this;
             _this.field1 = "test2";
@@ -37,7 +37,7 @@
     }(Class1));
     exports.Class2 = Class2;
     var Class3 = /** @class */ (function (_super) {
-        tslib_1.__extends(Class3, _super);
+        _$tslib_1.__extends(Class3, _super);
         function Class3(field7, field8) {
             if (field7 === void 0) { field7 = "test7"; }
             if (field8 === void 0) { field8 = "test8"; }

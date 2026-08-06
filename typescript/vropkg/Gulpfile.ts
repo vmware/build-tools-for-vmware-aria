@@ -1,9 +1,9 @@
+import { execSync } from "child_process";
 import * as fs from "fs-extra";
 import * as gulp from "gulp";
 import jasmine from "gulp-jasmine";
 import * as tsc from "gulp-typescript";
 import * as path from 'path';
-import { execSync } from "child_process";
 
 function toPathArg(...args: string[]) {
 	const res = args.length == 1 ? args[0] : path.join(...args).replace(/[\\/]+/, path.posix.sep);
@@ -15,18 +15,19 @@ gulp.task("clean", async () => {
 	await fs.remove(path.join('test', 'target-flat'))
 	await fs.remove(path.join('test', 'target-flat.tmp'))
 	await fs.remove(path.join('test', 'target-tree'))
-	const certPem		= path.join('test', "cert.pem");
-	const privateKeyPem	= path.join('test', "private_key.pem");
-	const packageFile	= path.join('test', "com.vmware.pscoe.toolchain.package");
-	fs.existsSync( certPem ) && fs.unlinkSync( certPem );
-	fs.existsSync( privateKeyPem ) && fs.unlinkSync( privateKeyPem );
-	fs.existsSync( packageFile ) && fs.unlinkSync( packageFile );
+	const certPem = path.join('test', "cert.pem");
+	const privateKeyPem = path.join('test', "private_key.pem");
+	const packageFile = path.join('test', "com.vmware.pscoe.toolchain.package");
+	fs.existsSync(certPem) && fs.unlinkSync(certPem);
+	fs.existsSync(privateKeyPem) && fs.unlinkSync(privateKeyPem);
+	fs.existsSync(packageFile) && fs.unlinkSync(packageFile);
 });
 
 gulp.task("compile-prod", done => {
 	return compile({
 		declaration: true,
-		removeComments: true
+		removeComments: true,
+		skipLibCheck: true
 	});
 });
 
@@ -43,6 +44,7 @@ gulp.task("compile-e2e", (done) => {
 
 	let project = tsc.createProject("conf/tsconfig.e2e.json", {
 		declaration: true,
+		skipLibCheck: true
 	});
 
 	return project.src()
@@ -60,7 +62,11 @@ gulp.task("test-e2e", gulp.series([
 		}))
 ]));
 
-gulp.task("build-prod", gulp.series(["package-prod", "test-e2e"]));
+const buildProdTasks = ["package-prod"];
+if (!(process.env.SKIP_NPM_TESTS && process.env.SKIP_NPM_TESTS.toLowerCase() === 'true')) {
+	buildProdTasks.push("test-e2e");
+}
+gulp.task("build-prod", gulp.series(buildProdTasks));
 
 gulp.task("default", gulp.series(["clean", "build-prod"]));
 
@@ -73,11 +79,11 @@ function compile(settings: tsc.Settings): NodeJS.ReadWriteStream {
 
 function generateBasePackage() {
 	const options = [
-		toPathArg( path.resolve('bin', 'vropkg')),
+		toPathArg(path.resolve('bin', 'vropkg')),
 		'--in', 'tree',
 		'--out', 'flat',
 		'--srcPath', toPathArg('test', 'com.vmware.pscoe.toolchain-expand'),
-		'--destPath', toPathArg( 'test', 'tmp' ),
+		'--destPath', toPathArg('test', 'tmp'),
 		'--privateKeyPEM', toPathArg('test', 'private_key.pem'),
 		'--certificatesPEM', toPathArg('test', 'cert.pem'),
 		'--version', '1.0.0',
@@ -89,21 +95,21 @@ function generateBasePackage() {
 		'--vroIgnoreFile', '.vroignore'
 	]
 
-	execSync( options.join( " " ), {
+	execSync(options.join(" "), {
 		cwd: process.cwd(),
 		env: process.env
 	});
 
-	fs.moveSync( path.join( 'test', "tmp", "test.group.proj-artifact-1.0.0.package" ), path.join( 'test', "com.vmware.pscoe.toolchain.package" ), { overwrite: true } )
+	fs.moveSync(path.join('test', "tmp", "test.group.proj-artifact-1.0.0.package"), path.join('test', "com.vmware.pscoe.toolchain.package"), { overwrite: true })
 }
 
 function generateAdditionalPackage() {
 	const options = [
-		toPathArg( path.resolve('bin', 'vropkg')),
+		toPathArg(path.resolve('bin', 'vropkg')),
 		'--in', 'tree',
 		'--out', 'flat',
 		'--srcPath', toPathArg('test', 'com.vmware.pscoe.vrbt-forms'),
-		'--destPath', toPathArg('test', 'tmp' ),
+		'--destPath', toPathArg('test', 'tmp'),
 		'--privateKeyPEM', toPathArg('test', 'private_key.pem'),
 		'--certificatesPEM', toPathArg('test', 'cert.pem'),
 		'--version', '1.0.0',
@@ -115,11 +121,10 @@ function generateAdditionalPackage() {
 		'--vroIgnoreFile', '".vroignore"'
 	]
 
-	execSync( options.join( " " ), {
+	execSync(options.join(" "), {
 		cwd: process.cwd(),
 		env: process.env
 	});
 
-	fs.moveSync( path.join( 'test', "tmp", "custom.forms.proj-artifact-1.0.0.package" ), path.join( 'test', "com.vmware.pscoe.vrbt.custom.interaction.package" ), { overwrite: true } )
-
+	fs.moveSync(path.join('test', "tmp", "custom.forms.proj-artifact-1.0.0.package"), path.join('test', "com.vmware.pscoe.vrbt.custom.interaction.package"), { overwrite: true })
 }

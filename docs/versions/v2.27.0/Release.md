@@ -3,7 +3,6 @@
 ## Breaking Changes
 
 
-
 ## Deprecations
 
 
@@ -16,14 +15,14 @@ The package-typescript-autogen-archetype was part of the big toolchain package, 
 #### New Behavior
 The package-typescript-autogen-archetype and the typescript-autogen-project base packages are moved to a new `ts-autogen` repository which will be maintained separately.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
-## Features:
+## Features
 ### *Added an archetype for a multi-module project*
 
 #### *Command for archetype generation*
-**Windows OS**
+`Windows OS`
 ```commandline
     mvn archetype:generate "-DinteractiveMode=false"
         "-DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes"
@@ -34,7 +33,7 @@ The package-typescript-autogen-archetype and the typescript-autogen-project base
         "-DlicenseHeader=<license-header>"
         "-DlicenseTechnicalPreview=false"
 ```
-**Linux/Mac OS**
+`Linux/Mac OS`
 ```commandline
     mvn archetype:generate -DinteractiveMode=false \
         -DarchetypeGroupId=com.vmware.pscoe.o11n.archetypes \
@@ -46,8 +45,8 @@ The package-typescript-autogen-archetype and the typescript-autogen-project base
         -DlicenseTechnicalPreview=false
 ```
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 
 ## Improvements
@@ -60,7 +59,7 @@ When we run the installer from a folder different from the package bundle bin fo
 #### New Behavior
 When we run the installer from a folder different from the package bundle bin folder, we follow all steps of the interactive mode.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [appassembler-maven-plugin](https://www.mojohaus.org/appassembler/appassembler-maven-plugin/usage-script.html)
 
 ### Interactive Installer Doesn't Ask if vRO is embedded
@@ -69,11 +68,11 @@ When we run the installer from a folder different from the package bundle bin fo
 When running the installer script in interactive mode to import vRA and vRO content simultaneously, the script doesn't show a prompt to ask whether vRO is embedded. And in the case of vRA Cloud, vRO cannot be embedded, which makes it impossible to use the interactive mode of the script.
 
 #### New Behavior
-When we run the installer to import vRA and vRO content simultaneously, the script shows a prompt to ask whether vRO is embedded. 
+When we run the installer to import vRA and vRO content simultaneously, the script shows a prompt to ask whether vRO is embedded.
 If the answer is yes, the vRealize Automation NG Configuration is run. Otherwise, the script asks vRealize Orchestrator Configuration set of questions.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### Add support for the following ABX properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant)
 
@@ -81,76 +80,76 @@ If the answer is yes, the vRealize Automation NG Configuration is run. Otherwise
 Properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant) are ignored during the installation process.
 
 #### New Behavior
-Correct value will be taken from package.json file for properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant). 
+Correct value will be taken from package.json file for properties: memoryLimitMb, timeoutSec, provider(Faas provider), shared(Share with all projects in this organization), inputSecrets(Secret), inputConstants(Action constant).
 Possible values for property **Faas provider** are: "aws", "azure", "on-prem". File **package.json** should be placed to the root of the project folder.
 
-**package.json**
-```
+`package.json`
+```json
 {
-	"name": "nic.abx",
-	"version": "1.0.1-SNAPSHOT",
-	"description": "Find Tags Action",
-	"private": false,
-	"scripts": {
-		"build": "polyglotpkg --env abx",
-		"clean": "run-script-os",
-		"clean:win32": "rmdir /S /Q out dist tmp || echo Nothing to clean",
-		"clean:default": "rm -Rf out dist tmp",
-		"test": "echo \"Error: no test specified\""
-	},
-	"keywords": [
-		"polyglot",
-		"package",
-		"abx",
-		"python"
-	],
-	"author": "VMware WWCoE",
-	"license": "VMware Confidential",
-	"devDependencies": {
-		"@types/node": "^14.0.13",
-		"@vmware-pscoe/polyglotpkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/polyglotpkg/2.18.1/polyglotpkg-2.18.1.tgz",
-		"@vmware-pscoe/vropkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/vropkg/2.18.1/vropkg-2.18.1.tgz",
-		"run-script-os": "^1.1.6",
-		"sinon": "^11.1.2",
-		"ts-node": "^8.10.2",
-		"typescript": "^3.9.5"
-	},
-	"dependencies": {},
-	"platform": {
-		"runtime": "python",
-		"action": "findTags",
-		"tags": [],
-		"entrypoint": "handler.handler",
-		"base": "out",
-		"memoryLimitMb": 79,
-		"timeoutSec": 22,
-		"provider": "azure"
-	},
-	"abx": {
-		"shared": true,
-		"inputSecrets": [
-			"Secret1",
-			"Secret2"
-		],
-		"inputConstants": [
-			"Constant1",
-			"Constant2"
-		],
-		"inputs": {
-			"tagKey": ""
-		}
-	},
-	"files": [
-		"out",
-		"!package.json"
-	]
+    "name": "nic.abx",
+    "version": "1.0.1-SNAPSHOT",
+    "description": "Find Tags Action",
+    "private": false,
+    "scripts": {
+        "build": "polyglotpkg --env abx",
+        "clean": "run-script-os",
+        "clean:win32": "rmdir /S /Q out dist tmp || echo Nothing to clean",
+        "clean:default": "rm -Rf out dist tmp",
+        "test": "echo \"Error: no test specified\""
+    },
+    "keywords": [
+        "polyglot",
+        "package",
+        "abx",
+        "python"
+    ],
+    "author": "VMware WWCoE",
+    "license": "VMware Confidential",
+    "devDependencies": {
+        "@types/node": "^14.0.13",
+        "@vmware-pscoe/polyglotpkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/polyglotpkg/2.18.1/polyglotpkg-2.18.1.tgz",
+        "@vmware-pscoe/vropkg": "https://artifactory-fqdn/artifactory/com/vmware/pscoe/iac/vropkg/2.18.1/vropkg-2.18.1.tgz",
+        "run-script-os": "^1.1.6",
+        "sinon": "^11.1.2",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.5"
+    },
+    "dependencies": {},
+    "platform": {
+        "runtime": "python",
+        "action": "findTags",
+        "tags": [],
+        "entrypoint": "handler.handler",
+        "base": "out",
+        "memoryLimitMb": 79,
+        "timeoutSec": 22,
+        "provider": "azure"
+    },
+    "abx": {
+        "shared": true,
+        "inputSecrets": [
+            "Secret1",
+            "Secret2"
+        ],
+        "inputConstants": [
+            "Constant1",
+            "Constant2"
+        ],
+        "inputs": {
+            "tagKey": ""
+        }
+    },
+    "files": [
+        "out",
+        "!package.json"
+    ]
 }
 ```
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
-### NPE in case user provides non-existing project name during installation 
+### NPE in case user provides non-existing project name during installation
 
 #### Previous Behavior
 We get a null pointer exception if we specify a non-existing project name during the installation process.
@@ -158,8 +157,8 @@ We get a null pointer exception if we specify a non-existing project name during
 #### New Behavior
 We get an error that the specified project doesn't exist, and information with a list of existing project if we specify the name of non-existing project during the installation process.
 
-#### Relevant Documentation:
-**NONE**
+#### Relevant Documentation
+NONE
 
 ### Ability to Skip the node_modules reinstallation
 Added the Ability to Skip the node_modules cleaning and installation
@@ -170,7 +169,7 @@ The "mvn clean" command (for typescript projects) used to clean/delete the node_
 #### New Behavior
 Adding "skipInstallNodeDeps=true" flag to the mvn commands , skips the deletion and re installation of node-deps.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [skipInstallNodeDeps](Components/Archetypes/typescript/General/Getting%20Started.md#skipInstallNodeDeps)
 
 ### Update documentation to use approved project name **Build Tools for VMware Aria**
@@ -186,14 +185,14 @@ Project references used `Build Tools for VMware Aria` or `Build Tools for Aria` 
 
 #### Previous Behavior
 When changes are detected on blueprint imports and versions are not ignored vRBT tries to release a new blueprint version. If
-however, the exported versions were stored in reverse order and imported that way, new release failed due to trying to release 
+however, the exported versions were stored in reverse order and imported that way, new release failed due to trying to release
 an existing version.
 
 #### New Behavior
 Added error handling that will try to release a date formatted version (which shouldn't have any duplicates on the server) in
 case the MAJOR.MINOR.PATCH fails.
 
-#### Relevant Documentation:
+#### Relevant Documentation
 [importing](Components/Archetypes/VRA%208.x/Components/Blueprints.md#importing)
 
 ### vRA authentication with refresh token
@@ -205,16 +204,16 @@ Authentication is possible only by specifing username and password in profile co
 Authentication is possible by specifing either refresh token or username and password in profile configuration in settings.xml
 ```xml
 <profile>
-	<id>corp-dev</id>
-	<properties>
-		<!--vRO Connection-->
-		<vro.host>vra-l-01a.corp.local</vro.host>
-		<vro.port>443</vro.port>
-		<vro.auth>vra</vro.auth>
-		<vro.refresh.token>{{refreshToken}}</vro.refresh.token>
-	</properties>
+    <id>corp-dev</id>
+    <properties>
+        <!--vRO Connection-->
+        <vro.host>vra-l-01a.corp.local</vro.host>
+        <vro.port>443</vro.port>
+        <vro.auth>vra</vro.auth>
+        <vro.refresh.token>{{refreshToken}}</vro.refresh.token>
+    </properties>
 </profile>
 ```
 
-## Upgrade procedure:
+## Upgrade procedure
 

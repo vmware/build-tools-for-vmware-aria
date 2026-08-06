@@ -83,7 +83,11 @@ gulp.task("test", async done => {
     done();
 });
 
-gulp.task("build", gulp.series(["clean", "compile", "bundle", "test"]));
+const buildTasks = ["clean", "compile", "bundle"];
+if (!(process.env.SKIP_NPM_TESTS && process.env.SKIP_NPM_TESTS.toLowerCase() === 'true')) {
+    buildTasks.push("test");
+}
+gulp.task("build", gulp.series(buildTasks));
 
 async function tsc(projectName: string): Promise<void> {
     const tscCommand = path.join("node_modules", ".bin", "tsc");

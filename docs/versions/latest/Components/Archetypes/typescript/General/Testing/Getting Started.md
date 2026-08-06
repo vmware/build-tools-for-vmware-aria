@@ -45,9 +45,9 @@ beforeEach(() => {
     this.someClass = new SomeClass();
 });
 
-describe("Different Methods of Expect Block",function() { 
+describe("Different Methods of Expect Block",function() {
    it("Returns even or optional ", function() {
-      expect(this.someClass.evenOrOdd()).toBe("even");     
+      expect(this.someClass.evenOrOdd()).toBe("even");
    });
 });
 ```
@@ -76,11 +76,11 @@ describe('Array.prototype', function() {
 
 ```txt
 "**/?(*.)+(spec|test).[j|t]s(x)"
- 
+
 //example names for javascript file
 MyTests.test.js
 MyTests.spec.js
- 
+
 //example names for typescript file
 MyTest.test.ts
 MyTest.spec.ts

@@ -55,7 +55,7 @@ service-automation
             └── integrationAction.js
         └── classes
             └── IntegrationService1.ts
-            └── IntegrationService1.test.ts            
+            └── IntegrationService1.test.ts
         └── policies
             └── EventListener.pl.ts
         └── resources
@@ -70,8 +70,8 @@ service-automation
         └── workflows
             └── CreateIntegration.wf.ts
             └── CreateIntegration.wf.form.json
-        └── IntegrationService1.conf.ts            
-        └── IntegrationService1Alternative.conf.yaml        
+        └── IntegrationService1.conf.ts
+        └── IntegrationService1Alternative.conf.yaml
 ```
 
 ### Configuring ~/.m2/settings.xml to work with Orchestrator project types
@@ -92,8 +92,8 @@ The following need to be added to the profile that you intend to use:
 ```
 
 - `vro.username` - For VCF 9 Orchestrator you need to provide username in the following format: user@domain. E.g.:
-  - admin@System - Provider admin
-  - configurationadmin@Classic - Classic organization admin
+    - admin@System - Provider admin
+    - configurationadmin@Classic - Classic organization admin
 
 ### Properties
 

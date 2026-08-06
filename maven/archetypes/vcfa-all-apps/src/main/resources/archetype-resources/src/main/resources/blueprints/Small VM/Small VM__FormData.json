@@ -1,0 +1,124 @@
+{
+  "layout": {
+    "pages": [
+      {
+        "id": "page_general",
+        "title": "General",
+        "sections": [
+          {
+            "id": "section_cf56a1ce",
+            "fields": [
+              {
+                "id": "vmName",
+                "display": "textField",
+                "state": {
+                  "visible": true,
+                  "read-only": false
+                },
+                "signpostPosition": "right-middle"
+              }
+            ]
+          },
+          {
+            "id": "section_140994b3",
+            "fields": [
+              {
+                "id": "vmSize",
+                "display": "dropDown",
+                "state": {
+                  "visible": true,
+                  "read-only": false
+                },
+                "signpostPosition": "right-middle"
+              }
+            ]
+          },
+          {
+            "id": "section_09613334",
+            "fields": [
+              {
+                "id": "emailList",
+                "display": "array",
+                "state": {
+                  "visible": true,
+                  "read-only": false
+                },
+                "signpostPosition": "right-middle"
+              }
+            ]
+          }
+        ],
+        "state": {}
+      }
+    ]
+  },
+  "schema": {
+    "vmName": {
+      "label": "VM name",
+      "type": {
+        "dataType": "string",
+        "isMultiple": false
+      },
+      "placeholder": "",
+      "constraints": {
+        "required": true
+      }
+    },
+    "vmSize": {
+      "label": "VM size",
+      "type": {
+        "dataType": "string",
+        "isMultiple": false
+      },
+      "valueList": [
+        {
+          "value": "best-effort-small",
+          "label": "Small"
+        },
+        {
+          "value": "best-effort-medium",
+          "label": "Meduim"
+        },
+        {
+          "value": "best-effort-large",
+          "label": "Large"
+        }
+      ],
+      "placeholder": "",
+      "constraints": {
+        "required": true
+      }
+    },
+    "emailList": {
+      "label": "Notification email(s)",
+      "type": {
+        "dataType": "string",
+        "isMultiple": true
+      },
+      "constraints": {}
+    }
+  },
+  "options": {
+    "externalValidations": [
+      {
+        "label": "ValidateEmails",
+        "source": {
+          "id": "com.vmware.library.mail/validateEmailAddressList",
+          "type": "scriptAction",
+          "parameters": [
+            {
+              "$type": {
+                "dataType": "string",
+                "isMultiple": true
+              },
+              "list": "emailList"
+            }
+          ]
+        },
+        "target": [
+          "emailList"
+        ]
+      }
+    ]
+  }
+}

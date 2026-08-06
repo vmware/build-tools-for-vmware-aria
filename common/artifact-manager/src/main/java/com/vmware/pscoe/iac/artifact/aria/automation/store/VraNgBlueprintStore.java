@@ -42,6 +42,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
@@ -309,9 +310,14 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 			restClient.updateBlueprint(bp);
 		}
 
+		// Evaluate whether a new custom request form layout variant or sibling styles
+		// changed on disk
+		boolean formChanged = this.processBlueprintFormCustomForm(bpDir, bp);
+
 		// Importing blueprint versions
 		VraNgReleaseManager releaseManager = new VraNgReleaseManager(this.restClient);
-		releaseManager.releaseNextVersion(bp);
+		releaseManager.releaseNextVersion(bp, formChanged);
+
 		if (this.config.getUnreleaseBlueprintVersions()) {
 			// Sleep so versions can be ordered correctly. Milliseconds parsing in JAVA is
 			// not very good, so we are
@@ -323,6 +329,108 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 
 			this.unreleaseOldVersions(bp);
 		}
+	}
+
+	/**
+	 * REPLICATED DESIGN: Scans the companion layout paths to check for incoming
+	 * custom
+	 * request form adjustments and updates to enforce synchronized release
+	 * deployments.
+	 */
+	private boolean processBlueprintFormCustomForm(final File bpDir, final VraNgBlueprint bp) {
+		File sourceDirectory = bpDir.getParentFile().getParentFile();
+		String bpName = bp.getName();
+
+		// Map companion resources under catalog-items relative workspace directory
+		// structure
+		File customFormsFolder = Paths.get(sourceDirectory.getPath(), "catalog-items", "custom-forms").toFile();
+		File customFormDataFile = new File(customFormsFolder, bpName + "__FormData.json");
+		File customFormStylesFile = new File(customFormsFolder, bpName + "__FormStyles.css");
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+		// Step 1: Handle cleanup mapping transitions if local assets are missing
+		if (!customFormDataFile.exists()) {
+			try {
+				Object rawServerForm = this.restClient.getCustomFormByTypeAndSource("blueprint", bp.getId());
+				if (rawServerForm != null) {
+					logger.info(
+							"Orphaned custom request form detected on server for blueprint '{}'. Forcing state-change release version.",
+							bpName);
+					return true;
+				}
+			} catch (Exception e) {
+				logger.debug(
+						"No active request form allocation on server for blueprint '{}'. Skipping cleanup release.",
+						bpName);
+			}
+			return false;
+		}
+
+		// Step 2: Compare working structures to detect updates
+		try {
+			String localFormContent = new String(Files.readAllBytes(customFormDataFile.toPath()),
+					StandardCharsets.UTF_8);
+			JsonElement localFormJson = JsonParser.parseString(localFormContent);
+			String localFormNormalized = gson.toJson(localFormJson);
+
+			String localCssContent = "";
+			if (customFormStylesFile.exists()) {
+				localCssContent = new String(Files.readAllBytes(customFormStylesFile.toPath()), StandardCharsets.UTF_8)
+						.trim();
+			}
+
+			boolean formChanged = true;
+			try {
+				Object rawServerForm = this.restClient.getCustomFormByTypeAndSource("blueprint", bp.getId());
+				if (rawServerForm != null) {
+					String serverFormJsonNormalized = "";
+					String serverStyles = "";
+
+					// Safe evaluation against internal VraNgCustomForm model schema structure
+					if (rawServerForm instanceof com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm) {
+						com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm vf = (com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm) rawServerForm;
+
+						if (vf.getForm() != null) {
+							serverFormJsonNormalized = gson.toJson(JsonParser.parseString(vf.getForm()));
+						}
+						if (vf.getStyles() != null) {
+							serverStyles = vf.getStyles().trim();
+						}
+					} else {
+						// Dynamic fallback parsing layer if API maps directly into linked
+						// arrays/structures
+						JsonObject serverObj = gson.toJsonTree(rawServerForm).getAsJsonObject();
+						if (serverObj.has("form") && !serverObj.get("form").isJsonNull()) {
+							serverFormJsonNormalized = gson
+									.toJson(JsonParser.parseString(serverObj.get("form").getAsString()));
+						}
+						if (serverObj.has("styles") && !serverObj.get("styles").isJsonNull()) {
+							serverStyles = serverObj.get("styles").getAsString().trim();
+						}
+					}
+
+					if (localFormNormalized.equals(serverFormJsonNormalized) && localCssContent.equals(serverStyles)) {
+						logger.debug(
+								"Custom request form layouts and styles match perfectly on server for blueprint '{}'. Skipping redundant version compile.",
+								bpName);
+						formChanged = false;
+					}
+				}
+			} catch (Exception fe) {
+				logger.info(
+						"No active form found on server or unable to parse for blueprint '{}'. Treating form as updated/new.",
+						bpName);
+			}
+
+			return formChanged;
+
+		} catch (Exception e) {
+			logger.error("Failed to execute custom request form drift detection calculations for blueprint: " + bpName,
+					e);
+		}
+
+		return false;
 	}
 
 	/*

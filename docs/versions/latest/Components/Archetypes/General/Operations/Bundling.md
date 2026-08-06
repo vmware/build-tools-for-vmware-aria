@@ -16,4 +16,4 @@ To produce an installation bundle containing all dependencies and a script for i
 mvn clean package -Pbundle-with-installer
 ```
 
-For more information refer to [Installer documentation](../../../Local/Installer/README.md)/.
+For more information refer to [Installer documentation](../../../Local/Installer/README.md).

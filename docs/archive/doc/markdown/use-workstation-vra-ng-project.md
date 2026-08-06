@@ -62,7 +62,7 @@ catalog
         └── entitlements
             └── Blueprint.yaml
             └── Workflow.yaml
-            └── ABX Action.yaml       
+            └── ABX Action.yaml
         └── subscriptions
             └── subscription.json
         └── regions
@@ -89,13 +89,13 @@ Content Descriptor is implemented by content.yaml file with the following defaul
 - Empty array [] - nothing is exported
 - List of items - the given items are exported.
 - Null (nothing given) - everything is being exported
-  - blueprints
-  - catalog-item
-  - content-source
-  - custom-resource
-  - catalog-entitlement
-  - property-group
-  - subscription
+    - blueprints
+    - catalog-item
+    - content-source
+    - custom-resource
+    - catalog-entitlement
+    - property-group
+    - subscription
 
 #### Exporting regional content
 
@@ -104,9 +104,9 @@ To export regional content, cloud account(s) with given tag(s) should be given.
 - Empty array [] - nothing is exported
 - List of items - the given items are exported in all regions linked to cloud accounts with given tag
 - Null (nothing given) - everything is being exported in all regions linked to cloud accounts with given tag
-  - flavor-mapping
-  - image-mapping
-  - storage-profile
+    - flavor-mapping
+    - image-mapping
+    - storage-profile
 
 #### Export all content in all regions linked to cloud accounts with given tag
 
@@ -115,17 +115,17 @@ To export all content in all regions linked to cloud accounts, the tag for expor
 ```yaml
 
 ---
-# Example describes export of: 
+# Example describes export of:
 #   Flavor mappings with names "small" and "medium" in all regions linked to cloud accounts with tag "env:dev"
 # Export Rules for all content types:
 #   flavor-mapping: []     - nothing will be exported
-#   flavor-mapping: 
+#   flavor-mapping:
 #        - small"
 #        - meduim
-#                          - only "small" and "meduim" will be exported 
+#                          - only "small" and "meduim" will be exported
 #   flavor-mapping:        - everything will be exported in all regions linked to cloud accounts with tag "env:dev"
 #
-#   
+#
 # Example describes import of:
 #   All blueprints in src/blueprints
 #   All subscriptions in src/blueprints
@@ -476,8 +476,8 @@ The other option is to set the flags in your Maven's settings.xml file for a spe
         <vro.auth>vra</vro.auth>
         <vro.tenant>vsphere.local</vro.tenant>
         <vro.authHost>{auth_host}</vro.authHost>
-        <vro.authPort>{auth_port}</vro.authPort> 
-        <vro.refresh.token>{refresh_token}</vro.refresh.token> 
+        <vro.authPort>{auth_port}</vro.authPort>
+        <vro.refresh.token>{refresh_token}</vro.refresh.token>
         <vro.proxy>http://proxy.host:80</vro.proxy>
         <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
         <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>

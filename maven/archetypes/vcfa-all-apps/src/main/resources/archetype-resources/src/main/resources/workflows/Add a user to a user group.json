@@ -1,0 +1,11 @@
+{
+  "typeId": "com.vmw.vro.workflow",
+  "spec": {
+    "workflowId": "95808080808080808080808080808080F281808001175609873343b6bbd2e3eea"
+  },
+  "name": "Add a user to a user group",
+  "id": "1fc7c318-e1ad-4c8a-a628-4d181f14ea5e",
+  "description": "Adds one user as a member of a user group.",
+  "projectId": "dbd131b6-9ed3-4309-9936-b7271675381f",
+  "global": false
+}

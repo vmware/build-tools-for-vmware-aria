@@ -49,7 +49,7 @@ public abstract class AbstractPackageMojo extends AbstractVroPkgMojo {
 		String packageName = packageInfoProvider
 				.getPackageName();
 
-		String targetFilename = packageName + "." + PackageType.VRO.getPackageExtention();
+		String targetFilename = packageName + "." + PackageType.VRO.getPackageExtension();
 		Path tempFolder = Paths.get(directory.getAbsolutePath(), "vropkg");
 		File packageFile = new File(tempFolder.toFile(), targetFilename);
 		try {

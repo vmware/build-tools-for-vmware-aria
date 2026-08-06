@@ -52,7 +52,7 @@ public class XmlBasedProjectPullMojo extends AbstractIacMojo {
 		}
 		final PackageInfoProvider packageInfoProvider = new MavenProjectPackageInfoProvider(project);
 		final String pkgName = StringUtils.isBlank(packageName) ? packageInfoProvider.getPackageName() : packageName;
-		final File packageFile = tempDir.resolve(pkgName + "." + PackageType.VRO.getPackageExtention()).toFile();
+		final File packageFile = tempDir.resolve(pkgName + "." + PackageType.VRO.getPackageExtension()).toFile();
 		final Package pkg = PackageFactory.getInstance(PackageType.VRO, packageFile);
 		// Get vRO package via REST API
 		try {

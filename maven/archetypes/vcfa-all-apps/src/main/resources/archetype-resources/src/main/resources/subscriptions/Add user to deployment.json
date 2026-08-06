@@ -1,0 +1,22 @@
+{
+  "id" : "sub_1782898962554",
+  "name" : "Add user to deployment",
+  "type" : "RUNNABLE",
+  "eventTopicId" : "deployment.request.post",
+  "ownerId" : "admin",
+  "subscriberId" : "service-account-project-serviceaccount",
+  "blocking" : false,
+  "description" : "Sample subscription",
+  "criteria" : "event.data.blueprintId =='cb5c3112-3a7e-46c5-be3a-2917d0aa7741'",
+  "constraints" : {
+    "projectId" : null
+  },
+  "timeout" : 0,
+  "broadcast" : false,
+  "priority" : 10,
+  "disabled" : false,
+  "system" : false,
+  "contextual" : false,
+  "runnableType" : "extensibility.vro",
+  "runnableId" : "95808080808080808080808080808080F281808001175609873343b6bbd2e3eea"
+}

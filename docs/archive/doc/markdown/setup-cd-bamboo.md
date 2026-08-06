@@ -16,7 +16,7 @@
 5. Click Add Environment.
 6. Add the Environment name (leave the agent selection) and click Create.
 7. Click on Set up tasks:
-8. Add an Artefact download task and select the artefact you want to run with the installer (vRO package OR vRA package). Click Save.  
+8. Add an Artefact download task and select the artefact you want to run with the installer (vRO package OR vRA package). Click Save.
 9. Add SCP Task and provide the IP address of the hatchery  ( Host field ).  Provide login credentials (Username and Password ). Select again the artefact which will be copied and installed. Add Remote Path. For example /tmp/vra.zip
 10. Add SSH Task. The task will connect to the hatchery and install the artefact.
 
@@ -24,7 +24,7 @@
 
     ```bash
     echo "On the hatchery server"
-    
+
     if [ ! -f /tmp/vra.zip ] ; then
     echo "vRA deployment package bundle cannot be found as /tmp/vra.zip"
     exit 1;
@@ -43,7 +43,7 @@
     fi
     java -version
     mkdir -p /tmp/vra-deployment/bin
-    
+
     cd /tmp/vra-deployment/bin
     cat << EOT > /tmp/vra-deployment/bin/environment.properties
     http_connection_timeout=360
@@ -74,10 +74,10 @@
     vro_import_configuration_secure_attribute_values=false
     vrang_password={PASS}Vk13YXJlMSE\=
     EOT
-    
+
     echo "Using the following properties:"
     cat /tmp/vra-deployment/bin/environment.properties
-    
+
     if [ ! -f /tmp/vra-deployment/bin/installer ] ; then
     echo "/bin/install script does not exist in vra.zip deployment package."
     exit 2
@@ -85,11 +85,11 @@
     chmod a+x /tmp/vra-deployment/bin/installer
     cd /tmp/vra-deployment/bin/
     ./installer environment.properties
-    
+
     exitcode=$?
-    
+
     echo "Deployment finished with exit code $exitcode"
-    
+
     cd /tmp
     if [ $exitcode -eq 0 ] ; then
     rm -rf /tmp/vra-deployment
@@ -97,7 +97,7 @@
     else
     echo "Deployment finished with errors. Please review package content in folder /tmp/vra-deployment on the hatchery server"
     fi
-    
+
     exit $exitcode
     ```
 

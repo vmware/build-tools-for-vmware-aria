@@ -300,7 +300,7 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>3.9.12</version>
+			<version>3.9.16</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vmware.pscoe.o11n</groupId>

@@ -6,9 +6,7 @@
 ## Deprecations
 
 
-
 ## Features
-
 
 
 ### *`vrealize:clean` support for vra-ng*
@@ -36,7 +34,6 @@ The following have been added:
 The build will now fail if the code coverage goes below 25%
 
 ## Improvements
-
 
 
 ### Pushing Fails when Pushing ABX action
@@ -184,9 +181,9 @@ declare class VcHostDigestInfo {
  constructor();
  constructor();
  /**
-  * @param digestMethod 
-  * @param digestValue 
-  * @param objectName 
+  * @param digestMethod
+  * @param digestValue
+  * @param objectName
  */
  constructor(digestMethod: string, digestValue: number[], objectName: string);
 }

@@ -1,0 +1,20 @@
+{
+  "id" : "eb9dbf29-9f57-4256-878c-3e5dac591ff5",
+  "name" : "vm_remove_disk",
+  "typeId" : "com.vmware.policy.deployment.action",
+  "enforcementType" : "HARD",
+  "description" : "Sample Day 2 Actions policy",
+  "definition" : {
+    "allowedActions" : [ {
+      "actions" : [ "CCI.Supervisor.Resource.VirtualMachine.Remove.Disk" ],
+      "authorities" : [ "ROLE:administrator" ]
+    } ]
+  },
+  "criteria" : {
+    "matchExpression" : [ {
+      "key" : "ownedBy",
+      "operator" : "contains",
+      "value" : "dummy"
+    } ]
+  }
+}

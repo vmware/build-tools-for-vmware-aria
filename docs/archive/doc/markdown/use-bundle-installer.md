@@ -50,12 +50,12 @@ vro_delete_old_versions=true
 # Run vRO configuration workflow
 vro_run_workflow=true
 vro_run_workflow_id=1944423533582937823496790834565483423
-# input.json contains JSON where each first class KEY represents 
+# input.json contains JSON where each first class KEY represents
 # the workflow input parameter name and its value will be sent as value
 # Supported types of workflow in/output parameters are string, number, boolean, Array/string
 vro_run_workflow_input_file_path=./input.json
-# output.json contains JSON where each first class KEY represents 
-# the workflow output parameter name and its value is a pretty printed value as JSON 
+# output.json contains JSON where each first class KEY represents
+# the workflow output parameter name and its value is a pretty printed value as JSON
 vro_run_workflow_output_file_path=./output.json
 vro_run_workflow_timeout=300
 
@@ -97,7 +97,7 @@ vra_password
 vrang_host
 vrang_csp_host
 vrang_proxy_required
-vrang_proxy  
+vrang_proxy
 vrang_port
 vrang_auth_with_refresh_token
 vrang_delete_content # can be used to delete all content from the vRA8 environment specified in the content.yaml

@@ -61,6 +61,13 @@
 			</includes>
 		</fileSet>
 		<fileSet>
+			<directory>target</directory>
+			<outputDirectory>${file.separator}vcfa-all-apps</outputDirectory>
+			<includes>
+				<include>*.vcfaa</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>target/dependency/vcd-ng</directory>
 			<outputDirectory>${file.separator}vcd-ng</outputDirectory>
 			<includes>

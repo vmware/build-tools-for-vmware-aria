@@ -25,6 +25,12 @@
 			<type>package</type>
 			<version>${revision}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.vmware.pscoe.library</groupId>
+			<artifactId>class</artifactId>
+			<type>package</type>
+			<version>${revision}</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<main.basedir>${project.baseUri}../../</main.basedir>

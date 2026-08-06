@@ -508,7 +508,7 @@ The command above will forcefully deploy the exact versions of the dependent pac
 
 #### Push only the files that changes from one commit to another
 
-The `vrealize:push` goal will deploy all dependencies of the current project to the target environment. You can control what files need to be refreshed wit the `-Dfiles` flag. The value of this property is a list with the names of the files that change from one commit to another.  
+The `vrealize:push` goal will deploy all dependencies of the current project to the target environment. You can control what files need to be refreshed wit the `-Dfiles` flag. The value of this property is a list with the names of the files that change from one commit to another.
 
 In Windows PowerShell console:
 
@@ -568,8 +568,8 @@ The other option is to set the flags in your Maven's settings.xml file for a spe
         <vro.auth>vra</vro.auth>
         <vro.tenant>vsphere.local</vro.tenant>
         <vro.authHost>{auth_host}</vro.authHost>
-        <vro.authPort>{auth_port}</vro.authPort> 
-        <vro.refresh.token>{refresh_token}</vro.refresh.token> 
+        <vro.authPort>{auth_port}</vro.authPort>
+        <vro.refresh.token>{refresh_token}</vro.refresh.token>
         <vro.proxy>http://proxy.host:80</vro.proxy>
         <vrealize.ssl.ignore.hostname>true</vrealize.ssl.ignore.hostname>
         <vrealize.ssl.ignore.certificate>true</vrealize.ssl.ignore.certificate>

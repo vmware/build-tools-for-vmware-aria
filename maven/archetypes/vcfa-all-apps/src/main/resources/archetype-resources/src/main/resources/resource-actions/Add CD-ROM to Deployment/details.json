@@ -1,0 +1,34 @@
+{
+  "id" : "Deployment.custom.add_cdrom",
+  "name" : "add_cdrom",
+  "displayName" : "Add CD-ROM to Deployment",
+  "description" : "Sample resource action",
+  "providerName" : "vro-workflow",
+  "resourceType" : "Deployment",
+  "status" : "RELEASED",
+  "orgId" : "457e4ab6-727f-446c-9d20-ba150e18950b",
+  "runnableItem" : {
+    "id" : "f146b992-71d3-431d-872e-2b22eb3b0f78",
+    "name" : "Mount CD-ROM",
+    "description" : "Mounts the CD-ROM of a virtual machine. If the virtual machine has no IDE controller and/or CD-ROM drive, the workflow creates them.\n",
+    "type" : "vro.workflow",
+    "inputParameters" : [ {
+      "type" : "VC:VirtualMachine",
+      "name" : "vm",
+      "description" : "Virtual machine to which to add a CD-ROM"
+    }, {
+      "type" : "boolean",
+      "name" : "connectAtPowerOn",
+      "description" : "Connect the CD-ROM when the virtual machine powers on"
+    }, {
+      "type" : "string",
+      "name" : "deviceType",
+      "description" : "Device type"
+    }, {
+      "type" : "string",
+      "name" : "filePath",
+      "description" : "ISO file path"
+    } ],
+    "endpointLink" : "/resources/endpoints/d88757a9-cda8-4efe-8d8c-866006b86782"
+  }
+}
