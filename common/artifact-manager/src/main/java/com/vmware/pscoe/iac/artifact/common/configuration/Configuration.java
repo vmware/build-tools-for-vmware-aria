@@ -42,9 +42,24 @@ public abstract class Configuration {
 	public static final String HOST = "host";
 
 	/**
+	 * Authentication hostname of the server, without the protocol.
+	 */
+	public static final String AUTH_HOST = "authHost";
+
+	/**
+	 * Shows information if used vro is internal or external
+	 */
+	public static final String IS_EMBEDDED = "embedded";
+
+	/**
 	 * Port of the server.
 	 */
 	public static final String PORT = "port";
+
+	/**
+	 * Port of the auth server.
+	 */
+	public static final String AUTH_PORT = "authPort";
 
 	/**
 	 * Username to authenticate with.
@@ -87,6 +102,11 @@ public abstract class Configuration {
 	public static final Integer DEFAULT_SSH_TIMEOUT = 300;
 
 	/**
+	 * Default is embedded value for vro.
+	 */
+	public static final Boolean DEFAULT_IS_EMBEDDED_VRO = true;
+
+	/**
 	 * Strategy configuration property. If set to true will perform force import
 	 * regardless of the vRO server content.
 	 *
@@ -111,6 +131,11 @@ public abstract class Configuration {
 	public static final Boolean DEFAULT_FORCE_IMPORT_LATEST_VERSIONS = false;
 
 	/**
+	 * Default auth port.
+	 */
+	public static final Integer DEFAULT_AUTH_PORT = 443;
+
+	/**
 	 * Contains all the properties passed by the user.
 	 */
 	public final Properties properties;
@@ -121,6 +146,7 @@ public abstract class Configuration {
 	protected final Logger logger = LoggerFactory.getLogger(Configuration.class);;
 
 	protected Configuration(PackageType type, Properties props) {
+		logger.info("Available property keys for type {}: {}", type, props.stringPropertyNames());
 		this.type = type;
 		this.properties = props;
 	}
@@ -140,6 +166,22 @@ public abstract class Configuration {
 	}
 
 	/**
+	 * @return the auth host
+	 */
+	public String getAuthHost() {
+		if (!StringUtils.hasLength(this.properties.getProperty(AUTH_HOST))) {
+			// auth host is same as host
+			return this.getHost();
+		}
+
+		try {
+			return this.properties.getProperty(AUTH_HOST);
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("Invalid auth host", e);
+		}
+	}
+
+	/**
 	 * @return the port
 	 */
 	public int getPort() {
@@ -147,6 +189,18 @@ public abstract class Configuration {
 			return Integer.parseInt(this.properties.getProperty(PORT));
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("Port is not a number", e);
+		}
+	}
+
+	/**
+	 * @return the auth port
+	 */
+	public int getAuthPort() {
+		try {
+			return Integer.parseInt(this.properties.getProperty(AUTH_PORT));
+		} catch (NumberFormatException e) {
+			logger.error("Auth port is not a number: {}. Proceeding with default value: {}", e, DEFAULT_AUTH_PORT);
+			return DEFAULT_AUTH_PORT;
 		}
 	}
 
@@ -194,6 +248,21 @@ public abstract class Configuration {
 			return DEFAULT_FORCE_IMPORT_LATEST_VERSIONS;
 		} else {
 			return Boolean.parseBoolean(this.properties.getProperty(FORCE_IMPORT_LATEST_VERSIONS));
+		}
+	}
+
+	/**
+	 * @return a boolean value indicating if vro is embedded
+	 */
+	public boolean isEmbeddedVro() {
+		logger.info("EMBEDDED VALUE: `{}`", this.properties.getProperty(IS_EMBEDDED));
+		if (!StringUtils.hasLength(this.properties.getProperty(IS_EMBEDDED))) {
+			logger.info("Property vro.embedded is not set, using default value {}", DEFAULT_IS_EMBEDDED_VRO);
+			return DEFAULT_IS_EMBEDDED_VRO;
+		} else {
+			logger.info("Property vro.embedded is set to value {}",
+					Boolean.parseBoolean(this.properties.getProperty(IS_EMBEDDED)));
+			return Boolean.parseBoolean(this.properties.getProperty(IS_EMBEDDED));
 		}
 	}
 

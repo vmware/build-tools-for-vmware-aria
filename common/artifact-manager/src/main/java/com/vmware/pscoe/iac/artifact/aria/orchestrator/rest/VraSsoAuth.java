@@ -34,13 +34,21 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.SsoEndpointDto;
+import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
 
 import net.minidev.json.JSONArray;
 
 public class VraSsoAuth {
+	/**
+	 * This logger is used to log messages and exceptions related to the creation
+	 * and usage of REST clients.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(VraSsoAuth.class);
 	/** CAFE_CLI_OWNER. */
 	private static final String CAFE_CLI_OWNER = "CAFE_CLI_OWNER";
 	/** Authorication endpoint for vRA 8.x. */
@@ -219,7 +227,7 @@ public class VraSsoAuth {
 	/**
 	 * Retrive vRA version.
 	 * 
-	 * @return the strig representation of the version.
+	 * @return the string representation of the version.
 	 */
 	public String getVersion() {
 		if (this.serverVersion != null) {
@@ -239,6 +247,8 @@ public class VraSsoAuth {
 
 		ResponseEntity<String> response = restTemplate.exchange(versionUri, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
+
+		LOGGER.debug("Orchestrator version response (/vco/api/about): {}", response);
 
 		Configuration conf = Configuration.defaultConfiguration();
 		conf.addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);

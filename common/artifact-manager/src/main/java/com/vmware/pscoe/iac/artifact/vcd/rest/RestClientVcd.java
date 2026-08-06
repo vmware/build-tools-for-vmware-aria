@@ -62,9 +62,14 @@ public class RestClientVcd extends RestClient {
 	public static final String API_VERSION_38 = "38.0";
 
 	/**
-	 * supported vcf 9 api version.
+	 * supported vcf 9.0 api version.
 	 */
 	public static final String API_VERSION_40 = "40.0";
+
+	/**
+	 * supported vcf 9.1 api version.
+	 */
+	public static final String API_VERSION_41 = "41.0";
 
 	/**
 	 * versions api path.
@@ -95,6 +100,11 @@ public class RestClientVcd extends RestClient {
 	 * apiVersion.
 	 */
 	private String apiVersion;
+
+	/**
+	 * skipVcd.
+	 */
+	private Boolean externalVro = false;
 
 	/**
 	 * extensions api path.
@@ -161,6 +171,15 @@ public class RestClientVcd extends RestClient {
 	}
 
 	/**
+	 * isExternalVro.
+	 * 
+	 * @return externalVro
+	 */
+	public Boolean isExternalVro() {
+		return this.externalVro;
+	}
+
+	/**
 	 * getConfiguration.
 	 * 
 	 * @return Configuration
@@ -204,10 +223,41 @@ public class RestClientVcd extends RestClient {
 
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,
 					new HttpEntity<String>(headers), String.class);
+
+			MediaType contentTypeResp = response.getHeaders().getContentType();
+
+			logger.debug("VCD API version response: {}", response);
+			logger.debug("VCD API HTTP response code: {}", response.getStatusCode());
+			logger.debug("VCD API HTTP response content type: {}", contentTypeResp);
+			// API does not work for external orchestrator, hence should ignore it
+			if (response.getStatusCode().is3xxRedirection()) {
+				// 302 is a typical error, returned for external vro, put a default value (API
+				// version 40)
+				this.externalVro = true;
+				this.apiVersion = API_VERSION_40;
+				logger.info(
+						"Received 302 redirect HTTP status code from {}. Endpoint belongs to an External vRO instance. Falling back to default API version {}.",
+						url, API_VERSION_40);
+				return this.apiVersion;
+			} else if (response.getStatusCode().is2xxSuccessful()) {
+				// 2. Check if the response is HTML (the vRO UI fallback page)
+				if (contentTypeResp != null && contentTypeResp.includes(MediaType.TEXT_HTML)) {
+					logger.info(
+							"Received HTML UI fallback from {}. Endpoint belongs to an External vRO instance. Falling back to default API version {}.",
+							url, API_VERSION_40);
+					this.externalVro = true;
+					this.apiVersion = API_VERSION_40;
+					return this.apiVersion;
+				}
+			} else {
+				throw new RuntimeException(
+						"Wrong status code returned from %s: %s".formatted(url, response.getStatusCode()));
+			}
+
 			JSONArray versionArray = JsonPath.parse(response.getBody()).read("$.versionInfo[*].version");
 			this.apiVersion = versionArray.get(versionArray.size() - 1).toString();
 
-			logger.debug("Detected API version is: " + this.apiVersion);
+			logger.info("Detected API version (/api/versions) is: " + this.apiVersion);
 			// Preserving API version check for backwards compatibility
 			if (this.apiVersion.indexOf(".") == this.apiVersion.lastIndexOf(".") // This check eliminates the versions
 																					// post VCFA 9.0.1. 40.0 changed to
