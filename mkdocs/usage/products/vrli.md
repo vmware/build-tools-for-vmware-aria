@@ -1,5 +1,12 @@
 ---
 title: VCF Operations for Logs
+vars:
+    archetype:
+        group_id: com.vmware.pscoe.vrli.archetypes
+        artifact_id: package-vrli-archetype
+    project:
+        artifact_id: vrli-project
+        type: VCF Operations for Logs
 ---
 
 ## Overview
@@ -29,25 +36,7 @@ title: VCF Operations for Logs
 
 To create a new {{ products.vrli_9_full_name }} project from archetype use the following command:
 
-```Bash
-mvn archetype:generate \
-    -DinteractiveMode=false \
-    -DarchetypeGroupId=com.vmware.pscoe.vrli.archetypes \
-    -DarchetypeArtifactId=package-vrli-archetype \
-    -DarchetypeVersion={{ iac.latest_release }} \ # (1)!
-    -DgroupId={{ archetype.customer_project.group_id}} \ # (2)!
-    -DartifactId={{ archetype.customer_project.artifact_id}} # (3)!
-```
-
-1. {{ archetype.customer_project.archetype_version_hint }}
-2. {{ archetype.customer_project.group_id_hint }}
-3. {{ archetype.customer_project.artifact_id_hint }}
-
-!!! note
-    If **build_tools_for_aria_version** is not specified a default value of 2.38.1 will be used.
-
-!!! note
-    Make sure to remove any trialing spaces after the backslashes (**\\**) otherwise the command will fail.
+{% include "../../assets/docs/mvn/archetype-generate.md" %}
 
 ### Content Structure
 
@@ -132,11 +121,11 @@ The following need to be added to the profile that you intend to use:
 
 1. {{ archetype.customer_project.maven_settings_location_hint}}
 
-<!-- this comment is used to properly visualise the unordered list below -->
+<!-- this comment is used to properly visualize the unordered list below -->
 
 - `vrli.vrops*` parameters are used for retrieving or updating data related to VCF Operations enabled alerts.
 
-- `vrli.provider` - specifyies the authentication provider used to connect to the vRLI / VCF Operations for Logs server. Currently supported providers are Local, active directory and VIDM.
+- `vrli.provider` - specifies the authentication provider used to connect to the vRLI / VCF Operations for Logs server. Currently supported providers are Local, active directory and VIDM.
 
 Use the profile by passing it with `-P`, e.g.:
 ``` bash
