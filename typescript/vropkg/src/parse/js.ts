@@ -12,17 +12,17 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import * as Path from "path";
-import * as FileSystem from "fs-extra";
-import { VroPackageMetadata, VroNativeElement, VroActionData, VroElementType, VroNativeElementAttributes, VroScriptBundle } from "../types";
-import { getCommentFromJavadoc, getScriptRuntime } from "./util";
 import * as AbstractSyntaxTree from "abstract-syntax-tree";
-import * as Comments from "parse-comments";
-import {v4 as uuidv4} from "uuid";
-import * as winston from "winston";
+import { parse } from "comment-parser";
+import * as FileSystem from "fs-extra";
 import * as glob from "glob";
-import VroIgnore from "../util/VroIgnore";
+import * as Path from "path";
+import { v4 as uuidv4 } from "uuid";
+import * as winston from "winston";
 import { WINSTON_CONFIGURATION } from "../constants";
+import { VroActionData, VroElementType, VroNativeElement, VroNativeElementAttributes, VroPackageMetadata, VroScriptBundle } from "../types";
+import VroIgnore from "../util/VroIgnore";
+import { getCommentFromJavadoc, getScriptRuntime } from "./util";
 
 export class VroJsProjParser {
 	private lazy: boolean;
@@ -32,7 +32,7 @@ export class VroJsProjParser {
 	}
 
 	public async parse(vroJsFolderPath: string, groupId: string, artifactId: string, version: string, packaging: string, vroIgnoreFile: string): Promise<VroPackageMetadata> {
-		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`);		const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'Packaging');
+		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).info(`Parsing vro javascript project folder path "${vroJsFolderPath}"...`); const ignorePatterns = new VroIgnore(vroIgnoreFile).getPatterns('General', 'Packaging');
 		winston.loggers.get(WINSTON_CONFIGURATION.logPrefix).debug(`vropkg parse js - ignored: ${JSON.stringify(ignorePatterns)}`);
 
 		let elements: Array<VroNativeElement> = [];
@@ -40,7 +40,7 @@ export class VroJsProjParser {
 		// let parser = new VroNativeFolderElementParser();
 		const JS_EXTENSION = ".js";
 		let baseDir = Path.join(vroJsFolderPath, "src", "main", "resources");
-		glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)?.replace(/[\\/]+/gm, Path.posix.sep), {ignore: ignorePatterns}).forEach(jsFile => {
+		glob.sync(Path.join(baseDir, "**", "*" + JS_EXTENSION)?.replace(/[\\/]+/gm, Path.posix.sep), { ignore: ignorePatterns }).forEach(jsFile => {
 			let content = FileSystem.readFileSync(jsFile);
 			let vroPath = jsFile.substring(baseDir.length + 1);
 			let moduleIndex = Math.max(vroPath.lastIndexOf("/"), vroPath.lastIndexOf("\\"));
@@ -103,7 +103,7 @@ export class VroJsProjParser {
 							sourceStartIndex: startIndex,
 							sourceEndLine: endLine,
 							sourceEndIndex: endIndex,
-							getActionSource: function(action: VroActionData): string {
+							getActionSource: function (action: VroActionData): string {
 								let jsFile = action.inline.sourceFile;
 								let startLine = action.inline.sourceStartLine;
 								let startIndex = action.inline.sourceStartIndex;
@@ -131,26 +131,37 @@ export class VroJsProjParser {
 	}
 
 	private static getFirstCommentInSource(source: string, jsFile: string): any {
-		const comments = new Comments({
-			"parse": {
-				"type": function(type: string, parsed: any, opts: any): any {
-					return {
-						"type": "NameExpression",
-						"name": type
-					};
-				}
-			}
-		});
-		comments.parse(source.toString());
-		let comment: Array<any> = comments.ast ? comments.ast : [];
-		comment = comment.filter(a => VroJsProjParser.isTopLevelComment(a) && !VroJsProjParser.isLicenseComment(a.raw)).sort((a, b) => a.loc?.start?.line - b.loc?.start?.line);
-		let details: any = comment.length ? comment[0] : {};
-		return details;
-	}
+		const parsedBlocks = parse(source);
 
-	private static isTopLevelComment(comment: any): boolean {
-		const context: any = comment?.code?.context;
-		return context == null || Object.keys(context).length <= 0;
+		// Filter out the license comment to find the actual action metadata
+		const validBlocks = parsedBlocks.filter(block => {
+			// Reconstruct the raw comment string for the regex check
+			const rawComment = block.source.map(line => line.source).join('\n');
+			return !VroJsProjParser.isLicenseComment(rawComment);
+		});
+
+		if (validBlocks.length === 0) {
+			return {};
+		}
+
+		const details = validBlocks[0];
+
+		const mappedTags = details.tags.map(tag => {
+			return {
+				title: tag.tag,
+				name: tag.name,
+				description: tag.description,
+				type: {
+					type: "NameExpression",
+					name: tag.type
+				}
+			};
+		});
+
+		return {
+			description: details.description,
+			tags: mappedTags
+		};
 	}
 
 	private static isLicenseComment(commentString: string): boolean {
