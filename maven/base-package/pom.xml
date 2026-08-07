@@ -505,7 +505,7 @@
 			<plugin>
 				<groupId>org.codehaus.gmavenplus</groupId>
 				<artifactId>gmavenplus-plugin</artifactId>
-				<version>1.13.0</version>
+				<version>3.0.2</version>
 				<executions>
 					<execution>
 						<id>calculate-checksums</id>
@@ -600,9 +600,9 @@ for (String definition : checksumDefs.split(',')) {
 				</configuration>
 				<dependencies>
 					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
+						<groupId>org.apache.groovy</groupId>
 						<artifactId>groovy</artifactId>
-						<version>3.0.25</version>
+						<version>5.0.8</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
