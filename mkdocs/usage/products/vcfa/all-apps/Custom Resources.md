@@ -4,7 +4,7 @@ title: Custom Resources
 
 ## Overview
 
-Custom resources are defined in {{ products.vra_9_full_name }} to expand the list of resource types that are available by default in blueprints. Custom resources allow you to define your own resource types based on existing VCF Operations orchestrator inventory objects or Orchestrator workflows with any kind of input and output.
+Custom resources are defined in {{ products.vra_9_full_name }} to expand the list of resource types that are available by default in blueprints. Custom resources allow you to define your own resource types based on existing VCF Operations Orchestrator inventory objects or Orchestrator workflows with any kind of input and output.
 
 ## Project Structure
 
@@ -70,4 +70,4 @@ This section contains a list of known issues with regards to custom resources in
 
 - **Issue**: Update of a custom resource definition fails if the custom resource is used in a {{ products.vra_9_short_name }} deployment.
 
-    **Explanation**: When {{ general.bta_name }} tries to update a custom resource that is in use by a {{ products.vra_9_short_name }} deployment, and if it fails to delete the custom resource definition in order to re-create it, {{ general.bta_short_name }} now attempts to update the custom resource by pre-fetching its ID. Once {{ general.bta_short_name }} has the ID, it removes it from the custom resource and re-assigns it again before the import process is initiated. This would allows {{ general.bta_short_name }} to create an updated custom resource that is imported to {{ products.vra_9_full_name }} regardless of whether it is used by a deployment. However, the update capabilities are limited and may not allow you to update all fields.
+    **Explanation**: When {{ general.bta_name }} tries to update a custom resource that is in use by a {{ products.vra_9_short_name }} deployment, and if it fails to delete the custom resource definition in order to re-create it, {{ general.bta_short_name }} now attempts to update the custom resource by pre-fetching its ID. Once {{ general.bta_short_name }} has the ID, it removes it from the custom resource and re-assigns it again before the import process is initiated. This allows {{ general.bta_short_name }} to create an updated custom resource that is imported to {{ products.vra_9_full_name }} regardless of whether it is used by a deployment. However, the update capabilities are limited and may not allow you to update all fields.

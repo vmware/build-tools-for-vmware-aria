@@ -17,7 +17,7 @@ mvn package {{ maven_goal }}:push -P{{ archetype.customer_project.maven_profile_
 
 {% if product_type == "vro" %}
 !!! note
-    Note that dependencies packages are not deployed to the target environment if the Orchestrator server already has a newer version of the same package deployed.
+    Note that dependent packages are not deployed to the target environment if the Orchestrator server already has a newer version of the same package deployed.
 
     For example, if your project depends on `com.vmware.pscoe.example-2.4.0` but the target server already has `com.vmware.pscoe.example-2.4.2` deployed on it, the package on the server will not be downgraded and the dependency package will not be deployed. You can force the deployment of the older version of the dependency package on the remote server by adding the `-Dvro.importOldVersions` flag.
 
@@ -30,7 +30,7 @@ mvn package {{ maven_goal }}:push -P{{ archetype.customer_project.maven_profile_
 
 ##### Ignore Certificates
 
-This section describes the flags that allow you to to bypass the security feature for verifying the certificate and certificate hostname of the remote server in a *development/testing* environment.
+This section describes the flags that allow you to bypass the security feature for verifying the certificate and certificate hostname of the remote server in a *development/testing* environment.
 
 !!! Warning
 

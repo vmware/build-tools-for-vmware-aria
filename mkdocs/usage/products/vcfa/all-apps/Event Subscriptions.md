@@ -4,7 +4,7 @@ title: Even Subscriptions
 
 ## Overview
 
-Event subscriptions (fka Event Broker Service subscriptions or EBS subscriptions) in {{ products.vra_9_full_name }} are configuration rules that link deployment lifecycle events to external actions. They listen for specific triggers, apply filters, and run custom code that allows administrators to modify provisioning properties or integrate with third-party tools when a system action occurs.
+Event subscriptions (aka Event Broker Service subscriptions or EBS subscriptions) in {{ products.vra_9_full_name }} are configuration rules that link deployment lifecycle events to external actions. They listen for specific triggers, apply filters, and run custom code that allows administrators to modify provisioning properties or integrate with third-party tools when a system action occurs.
 
 ## Project Structure
 
