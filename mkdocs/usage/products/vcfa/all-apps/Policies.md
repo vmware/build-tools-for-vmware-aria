@@ -11,7 +11,7 @@ In {{ products.vra_9_full_name }} All Apps organizations, there are four types o
 - **Approval** policies allow you to exercise control over deployment and day-2 action requests before they are run by reviewing requests before resources are consumed or destroyed.
 - **Day 2 Actions** policies allow you to control what changes users can make to deployments and their component resources.
 - **IaaS Resource** policies allow you to validate and control what namespace resources deployments can consume when users request catalog items or create resources using the services console in {{ products.vra_9_full_name }}.
-- **Lease** policies allow you to control the amount of time that a deployment is available to your users and help you reduce the need to intervene manually to reclaim resources
+- **Lease** policies allow you to control the amount of time that a deployment is available to your users and help you reduce the need to intervene manually to reclaim resources.
 
 ## Project Structure
 
@@ -19,7 +19,7 @@ In {{ products.vra_9_full_name }} All Apps organizations, there are four types o
 
 !!! Note
 
-    Since {{ products.vra_9_full_name }} allows you to configure multiple policy templates with the same name, when you are exporting policy templates from the remote server, {{ general.bta_name }} stores the policy template definition on your local filesystem as a JSON file that uses the format `policyName[-index].json`, where `-index` is an optional numerical index that  {{ general.bta_name }} adds only if there are multiple policy templates with the same name.
+    Since {{ products.vra_9_full_name }} allows you to configure multiple policy templates with the same name, when you are exporting policy templates from the remote server, {{ general.bta_name }} stores the policy template definition on your local filesystem as a JSON file that uses the format `policyName[-index].json`, where `-index` is an optional numerical index that {{ general.bta_name }} adds only if there are multiple policy templates with the same name.
 
 Following is a sample listing of the local filesystem for a four policies (one of each supported type).
 
