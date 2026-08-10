@@ -1,5 +1,5 @@
 ---
-title: Even Subscriptions
+title: Event Subscriptions
 ---
 
 ## Overview
@@ -36,7 +36,7 @@ Following is a sample listing of the content of an event subscription definition
 To export the definition of an event subscription from the {{ products.vra_9_full_name }} server (pull the content), you need to add the subscription name as a list item of the `subscription` element in the `content.yaml` content descriptor file for the project.
 
 !!! Tip
-    Alternatively, if you want to export all workflow catalog item objects from the project on the {{ products.vra_9_full_name }} server, you can configure the `workflow` element with no value (i.e. its value is `null`). For details, see the [Content Filtering](../all-apps/index.md#content-filtering) section.
+    Alternatively, if you want to export all event subscription objects from the project on the {{ products.vra_9_full_name }} server, you can configure the `subscription` element with no value (i.e. its value is `null`). For details, see the [Content Filtering](../all-apps/index.md#content-filtering) section.
 
 Following is a sample listing of the `content.yaml` file for a project that exports only the `Add user to deployment` event subscription from the project on the {{ products.vra_9_full_name }} server.
 
