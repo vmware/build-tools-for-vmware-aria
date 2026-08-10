@@ -195,7 +195,7 @@ You need to add the following configurations to the Maven profile from the `sett
 
 1. {{ archetype.customer_project.maven_settings_location_hint}}
 
-To specify the Maven profile that you want to use for an operation, pass its name with the `-P` options as shown in the following example.
+To specify the Maven profile that you want to use for an operation, pass its name with the `-P` option as shown in the following example.
 
 ``` bash
 mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_profile_name}}

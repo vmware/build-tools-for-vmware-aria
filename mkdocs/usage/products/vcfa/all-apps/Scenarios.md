@@ -8,7 +8,6 @@ title: Notifications
 
 ## Project Structure
 
-
 {{ general.bta_name }} stores notification objects in several files in a directory with the notification configuration name under the `src/main/resources/scenarios` directory in the project content on the local filesystem.
 
 Following is a sample listing of the local filesystem for a notification with the name **Deployment Lease Expired**.
@@ -23,19 +22,19 @@ src/
                 └── template.html
 ```
 
-Following is a list of the files for each blueprint object with a short description of their content and purpose.
+Following is a list of the files for each notification object with a short description of their content and purpose.
 
 - The `details.json` file contains the metadata information for the notification.
 - The `template.html` file contains the HTML definition for the notification.
 
 ## Export
 
-To export the definition of a notification from the {{ products.vra_9_full_name }} server (pull the content), you need to add the notification name as a list item of the `scenario` element in the `content.yaml` content descriptor file for the project.
+To export the definition of a notification configuration from the {{ products.vra_9_full_name }} server (pull the content), you need to add the notification name as a list item of the `scenario` element in the `content.yaml` content descriptor file for the project.
 
 !!! Tip
-    Alternatively, if you want to export all resource action objects from the project on the {{ products.vra_9_full_name }} server, you can configure the `resource-action` element with no value (i.e. its value is `null`). For details, see the [Content Filtering](../all-apps/index.md#content-filtering) section.
+    Alternatively, if you want to export all notification configuration objects from the project on the {{ products.vra_9_full_name }} server, you can configure the `scenario` element with no value (i.e. its value is `null`). For details, see the [Content Filtering](../all-apps/index.md#content-filtering) section.
 
-Following is a sample listing of the `content.yaml` file for a project that exports only the `Deployment Lease Expired` notification configuration the {{ products.vra_9_full_name }} server.
+Following is a sample listing of the `content.yaml` file for a project that exports only the `Deployment Lease Expired` notification configuration from the project on the {{ products.vra_9_full_name }} server.
 
 ```yaml title="content.yaml"
 scenario:
