@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../Content%20Policies/">
+        <link rel="prev" href="../Policies/">
       
       
         <link rel="next" href="../Catalog%20Items/">
@@ -1429,6 +1429,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1516,14 +1524,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../all-apps/Content%20Policies/" class="md-nav__link">
+      <a href="../../all-apps/Custom%20Resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Custom Resources
   
 
     
@@ -1544,14 +1552,126 @@
   
   
     <li class="md-nav__item">
-      <a href="../../all-apps/Custom%20Resources/" class="md-nav__link">
+      <a href="../../all-apps/Event%20Subscriptions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Custom Resources
+    Event Subscriptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../all-apps/Scenarios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../all-apps/Policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../all-apps/Property%20Groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Property Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../all-apps/Resource%20Actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resource Actions
   
 
     
@@ -1711,14 +1831,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../Content%20Policies/" class="md-nav__link">
+      <a href="../Policies/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Policies
   
 
     
@@ -2324,7 +2444,7 @@
   <h1>Custom Resources</h1>
 
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Custom Resources are items that are defined inside of Cloud Assembly. They extend the capabilities of Cloud Templates by giving you the ability to define your own Resource, that calls either a vRO Workflow or an ABX Action (in the latest version of vRA). Custom Resources are defined in the <code>content.yaml</code> file under <code>custom-resource</code>.</p>
+<p>Custom resources are items that are defined inside of Cloud Assembly. They extend the capabilities of Cloud Templates by giving you the ability to define your own Resource that calls either an Orchestrator Workflow or an ABX Action. Custom Resources are defined in the <code>content.yaml</code> file under <code>custom-resource</code>.</p>
 <h2 id="known-issues">Known Issues<a class="headerlink" href="#known-issues" title="Permanent link">&para;</a></h2>
 <p>When we try to update a CR that is in use by a deployment and if the deletion fails, now we will attempt to update the CR by pre-fetching it's ID. Once we have the ID, we would remove it from the CR and re-assigned it again before the importing process is initiated. This would allow us to create an updated CR that would be imported to vRA no matter if it is used by a deployment. However, update capabilities are limited and may not allow you to update all fields.</p>
 
@@ -2379,7 +2499,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy", "content.footnote.tooltips"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>

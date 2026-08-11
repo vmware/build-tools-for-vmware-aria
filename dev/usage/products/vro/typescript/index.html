@@ -1431,6 +1431,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1518,14 +1526,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vcfa/all-apps/Content%20Policies/" class="md-nav__link">
+      <a href="../../vcfa/all-apps/Custom%20Resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Custom Resources
   
 
     
@@ -1546,14 +1554,126 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vcfa/all-apps/Custom%20Resources/" class="md-nav__link">
+      <a href="../../vcfa/all-apps/Event%20Subscriptions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Custom Resources
+    Event Subscriptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vcfa/all-apps/Scenarios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vcfa/all-apps/Policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vcfa/all-apps/Property%20Groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Property Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vcfa/all-apps/Resource%20Actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resource Actions
   
 
     
@@ -1711,14 +1831,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vcfa/vm-apps/Content%20Policies/" class="md-nav__link">
+      <a href="../../vcfa/vm-apps/Policies/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Policies
   
 
     
@@ -2288,15 +2408,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#build-project" class="md-nav__link">
+  <a href="#build-the-project" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build Project
+        Build the Project
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Build Project">
+    <nav class="md-nav" aria-label="Build the Project">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2327,15 +2447,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#bundle-project" class="md-nav__link">
+  <a href="#bundle-the-project" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bundle Project
+        Bundle the Project
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Bundle Project">
+    <nav class="md-nav" aria-label="Bundle the Project">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2517,10 +2637,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#project-type-support-for-vrealize-clean" class="md-nav__link">
+  <a href="#project-type-support-for-content-clean-up" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Project Type Support for vrealize clean
+        Project Type Support for Content Clean Up
       
     </span>
   </a>
@@ -2533,10 +2653,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
+  <a href="#operation-troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Troubleshooting
+        Operation Troubleshooting
       
     </span>
   </a>
@@ -2682,27 +2802,60 @@
 <h2 id="create-new-orchestrator-project">Create New Orchestrator Project<a class="headerlink" href="#create-new-orchestrator-project" title="Permanent link">&para;</a></h2>
 <p>Build Tools for VMware Aria provides ready to use Orchestrator project templates (<em>maven archetypes</em>).</p>
 <p>To create a new Orchestrator project from archetype use the following command:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux / MacOS (Unix)</label><label for="__tabbed_1_2">Windows (PowerShell)</label><label for="__tabbed_1_3">Windows (CMD)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>archetype:generate<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-DinteractiveMode<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-DarchetypeGroupId<span class="o">=</span>com.vmware.pscoe.o11n.archetypes<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-DarchetypeArtifactId<span class="o">=</span>package-typescript-archetype<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-DarchetypeVersion<span class="o">=</span><span class="m">4</span>.24.0<span class="w"> </span><span class="se">\ </span><span class="c1"># (1)!</span>
-<span class="w">    </span>-DgroupId<span class="o">=</span>com.company.bu<span class="w"> </span><span class="se">\ </span><span class="c1"># (2)!</span>
-<span class="w">    </span>-DartifactId<span class="o">=</span>project.type<span class="w"> </span><span class="c1"># (3)!</span>
+<span class="w">  </span>-DinteractiveMode<span class="o">=</span><span class="nb">false</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DarchetypeGroupId<span class="o">=</span>vmware.pscoe.o11n.archetypes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DarchetypeArtifactId<span class="o">=</span>package-typescript-archetype<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DarchetypeVersion<span class="o">=</span><span class="m">4</span>.24.0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DgroupId<span class="o">=</span>com.company.department<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DartifactId<span class="o">=</span>vro-ts
 </code></pre></div>
-<ol>
-<li>This parameter is optional. The default value is 2.38.1. Note that archetype contents may change so it is recommended to use an up-to-date version.</li>
-<li>The <code>groupId</code> in Maven is a distinct identifier that is used as a base name of the company or group that creates the project. It acts as a namespace that ensures that project names don't clash with each other. It is recommended to choose a <code>groupId</code> that reflects your organization or main project.</li>
-<li>The <code>artifactId</code> is a unique identifier for a specific project or module within a company or group project. It represents the name of the artifact that is generated by the project. It is recommended to choose an <code>artifactId</code> that reflects the specific project (and project type).</li>
-</ol>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">mvn</span> <span class="n">archetype</span><span class="p">:</span><span class="n">generate</span> <span class="p">`</span>
+  <span class="n">-DinteractiveMode</span><span class="p">=</span><span class="n">false</span> <span class="p">`</span>
+  <span class="n">-DarchetypeGroupId</span><span class="p">=</span><span class="n">vmware</span><span class="p">.</span><span class="n">pscoe</span><span class="p">.</span><span class="n">o11n</span><span class="p">.</span><span class="n">archetypes</span> <span class="p">`</span>
+  <span class="n">-DarchetypeArtifactId</span><span class="p">=</span><span class="n">package-typescript-archetype</span> <span class="p">`</span>
+  <span class="n">-DarchetypeVersion</span><span class="p">=</span><span class="n">4</span><span class="p">.</span><span class="n">24</span><span class="p">.</span><span class="n">0</span> <span class="p">`</span>
+  <span class="n">-DgroupId</span><span class="p">=</span><span class="n">com</span><span class="p">.</span><span class="n">company</span><span class="p">.</span><span class="n">department</span> <span class="p">`</span>
+  <span class="n">-DartifactId</span><span class="p">=</span><span class="n">vro-ts</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>archetype:generate<span class="w"> </span>^
+<span class="w">  </span>-DinteractiveMode<span class="o">=</span><span class="nb">false</span><span class="w"> </span>^
+<span class="w">  </span>-DarchetypeGroupId<span class="o">=</span>vmware.pscoe.o11n.archetypes<span class="w"> </span>^
+<span class="w">  </span>-DarchetypeArtifactId<span class="o">=</span>package-typescript-archetype<span class="w"> </span>^
+<span class="w">  </span>-DarchetypeVersion<span class="o">=</span><span class="m">4</span>.24.0<span class="w"> </span>^
+<span class="w">  </span>-DgroupId<span class="o">=</span>com.company.department<span class="w"> </span>^
+<span class="w">  </span>-DartifactId<span class="o">=</span>vro-ts
+</code></pre></div>
+</div>
+</div>
+</div>
+<details>
+<summary>Expand for Description of Defined Properties for the Command</summary>
+<p>Following is a list of the properties that you define in the command for generating a project from the archetype with details about their expected and default values.</p>
+<ul>
+<li>The <code>interactiveMode</code> flag specifies whether you want to run the command in interactive mode.</li>
+<li>The <code>archetypeGroupId</code> property defines the group ID of the archetype (project template) that you want to use for the project. For VCF Operations Orchestrator TypeScript projects, make sure to set the value to <code>vmware.pscoe.o11n.archetypes</code>.</li>
+<li>The <code>archetypeArtifactId</code> property defines the artifact ID of the archetype (project template) that you want to use for the project. For VCF Operations Orchestrator TypeScript projects, make sure to set the value to <code>package-typescript-archetype</code>.</li>
+<li>
+<p>The <code>archetypeVersion</code> property is optional and defines the version of the archetype (project template) that you want to use for the project. This version matches the version of Build Tools for VMware Aria.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If <strong>build_tools_for_aria_version</strong> is not specified a default value of 2.38.1 will be used.</p>
+<p>Note that if you do not specify a value for the <code>archetypeVersion</code> property, the command uses the default value of <code>2.38.1</code>. However, since the archetype content changes, you are advised to use an up-to-date version. </p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Make sure to remove any trialing spaces after the backslashes (<strong>\</strong>) otherwise the command will fail.</p>
-</div>
+</li>
+<li>
+<p>The <code>groupId</code> property defines the distinct identifier of the group to which your project belongs. You should use this property to define the base name of the company or the group that creates the project. It acts as a namespace that ensures that project names don't clash with each other. It is recommended to choose a <code>groupId</code> that reflects your organization or main project.</p>
+</li>
+<li>The <code>artifactId</code> property defines the unique identifier for your project or module (within the company or project group). It represents the name of the artifact that is generated by the project. It is recommended to use an <code>artifactId</code> value that reflects the specific project (and project type in multi-module projects).</li>
+</ul>
+</details>
 <h3 id="content-structure">Content Structure<a class="headerlink" href="#content-structure" title="Permanent link">&para;</a></h3>
 <p>The result of this command will produce the following project file structure:</p>
 <div class="highlight"><pre><span></span><code>service-automation
@@ -2774,52 +2927,72 @@
 </code></pre></div></p>
 <h2 id="operations">Operations<a class="headerlink" href="#operations" title="Permanent link">&para;</a></h2>
 <!-- Build Project Section -->
-<h3 id="build-project">Build Project<a class="headerlink" href="#build-project" title="Permanent link">&para;</a></h3>
+<h3 id="build-the-project">Build the Project<a class="headerlink" href="#build-the-project" title="Permanent link">&para;</a></h3>
+<p>This section describes the operation for building the project.</p>
 <h4 id="overview_1">Overview<a class="headerlink" href="#overview_1" title="Permanent link">&para;</a></h4>
-<p>Maven goal for compiling the code into a deployment ready package.</p>
+<p>A Maven goal for compiling the code into a deployment-ready package.</p>
 <h4 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h4>
+<p>To build the project, use the following command.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>clean<span class="w"> </span>package
 </code></pre></div>
-<p>The output of the command will result in <strong>com.company.bu.project.type-1.0.0-SNAPSHOT.package</strong> file generated in the target folder of the project. This is an Orchestrator native package that can be imported from Orchestrator UI -&gt; Assets -&gt; Packages.</p>
+<p>The output of the command will result in <strong>com.company.department.project.type-1.0.0-SNAPSHOT.package</strong> file generated in the target folder of the project. This is an Orchestrator native package that can be imported from Orchestrator UI -&gt; Assets -&gt; Packages.</p>
 <!-- Bundle Project Section -->
-<h3 id="bundle-project">Bundle Project<a class="headerlink" href="#bundle-project" title="Permanent link">&para;</a></h3>
+<h3 id="bundle-the-project">Bundle the Project<a class="headerlink" href="#bundle-the-project" title="Permanent link">&para;</a></h3>
+<p>This section describes the operation for bundling the project.</p>
 <h4 id="overview_2">Overview<a class="headerlink" href="#overview_2" title="Permanent link">&para;</a></h4>
-<p>Maven goal for producing an installation bundle containing the solution package, all its dependencies and scripts for deploying to target environment.</p>
+<p>A Maven goal for producing an installation bundle that contains the solution package, all its dependencies, and scripts for deploying them to a target environment.</p>
 <h4 id="usage_1">Usage<a class="headerlink" href="#usage_1" title="Permanent link">&para;</a></h4>
+<p>To bundle the project, use the following command.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span>-Pbundle-with-installer
 </code></pre></div>
-<p>For more information refer to <a href="../../../installer/">Installer documentation</a>.</p>
+<p>For more information about using the bundle, see the documentation of the <a href="../../../installer/">Installer</a> CLI tool.</p>
 <h3 id="pull-content">Pull Content<a class="headerlink" href="#pull-content" title="Permanent link">&para;</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p><strong>Not supported!</strong> Typescript development is unidirectional - local code is transpiled into Orchestrator Javascript. Extracting Orchestrator content into local Typescript files is not supported.</p>
 </div>
 <!-- Push Content Section -->
+
 <h3 id="push-content">Push Content<a class="headerlink" href="#push-content" title="Permanent link">&para;</a></h3>
+<p>This section describes the operation for pushing project content to the target environment.</p>
 <h4 id="overview_3">Overview<a class="headerlink" href="#overview_3" title="Permanent link">&para;</a></h4>
-<p>Maven goal for packaging and deploying all local content from <code>./src</code> folder to the remote server.</p>
+<p>A Maven goal for packaging and deploying all local content from <code>./src</code> directory to the remote server.</p>
 <h4 id="usage_2">Usage<a class="headerlink" href="#usage_2" title="Permanent link">&para;</a></h4>
+<p>To push the project content to the target environment (defined in the Maven build profile that you specify in the <code>-P${PROFILE}</code> argument), use the following command.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env
 </code></pre></div>
 <!-- Push Common Section -->
+
 <h5 id="include-dependencies">Include Dependencies<a class="headerlink" href="#include-dependencies" title="Permanent link">&para;</a></h5>
-<p>By default, the <code>vrealize:push</code> goal will deploy all dependencies of the current project to the target environment. You can control that by the <code>-DincludeDependencies</code> flag. The value is <code>true</code> by default, so you skip the dependencies by executing the following:
+<p>By default, the <code>vrealize:push</code> goal deploys all dependencies of the current project to the target environment. You can control this behavior by adding the <code>-DincludeDependencies</code> flag with the value <code>false</code> (to overwrite the default value <code>true</code>).</p>
+<p>To skip deploying the project dependencies, run the following command.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">false</span>
-</code></pre></div></p>
+</code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Dependencies will not be deployed if the server has a newer version of the same package deployed. For example, if the current project depends on <code>com.vmware.pscoe.example-2.4.0</code> and on the server there is <code>com.vmware.pscoe.example-2.4.2</code>, the package will not be downgraded. You can force that by adding the <code>`-Dvra.importOldVersions</code> flag:
-<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-Dvra.importOldVersions
+<p>Note that dependent packages are not deployed to the target environment if the Orchestrator server already has a newer version of the same package deployed.</p>
+<p>For example, if your project depends on <code>com.vmware.pscoe.example-2.4.0</code> but the target server already has <code>com.vmware.pscoe.example-2.4.2</code> deployed on it, the package on the server will not be downgraded and the dependency package will not be deployed. You can force the deployment of the older version of the dependency package on the remote server by adding the <code>-Dvro.importOldVersions</code> flag.</p>
+<p>The following command will forcefully deploy the exact versions of the dependent packages, downgrading anything it finds on the server.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-Dvro.importOldVersions
 </code></pre></div>
-The command above will forcefully deploy the exact versions of the dependent packages, downgrading anything it finds on the server.</p>
 </div>
 <h5 id="ignore-certificates">Ignore Certificates<a class="headerlink" href="#ignore-certificates" title="Permanent link">&para;</a></h5>
-<p>This section describes how to bypass a security feature in development/testing environment. <strong>Do not use those flags when targeting production servers.</strong> Instead, make sure the certificates have the correct CN, use FQDN to access the servers and add the certificates to Java's key store (i.e. cacerts).</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Use Maven Profiles</label><label for="__tabbed_1_2">Directly Pass The Parameters</label></div>
+<p>This section describes the flags that allow you to bypass the security feature for verifying the certificate and certificate hostname of the remote server in a <em>development/testing</em> environment.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><em>Do not use the flags described in this section when targeting production servers.</em> </p>
+<p>Instead, make sure that the certificates have the correct CN, use FQDN to access the servers, and add the certificates to the Java key store (i.e. <code>cacerts</code>).</p>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Use the Maven Profile</label><label for="__tabbed_2_2">Directly Pass The Parameters</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>You can ignore certificate errors <strong>the certificate is not trusted</strong> and <strong>the CN does not match the actual hostname</strong> by appending the following parameters to the target profile in your maven settings.xml file:</p>
-<div class="highlight"><pre><span></span><code>...<span class="cm">&lt;!--# (1)! --&gt;</span>
+<p>You can ignore certificate errors for all operations by adding the following parameters to the target profile in your Maven <code>settings.xml</code> file.</p>
+<ul>
+<li>For the <strong>the certificate is not trusted</strong> error, use the <code>vrealize.ssl.ignore.certificate</code> parameter.</li>
+<li>For the <strong>the CN does not match the actual hostname</strong> error, use the <code>vrealize.ssl.ignore.hostname</code> parameter.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">&lt;!-- Parameters for ignoring certificates in settings.xml file --&gt;</span><span class="w"> </span><span class="cm">&lt;!-- # (1)! --&gt;</span>
+...
 <span class="nt">&lt;profiles&gt;</span>
 <span class="w">  </span>...
 <span class="w">  </span><span class="nt">&lt;profile&gt;</span>
@@ -2837,12 +3010,19 @@ The command above will forcefully deploy the exact versions of the dependent pac
 </ol>
 </div>
 <div class="tabbed-block">
-<p>You can ignore certificate error, i.e. the certificate is not trusted, by adding the flag <code>-Dvrealize.ssl.ignore.certificate</code>:
-<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span><span class="o">{</span>projectGoal<span class="o">}</span>:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-Dvrealize.ssl.ignore.certificate
+<p>You can ignore certificate errors for specific operations by adding the following flags to your command.</p>
+<ul>
+<li>
+<p>To ignore the <strong>the certificate is not trusted</strong> error, add the <code>-Dvrealize.ssl.ignore.certificate</code> flag to your command.
+    <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-Dvrealize.ssl.ignore.certificate
 </code></pre></div></p>
-<p>You can ignore certificate hostname error, i.e. the CN does not match the actual hostname, by adding the flag <code>-Dvrealize.ssl.ignore.certificate</code>:
-<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span><span class="o">{</span>projectGoal<span class="o">}</span>:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-Dvrealize.ssl.ignore.hostname
-</code></pre></div></p>
+</li>
+<li>
+<p>To ignore the <strong>the CN does not match the actual hostname</strong> error, add the flag <code>-Dvrealize.ssl.ignore.certificate</code>:</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-Dvrealize.ssl.ignore.hostname
+</code></pre></div>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -2923,32 +3103,52 @@ The command above will forcefully deploy the exact versions of the dependent pac
 **/*.helper.[tj]s
 </code></pre></div></p>
 <!-- Clean Up Content Section -->
+
 <h3 id="clean-up-content">Clean Up Content<a class="headerlink" href="#clean-up-content" title="Permanent link">&para;</a></h3>
+<p>This section describes the operation for cleaning up project content from a target environment.</p>
+<!-- markdownlint-disable MD051 -->
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the supported functionality for the cleaning up of project content from a target environment depends on the project type. For details, see the <a href="#project-type-support-for-content-clean-up">Project Type Support for Content Clean Up</a>.</p>
+</div>
+<!-- markdownlint-enable MD051 -->
+
 <h4 id="overview_4">Overview<a class="headerlink" href="#overview_4" title="Permanent link">&para;</a></h4>
-<p>A dedicated goal is implemented to clean up project packages on a given environment.</p>
+<p>A dedicated goal for cleaning up project packages from a given environment (server).</p>
 <h4 id="usage_3">Usage<a class="headerlink" href="#usage_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-Ddryrun<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-P<span class="si">${</span><span class="nv">PROFILE</span><span class="si">}</span>
+<p>To clean up content from the target environment (defined in the Maven build profile that you specify in the <code>-P${PROFILE}</code> argument), use the following command.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-Ddryrun<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-Ptarget-env
 </code></pre></div>
+<p>Following is a list of the properties that you define via the <code>-D</code> command line arguments in the command with short description of their values.</p>
 <ul>
-<li>includeDependencies - a flag depicting if dependencies should also be deleted</li>
-<li>cleanUpOldVersions - a flag depicting if old versions of the package (and dependencies in case of includeDependencies) should be deleted</li>
-<li>cleanUpLastVersion - a flag depicting if the latest version should also be deleted before importing</li>
-<li>dryrun - Dryrun or not</li>
+<li>The <code>includeDependencies</code> flag specifies whether the package dependencies should be deleted together with the project package.</li>
+<li>The <code>cleanUpOldVersions</code> flag specifies whether old versions of the package should be deleted. When combined with the <code>includeDependencies</code> flag, the operation is extended to the dependencies of the project package as well.</li>
+<li>The <code>cleanUpLastVersion</code> flag specifies whether the latest version of the project package should be deleted before importing.</li>
+<li>The <code>dryrun</code> flag specifies whether the operation should be run in dry run mode. </li>
 </ul>
 <h5 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h5>
+<p>Following is a list of usage examples for cleaning up content from an environment.</p>
 <ul>
-<li>Clean up only current package version from the server
-  <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">false</span>
-</code></pre></div></li>
-<li>Clean up current package version from the server and its dependencies. This is a force removal operation.
-  <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span>
-</code></pre></div></li>
-<li>Clean up old package versions and the old version of package dependencies.
-  <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span>
-</code></pre></div></li>
+<li>
+<p>To clean up only the current project package version from the server and keep the older package versions and dependencies, use the command with the following argument values.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-Ptarget-env
+</code></pre></div>
+</li>
+<li>
+<p>To clean up the current project package version and its dependencies from the server but keep the older package versions, use the command with the following argument values. Note that this is a force removal operation.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-Ptarget-env
+</code></pre></div>
+</li>
+<li>
+<p>To clean up the old project package versions and the old versions of package dependencies but keep the current (latest) package version, use the command with the following argument values.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-Ptarget-env
+</code></pre></div>
+</li>
 </ul>
 <!-- Clean Up Support Table -->
-<h4 id="project-type-support-for-vrealize-clean">Project Type Support for vrealize clean<a class="headerlink" href="#project-type-support-for-vrealize-clean" title="Permanent link">&para;</a></h4>
+
+<h4 id="project-type-support-for-content-clean-up">Project Type Support for Content Clean Up<a class="headerlink" href="#project-type-support-for-content-clean-up" title="Permanent link">&para;</a></h4>
+<p>The following table provides details about the support of the cleaning up of project content via the <code>vrealize:clean</code> command per project type (archetype).</p>
 <table>
 <thead>
 <tr>
@@ -2966,49 +3166,54 @@ The command above will forcefully deploy the exact versions of the dependent pac
 <tr>
 <td>vcd</td>
 <td>Partial</td>
-<td>Does not support dryRunning</td>
+<td>Does not support dry run mode.</td>
 </tr>
 <tr>
 <td>abx</td>
 <td>No</td>
-<td>Not implemented</td>
+<td>Not implemented.</td>
 </tr>
 <tr>
 <td>vrops</td>
 <td>No</td>
-<td>Not implemented</td>
+<td>Not implemented.</td>
 </tr>
 <tr>
 <td>vra-ng</td>
 <td>Partial</td>
-<td>Does not support dryRunning</td>
+<td>Does not support dry run mode.</td>
 </tr>
 <tr>
 <td>vrli</td>
 <td>No</td>
-<td>vRLI does not provide native package support</td>
+<td>Product does not provide native package support.</td>
 </tr>
 <tr>
 <td>cs</td>
 <td>No</td>
-<td>Code Stream Services does not provide native support for packages</td>
+<td>Product (Code Stream Services) does not provide native package support.</td>
 </tr>
 <tr>
 <td>vcfa-all-apps</td>
 <td>Partial</td>
-<td>Does not support dryRunning</td>
+<td>Does not support dry run mode.</td>
 </tr>
 </tbody>
 </table>
 <!-- Troubleshooting Section -->
-<h3 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h3>
+<h3 id="operation-troubleshooting">Operation Troubleshooting<a class="headerlink" href="#operation-troubleshooting" title="Permanent link">&para;</a></h3>
+<p>Following is a list of tips on how to resolve issues that you might face when performing any of the supported operations.</p>
 <ul>
-<li>If maven error does not contain enough information re-run it with <em>-X</em> debug flag.
+<li>
+<p>If a Maven error does not contain enough information, re-run the command with the <code>-X</code> debug flag.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>-X<span class="w"> </span>&lt;rest<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>command&gt;
-</code></pre></div></li>
-<li>Sometimes maven might cache old artifacts. Force fetching new artifacts with <em>-U</em>. Alternatively remove <em>&lt; home &gt;/.m2/repository</em> folder.
+</code></pre></div>
+</li>
+<li>
+<p>Sometimes Maven might cache old artifacts. To force the fetching of new artifacts, run the command with the <code>-U</code> flag. Alternatively, remove <em>&lt; home &gt;/.m2/repository</em> directory.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>-U<span class="w"> </span>&lt;rest<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>command&gt;
-</code></pre></div></li>
+</code></pre></div>
+</li>
 </ul>
 <h2 id="known-issues">Known issues<a class="headerlink" href="#known-issues" title="Permanent link">&para;</a></h2>
 <h3 id="array-functions-are-not-transpiled-to-orchestrator-code">Array functions are not transpiled to Orchestrator code<a class="headerlink" href="#array-functions-are-not-transpiled-to-orchestrator-code" title="Permanent link">&para;</a></h3>
@@ -3190,7 +3395,7 @@ The command above will forcefully deploy the exact versions of the dependent pac
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy", "content.footnote.tooltips"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>

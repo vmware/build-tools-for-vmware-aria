@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../Custom%20Resources/">
+        <link rel="prev" href="../Resource%20Actions/">
       
       
         <link rel="next" href="../../vm-apps/">
@@ -1431,6 +1431,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1518,14 +1526,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../Content%20Policies/" class="md-nav__link">
+      <a href="../Custom%20Resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Custom Resources
   
 
     
@@ -1546,14 +1554,126 @@
   
   
     <li class="md-nav__item">
-      <a href="../Custom%20Resources/" class="md-nav__link">
+      <a href="../Event%20Subscriptions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Custom Resources
+    Event Subscriptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Scenarios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Property%20Groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Property Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Resource%20Actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resource Actions
   
 
     
@@ -1634,6 +1754,56 @@
     <span class="md-ellipsis">
       
         Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Project Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sample-project-file-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sample Project File Content
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import
       
     </span>
   </a>
@@ -1765,14 +1935,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-apps/Content%20Policies/" class="md-nav__link">
+      <a href="../../vm-apps/Policies/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Policies
   
 
     
@@ -2279,6 +2449,56 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Project Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sample-project-file-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sample Project File Content
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2302,9 +2522,66 @@
   <h1>Workflows</h1>
 
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The catalog items in VCF Automation consist of different type of content sources - blueprints and workflows.</p>
-<p>Blueprints are published to the Catalog automatically every time a new version is created.</p>
-<p>Workflows are created in Orchestrator but are not published in Catalog. To publish a specific workflow to the catalog, you need to configure a Workflow content item for it.</p>
+<p>You can publish workflows that are defined in VCF Operations Orchestrator to the VCF Automation catalog to make them available as self-service catalog items to project users in your organization. When publishing an Orchestrator workflow to the VCF Automation catalog, you can configure a custom icon and a name for the catalog item that is different from the name of the default workflow name.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that if you want to add a custom form to the catalog item for an Orchestrator workflow, you need to create it in VCF Operations Orchestrator.</p>
+</div>
+<h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
+<p>Build Tools for VMware Aria stores each object for a workflow that you publish as a catalog item in a single JSON file with the name of the workflow under the <code>src/main/resources/workflows</code> directory in the project content on the local filesystem. The JSON file contains the full definition of the workflow catalog item.</p>
+<p>Following is a sample listing of the local filesystem for a workflow catalog item with the name <strong>Add a user to a user group</strong>.</p>
+<div class="highlight"><span class="filename">Local Project Content</span><pre><span></span><code>src/
+└─ main/
+    └── resources/
+        └── workflows/
+            └── Add a user to a user group.json
+</code></pre></div>
+<h3 id="sample-project-file-content">Sample Project File Content<a class="headerlink" href="#sample-project-file-content" title="Permanent link">&para;</a></h3>
+<p>Following is a sample listing of the content of a workflow catalog item definition (as defined in the project archetype) that is stored in the <code>src/main/resources/workflows/&lt;workflow name&gt;.json</code><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> file in the project content on the local filesystem.</p>
+<details>
+<summary>src/main/resources/workflows/Add a user to a user group.json</summary>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;typeId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;com.vmw.vro.workflow&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;spec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;workflowId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;95808080808080808080808080808080F281808001175609873343b6bbd2e3eea&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Add a user to a user group&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1fc7c318-e1ad-4c8a-a628-4d181f14ea5e&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Adds one user as a member of a user group.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;projectId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dbd131b6-9ed3-4309-9936-b7271675381f&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;global&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+<h2 id="export">Export<a class="headerlink" href="#export" title="Permanent link">&para;</a></h2>
+<p>To export the definition of a workflow catalog item from the VCF Automation server (pull the content), you need to add the workflow catalog item name as a list item of the <code>workflow</code> element in the <code>content.yaml</code> content descriptor file for the project.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Alternatively, if you want to export all workflow catalog item objects from the project on the VCF Automation server, you can configure the <code>workflow</code> element with no value (i.e. its value is <code>null</code>). For details, see the <a href="../#content-filtering">Content Filtering</a> section.</p>
+</div>
+<p>Following is a sample listing of the <code>content.yaml</code> file for a project that exports only the <code>Add a user to a user group</code> workflow catalog item from the project on the VCF Automation server.</p>
+<div class="highlight"><span class="filename">content.yaml</span><pre><span></span><code><span class="nt">workflow</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add a user to a user group</span>
+<span class="c1"># ...</span>
+</code></pre></div>
+<h2 id="import">Import<a class="headerlink" href="#import" title="Permanent link">&para;</a></h2>
+<p>When you import a workflow catalog item to a project on a VCF Automation server (push operation), Build Tools for VMware Aria matches the workflow object by its name (the name of the JSON definition file under <code>src/main/resources/workflows</code> in the project content on your local filesystem) and performs one of the following operations.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that for push operations for VCF Automation projects for All Apps organizations, Build Tools for VMware Aria uses the content filtering rules that you define in the <code>content.yaml</code> content descriptor file. For details, see the <a href="../#content-filtering">Content Filtering</a> section.</p>
+</div>
+<ul>
+<li>If a workflow catalog item with the same name does not exist on the server, Build Tools for VMware Aria creates a new workflow catalog item with the details from the local project files.</li>
+<li>If a workflow catalog item with the same name already exists on the server, Build Tools for VMware Aria updates the existing workflow catalog item object on the server with the definition from the local project.</li>
+</ul>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>The <code>&lt;workflow name&gt;</code> placeholder stands for the name of the workflow catalog item.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 
@@ -2357,7 +2634,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy", "content.footnote.tooltips"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>

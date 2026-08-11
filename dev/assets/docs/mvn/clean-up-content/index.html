@@ -1412,6 +1412,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1499,14 +1507,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../usage/products/vcfa/all-apps/Content%20Policies/" class="md-nav__link">
+      <a href="../../../../usage/products/vcfa/all-apps/Custom%20Resources/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Custom Resources
   
 
     
@@ -1527,14 +1535,126 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../usage/products/vcfa/all-apps/Custom%20Resources/" class="md-nav__link">
+      <a href="../../../../usage/products/vcfa/all-apps/Event%20Subscriptions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Custom Resources
+    Event Subscriptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../usage/products/vcfa/all-apps/Scenarios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../usage/products/vcfa/all-apps/Policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../usage/products/vcfa/all-apps/Property%20Groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Property Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../usage/products/vcfa/all-apps/Resource%20Actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resource Actions
   
 
     
@@ -1692,14 +1812,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../usage/products/vcfa/vm-apps/Content%20Policies/" class="md-nav__link">
+      <a href="../../../../usage/products/vcfa/vm-apps/Policies/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Content Policies
+    Policies
   
 
     
@@ -2247,10 +2367,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#project-type-support-for-vrealize-clean" class="md-nav__link">
+  <a href="#project-type-support-for-content-clean-up" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Project Type Support for vrealize clean
+        Project Type Support for Content Clean Up
       
     </span>
   </a>
@@ -2285,31 +2405,58 @@
   <h1>Clean up content</h1>
 
 <h3 id="clean-up-content">Clean Up Content<a class="headerlink" href="#clean-up-content" title="Permanent link">&para;</a></h3>
+<p>This section describes the operation for cleaning up project content from a target environment.</p>
+<!-- markdownlint-disable MD051 -->
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the supported functionality for the cleaning up of project content from a target environment depends on the project type. For details, see the <a href="#project-type-support-for-content-clean-up">Project Type Support for Content Clean Up</a>.</p>
+</div>
+<!-- markdownlint-enable MD051 -->
+
 <h4 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h4>
-<p>A dedicated goal is implemented to clean up project packages on a given environment.</p>
+<p>A dedicated goal for cleaning up project packages from a given environment (server).</p>
 <h4 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-Ddryrun<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-P<span class="si">${</span><span class="nv">PROFILE</span><span class="si">}</span>
+<p>To clean up content from the target environment (defined in the Maven build profile that you specify in the <code>-P${PROFILE}</code> argument), use the following command.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-Ddryrun<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-Ptarget-env
 </code></pre></div>
+<p>Following is a list of the properties that you define via the <code>-D</code> command line arguments in the command with short description of their values.</p>
 <ul>
-<li>includeDependencies - a flag depicting if dependencies should also be deleted</li>
-<li>cleanUpOldVersions - a flag depicting if old versions of the package (and dependencies in case of includeDependencies) should be deleted</li>
-<li>cleanUpLastVersion - a flag depicting if the latest version should also be deleted before importing</li>
-<li>dryrun - Dryrun or not</li>
+<li>The <code>includeDependencies</code> flag specifies whether the package dependencies should be deleted together with the project package.</li>
+<li>The <code>cleanUpOldVersions</code> flag specifies whether old versions of the package should be deleted. When combined with the <code>includeDependencies</code> flag, the operation is extended to the dependencies of the project package as well.</li>
+<li>The <code>cleanUpLastVersion</code> flag specifies whether the latest version of the project package should be deleted before importing.</li>
+<li>
+<p>The <code>dryrun</code> flag specifies whether the operation should be run in dry run mode.  <!-- markdownlint-disable MD051 --></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the the current type of project does not support running the clean up operation in dry run mode. For details, see the <a href="#project-type-support-for-content-clean-up">Project Type Support for Content Clean Up</a>.</p>
+</div>
+</li>
 </ul>
+<!-- markdownlint-enable MD051 -->
+
 <h5 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h5>
+<p>Following is a list of usage examples for cleaning up content from an environment.</p>
 <ul>
-<li>Clean up only current package version from the server
-  <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">false</span>
-</code></pre></div></li>
-<li>Clean up current package version from the server and its dependencies. This is a force removal operation.
-  <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span>
-</code></pre></div></li>
-<li>Clean up old package versions and the old version of package dependencies.
-  <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span>
-</code></pre></div></li>
+<li>
+<p>To clean up only the current project package version from the server and keep the older package versions and dependencies, use the command with the following argument values.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-Ptarget-env
+</code></pre></div>
+</li>
+<li>
+<p>To clean up the current project package version and its dependencies from the server but keep the older package versions, use the command with the following argument values. Note that this is a force removal operation.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-Ptarget-env
+</code></pre></div>
+</li>
+<li>
+<p>To clean up the old project package versions and the old versions of package dependencies but keep the current (latest) package version, use the command with the following argument values.</p>
+<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrealize:clean<span class="w"> </span>-DcleanUpLastVersion<span class="o">=</span><span class="nb">false</span><span class="w"> </span>-DcleanUpOldVersions<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">true</span><span class="w"> </span>-Ptarget-env
+</code></pre></div>
+</li>
 </ul>
 <!-- Clean Up Support Table -->
-<h4 id="project-type-support-for-vrealize-clean">Project Type Support for vrealize clean<a class="headerlink" href="#project-type-support-for-vrealize-clean" title="Permanent link">&para;</a></h4>
+
+<h4 id="project-type-support-for-content-clean-up">Project Type Support for Content Clean Up<a class="headerlink" href="#project-type-support-for-content-clean-up" title="Permanent link">&para;</a></h4>
+<p>The following table provides details about the support of the cleaning up of project content via the <code>vrealize:clean</code> command per project type (archetype).</p>
 <table>
 <thead>
 <tr>
@@ -2327,37 +2474,37 @@
 <tr>
 <td>vcd</td>
 <td>Partial</td>
-<td>Does not support dryRunning</td>
+<td>Does not support dry run mode.</td>
 </tr>
 <tr>
 <td>abx</td>
 <td>No</td>
-<td>Not implemented</td>
+<td>Not implemented.</td>
 </tr>
 <tr>
 <td>vrops</td>
 <td>No</td>
-<td>Not implemented</td>
+<td>Not implemented.</td>
 </tr>
 <tr>
 <td>vra-ng</td>
 <td>Partial</td>
-<td>Does not support dryRunning</td>
+<td>Does not support dry run mode.</td>
 </tr>
 <tr>
 <td>vrli</td>
 <td>No</td>
-<td>vRLI does not provide native package support</td>
+<td>Product does not provide native package support.</td>
 </tr>
 <tr>
 <td>cs</td>
 <td>No</td>
-<td>Code Stream Services does not provide native support for packages</td>
+<td>Product (Code Stream Services) does not provide native package support.</td>
 </tr>
 <tr>
 <td>vcfa-all-apps</td>
 <td>Partial</td>
-<td>Does not support dryRunning</td>
+<td>Does not support dry run mode.</td>
 </tr>
 </tbody>
 </table>
@@ -2410,7 +2557,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy"], "search": "../../../javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.annotate", "content.code.copy", "content.footnote.tooltips"], "search": "../../../javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../javascripts/bundle.d7400e89.min.js"></script>
