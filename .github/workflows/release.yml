@@ -15,7 +15,6 @@ jobs:
       actions: write
       contents: write
     steps:
-
       - name: Validate actor permissions
         run: |
           URL="https://api.github.com/orgs/vmware/teams/build-tools-for-vmware-aria-maintainers/memberships/${GITHUB_ACTOR}"
@@ -33,7 +32,7 @@ jobs:
             echo "You are not a maintainer user of 'build-tools-for-vmware-aria-maintainers' team!"
             exit 1
           fi
-          
+
       - name: Validate version input
         run: |
           if ! [[ "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -81,7 +80,12 @@ jobs:
           # Remove comments from the Release file
           sed -i '/^\[\/\/\]:\s#/d' $RELEASE_MD
 
-          echo "Done Generating Documentation." 
+          MKDOCS_YAML="mkdocs.yml"
+
+          # Replace the version in mkdocs yaml file
+          sed -i "s/latest_release: .*/latest_release: ${{ inputs.version }}/g" $MKDOCS_YAML
+
+          echo "Done Generating Documentation."
 
       - name: Generate plugin arguments
         run: |
@@ -120,7 +124,7 @@ jobs:
           git commit -m "(release) v${{ inputs.version }}"
           git tag v${{ inputs.version }}
           git push --tags
-          git push 
+          git push
 
       - name: Prepare next development iteration
         run: |
