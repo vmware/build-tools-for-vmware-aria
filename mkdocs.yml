@@ -80,6 +80,16 @@ plugins:
       version_selector: true
       css_dir: css
       javascript_dir: js
+  - kroki:
+      # See plugin docs for more info: https://pypi.org/project/mkdocs-kroki-plugin/
+      server_url: !ENV [KROKI_SERVER_URL, 'https://kroki.io']
+      fence_prefix: kroki-
+      enable_block_diag: true
+      http_method: POST
+      file_types: 
+        - svg
+      fail_fast: !ENV CI
+      # cache_dir: .cache/kroki
 markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed:
