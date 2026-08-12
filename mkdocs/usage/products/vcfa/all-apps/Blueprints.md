@@ -4,67 +4,125 @@ title: Blueprints
 
 ## Overview
 
-Blueprint architects build Software components, machine blueprints, and custom XaaS blueprints and assemble those components into the blueprints that define the items users request from the catalog.
+A blueprint is a declarative template that is used to define and automate the deployment of infrastructure, applications, and services with the option to expose the functionality to entitled users via the {{ products.vra_9_full_name }} Catalog.
 
-## Structure
+## Project Structure
 
-Below is an example structure of a blueprint export.
+{{ general.bta_name }} stores blueprint objects in several files in a directory with the blueprint name under the `src/main/resources/blueprints` directory in the project content on the local filesystem.
 
-Example `content.yaml`
+Following is a sample listing of the local filesystem for a blueprint with the name **Example Blueprint**.
 
-```yaml
+```ascii title="Local Project Content"
+src/
+└── main/
+    └── resources/
+        └── blueprints/
+            └── Example Blueprint/
+                ├─ content.yaml
+                ├─ details.json
+                ├─ Example Blueprint__FormData.json
+                └─ styles.css
+```
+
+Following is a list of the files for each blueprint object with a short description of their content and purpose.
+
+- The `content.yaml` file contains the exported blueprint code (in YAML format).
+- The `details.json` file contains the metadata information for the blueprint.
+- The `<blueprint name>__FormData.json`[^1] file is optional and contains the custom form definition for the blueprint, if available.
+- The `style.css` file is optional and contains the CSS for the custom form of the blueprint, if available.
+
+[^1]: The `<blueprint name>` placeholder stands for the name of the blueprint that matches the name of the parent directory.
+
+### Sample Project File Content
+
+This section contains sample listings of the content of the files for each blueprint object as they are stored in the `src/main/resources/blueprints/<blueprint name>/`[^2] directory in the project content on the local filesystem.
+
+[^2]: The `<blueprint name>` placeholder stands for the name of the blueprint that determines the name of the directory.
+
+Following is a sample listing of the content of the `content.yaml` file for the **Small VM** blueprint (as defined in the project archetype).
+
+??? "src/main/resources/blueprints/Small VM/content.yaml"
+    ```yaml
+    {% include "../../../../../maven/archetypes/vcfa-all-apps/src/main/resources/archetype-resources/src/main/resources/blueprints/Small VM/content.yaml" %}
+    ```
+
+Following is a sample listing of the content of the `details.json` file for the **Small VM** blueprint (as defined in the project archetype).
+
+??? "src/main/resources/blueprints/Small VM/details.json"
+    ```json
+    {% include "../../../../../maven/archetypes/vcfa-all-apps/src/main/resources/archetype-resources/src/main/resources/blueprints/Small VM/details.json" %}
+    ```
+
+Following is a sample listing of the content of the `Small VM__FormData.json` file (custom form) for the **Small VM** blueprint (as defined in the project archetype).
+
+??? "src/main/resources/blueprints/Small VM/Small VM__FormData.json"
+    ```json
+    {% include "../../../../../maven/archetypes/vcfa-all-apps/src/main/resources/archetype-resources/src/main/resources/blueprints/Small VM/Small VM__FormData.json" %}
+    ```
+
+<!-- Remove comment once there is a sample CSS file to show
+Following is a sample listing of the content of the `style.css` file for the **Small VM** blueprint (as defined in the project archetype).
+
+??? "src/main/resources/blueprints/Small VM/style.css"
+    ```css
+    {% include "../../../../../maven/archetypes/vcfa-all-apps/src/main/resources/archetype-resources/src/main/resources/blueprints/Small VM/styles.css" %}
+    ```
+-->
+
+## Export
+
+To export a blueprint from the {{ products.vra_9_full_name }} server (pull the content), you need to add the blueprint name as a list item of the `blueprint` element in the `content.yaml` content descriptor file for the project.
+
+!!! Tip
+    Alternatively, if you want to export all blueprint objects from the project on the {{ products.vra_9_full_name }} server, you can configure the `blueprint` element with no value (i.e. its value is `null`). For details, see the [Content Filtering](../all-apps/index.md#content-filtering) section.
+
+Following is a sample listing of the `content.yaml` file for a project that exports only the `Example Blueprint` blueprint from the project on the {{ products.vra_9_full_name }} server.
+
+```yaml title="content.yaml"
 blueprint:
   - Example Blueprint
 # ...
 ```
 
-Structure
+## Import
 
-```ascii
-src/
-├─ main/
-│  ├─ resources/
-│  │  ├─ blueprints/
-│  │  │  ├─ Example Blueprint/
-│  │  │  │  ├─ content.yaml
-│  │  │  │  ├─ details.json
-│  │  │  │  ├─ Example Blueprint__FormData.json
-```
+When you import a blueprint to a project on a {{ products.vra_9_full_name }} server (push operation), {{ general.bta_name }} matches the blueprint object by its name (the name of the directory under `src/main/resources/blueprints` in the project content on your local filesystem) and performs one of the following operations.
 
-Each blueprint will be placed in a different folder.
+!!! Warning
 
-- `content.yaml` contains the exported code from the blueprint's canvas.
-- `details.json` contains metadata information.
-- `<blueprint name>__FormData.json` contains custom form definition for the blueprint.
+    Note that for push operations for {{ products.vra_9_full_name }} projects for All Apps organizations, {{ general.bta_name }} uses the content filtering rules that you define in the `content.yaml` content descriptor file. For details, see the [Content Filtering](../all-apps/index.md#content-filtering) section.
 
-## Importing
-
-When importing a blueprint, it is matched by its name. If there is a blueprint with the same name on the server, an update will be performed. Otherwise, the blueprint will be created instead.
-
-Also when importing an already existing blueprint, we will check for any differences between local copy and server copy. If there are differences, a new version will be released. New version is determined by the already existing versions. If a patter of MAJOR.MINOR.PATCH is detected, vRBT will try to continue the numbering, otherwise a date formatted version is released.
+- If a blueprint with the same name does not exist on the server, {{ general.bta_name }} creates a new blueprint with the details from the local project files.
+- If a blueprint with the same name already exists on the server, {{ general.bta_name }} checks if there are any differences between the local copy and the server copy and performs one of the following operations.
+    - If there are no differences between the local copy and the server copy, {{ general.bta_short_name }} skips the operation and does not update the blueprint on the server.
+    - If there are differences between the local copy and the server copy, {{ general.bta_short_name }} updates the content on the server and releases a new version of the blueprint. For details about the versioning that {{ general.bta_short_name }} uses, see [Version Management](#version-management).
 
 ## Version Management
 
-When pushing a blueprint to a {{ products.vra_9_short_name }} server that contains previously released blueprint with the same name as the one being pushed, a new version will be created and released in order to maintain the intended state. A new version will *not* be created if the content of the blueprint has not been modified since the latest released version in order to avoid unnecessary versioning.
+When you push a blueprint to a {{ products.vra_9_short_name }} server that contains a previously-released version of a blueprint with the same name, {{ general.bta_name }} creates and releases a new version of the blueprint to maintain the intended state. Note, however, that if the content of the blueprint has not been modified since the latest released version, {{ general.bta_short_name }} *does not* create a new version to avoid unnecessary versioning.
 
-If there's a custom form associated with the blueprint being imported and there's no previously released version, an initial blueprint version (1) will be created and released in order to import the custom form.
+If there is a custom form associated with the blueprint that you are importing and there is no previously-released version, {{ general.bta_name }} creates and releases an initial blueprint version (1) in order to import the custom form.
 
-When creating a new version in the above-described cases, the new version will be auto-generated based on the latest version of the blueprint. The following version formats are supported with their respective incrementing rules:
+When creating a new version of the blueprint, {{ general.bta_short_name }} auto-generates the new version based on the latest existing version of the blueprint and tries to continue the numbering. If it fails to detect a version that is based on semantic versioning (`MAJOR.MINOR.PATCH`), {{ general.bta_short_name }} releases a date-formatted version.
 
-| Latest version | New version         | Incrementing rules                                         |
-|----------------|---------------------|------------------------------------------------------------|
-| 1              | 2                   | Increment major version                                    |
-| 1.0            | 1.1                 | Major and minor version - increment the minor              |
-| 1.0.0          | 1.0.1               | Major, minor and patch version - incrementing the patch    |
-| 1.0.0-alpha    | 2020-05-27-10-10-43 | Arbitrary version - generate a new date-time based version |
+The following table lists the supported version formats that {{ general.bta_short_name }} detects with their respective incrementing rules.
 
-By default all versions that are not the latest one will be unreleased.
+| Latest version | New version         | Incrementing rules                                                         |
+|----------------|---------------------|----------------------------------------------------------------------------|
+| 1              | 2                   | Major version detected - increment the major version.                      |
+| 1.0            | 1.1                 | Major and minor version detected - increment the minor version.            |
+| 1.0.0          | 1.0.1               | Major, minor, and patch version detected - increment the patch version.    |
+| 1.0.0-alpha    | 2026-07-27-14-36-42 | Arbitrary version detected - generate a new version based on date-time.    |
 
-To control this behavior you can set:
+### Handling of Previously-Released Blueprint Versions
+
+By default, {{ general.bta_short_name }} unreleases all released versions of the blueprint that are not the latest one.
+
+To control this behavior, you can use the `{{ page.meta.vars.maven.property_prefix }}.bp.unrelease.versions` property of the Maven profile configuration in the `settings.xml` file.
 
 ```xml
-<bp.unrelease.versions>false</bp.unrelease.versions>
+<{{ page.meta.vars.maven.property_prefix }}.bp.unrelease.versions>false</{{ page.meta.vars.maven.property_prefix }}.bp.unrelease.versions>
 ```
 
 !!! warning
-    Version history gets lost. This is known and currently there is no workaround for this.
+    Version history gets lost. This is known behavior and currently there is no workaround for it.
