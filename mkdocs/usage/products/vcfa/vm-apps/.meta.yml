@@ -1,0 +1,10 @@
+vars:
+    archetype:
+        group_id: com.vmware.pscoe.vra-ng.archetypes
+        artifact_id: package-vra-ng-archetype
+    project:
+        artifact_id: vrang-project
+        type: Aria Automation/VCF Automation VM Apps
+    maven:
+        goal: vra-ng
+        property_prefix: vrang
