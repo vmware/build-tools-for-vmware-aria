@@ -1,10 +1,12 @@
 ---
-title: Content Policies
+title: Policies
 ---
 
 ## Overview
 
-There are 6 types of content policies:
+A policy (or a policy template) in {{ products.vra_9_full_name }} (and {{ products.vra_8_full_name }}) is a set of rules or parameters that are applied to {{ products.vra_9_full_name }}/{{ products.vra_8_full_name }} projects to govern deployment requests from entitled users and impose guardrails around provisioning requests.
+
+In {{ products.vra_9_full_name }} VM Apps organizations/{{ products.vra_8_full_name }}, there are six types of policy templates.
 
 - Approval
 - Content Sharing
@@ -41,32 +43,32 @@ Structure
 
 ```ascii
 src/
-├─ main/
-│  ├─ resources/
-│  │  ├─ policies/
-│  │  │  ├─ approval/
-│  │  │  │  ├─ examplePolicy.json
-│  │  │  ├─ content-sharing/
-│  │  │  │  ├─ examplePolicy.json
-│  │  │  ├─ day2-actions/
-│  │  │  │  ├─ examplePolicy.json
-│  │  │  ├─ deployment-limit/
-│  │  │  │  ├─ examplePolicy.json
-│  │  │  ├─ lease/
-│  │  │  │  ├─ examplePolicy.json
-│  │  │  ├─ resource-quota/
-│  │  │  │  ├─ examplePolicy.json
+└── main/
+    └── resources/
+        └── policies/
+            └── approval/
+                └── examplePolicy.json
+            └── content-sharing/
+                └── examplePolicy.json
+            └── day2-actions/
+                └── examplePolicy.json
+            └── deployment-limit/
+                └── examplePolicy.json
+            └── lease/
+                └── examplePolicy.json
+            └── resource-quota/
+                └── examplePolicy.json
 ```
 
 ## Operations
 
 ### Import
 
-When importing policies, files are read form the filesystem, and the content.yml filter is by filename. All non-hidden files are read from the folder, and if the name of the file, without the extension matches the list in content.yml, the policy will be imported. The filename is only important for filtering. Actual policy fields are read from the file contents. If there is a policy with the same id on the server, an update will be performed. Otherwise, the policy will be created instead, using the same id, that is found in the file.
+When importing policies, files are read form the filesystem, and the `content.yaml` filter is by filename. All non-hidden files are read from the folder, and if the name of the file, without the extension matches the list in `content.yaml`, the policy will be imported. The filename is only important for filtering. Actual policy fields are read from the file contents. If there is a policy with the same ID on the server, an update will be performed. Otherwise, the policy will be created instead, using the same ID, that is found in the file.
 
 #### Content Sharing Polices Import
 
-If project name is is defined as a *scope* proprty in the content sharing JSON file it will be used as a project scope during push , hence allowing more granular content sharing across different projects. If the *scope* property is not defined then the project id defined in the settings.xml configuration file will be used.
+If project name is is defined as a *scope* property in the content sharing JSON file it will be used as a project scope during push , hence allowing more granular content sharing across different projects. If the *scope* property is not defined then the project id defined in the settings.xml configuration file will be used.
 
 If a organization name is defined as *organization* property in the content sharing JSON file then it will be used as organization of the content sharing policy, otherwise the organization defined in the settings.xml file will be used. The following policy types can be used during import:
 
