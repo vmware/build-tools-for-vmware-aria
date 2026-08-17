@@ -73,7 +73,7 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
        - Set the "Debugger mode" to "Attach to Remote JVM"
        - Set the "Host" to "localhost"
        - Set the "Port" to 8000
-     - To get latest version if artifact in your project, you need to clean repository files, example: `rm -rf ~/.m2/repository/com/vmware/pscoe/iac/artifact-manager/{VERSION}-SNAPSHOT/`
+     - To get latest version if artifact in your project, you need to clean repository files, example: `rm -rf ~/.m2/repository/com/vmware/pscoe/iac/${SUB_PACKAGE_NAME}/${VERSION}-SNAPSHOT/`
      - Now test the modifications by executing `mvndebug clean package/pull/push` command from the test project.
      - Start the debugger you created in the previous step: "Run" => "Debug 'vrbt'"
 

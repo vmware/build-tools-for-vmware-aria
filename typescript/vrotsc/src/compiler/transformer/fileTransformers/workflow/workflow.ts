@@ -102,7 +102,7 @@ export function getWorkflowTransformer(file: FileDescriptor, context: FileTransf
             context.writeFile(`${targetFilePath}.form.json`, workflowJsonForm);
         }
 
-        console.debug(`Attaching User Interaction Custom Forms for Workflow '${workflowFileName}'.`);
+        console.debug(`Attaching User Interaction Custom Forms for Workflow '${workflowFileName}'. (src)`);
 
         // attach the custom interaction component form json file (if any)
         workflowInfo.items?.forEach(item => {
