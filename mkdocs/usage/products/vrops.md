@@ -7,13 +7,17 @@ vars:
     project:
         artifact_id: vrops-project
         type: VCF Operations
+        product_type: non-vro
+    maven:
+        installer_directory_name: vrops
+        installer_file_extension: vrops
 ---
 
 ## Overview
 
 <!-- markdownlint-disable MD033 -->
 | Field | Value |
-|---|---|
+| --- | --- |
 | Name | vrops |
 | Archetype Group ID | com.vmware.pscoe.vrops.archetypes |
 | Archetype Artifact ID | package-vrops-archetype |
@@ -41,6 +45,7 @@ vars:
 - `custom-group`
 
 ## Create New {{ products.vrops_9_short_name }} Project
+
 {{ general.bta_name }} provides ready to use {{ products.vrops_9_short_name }} project templates (*maven archetypes*).
 
 To create a new {{ products.vrops_9_short_name }} project from archetype use the following command:
@@ -204,10 +209,12 @@ The following need to be added to the profile that you intend to use:
 - `vrops.restAuthSource` - Authentication source used for acquiring a token for REST API communication.
 
 - `vrops.restAuthProvider` - Defines the type of authentication used for REST API communication.
+
     - Supported values: `BASIC`, `AUTH_N` (token based authentication - supported since version 2.8.0).
     - Default value: `AUTH_N`.
 
 Use the profile by passing it with `-P`, e.g.:
+
 ``` bash
 mvn vrops:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```

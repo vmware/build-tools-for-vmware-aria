@@ -1,3 +1,6 @@
 vars:
     project:
         product_type: vro
+    maven:
+        installer_directory_name: vro
+        installer_file_extension: package

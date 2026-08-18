@@ -8,3 +8,5 @@ vars:
     maven:
         goal: vra-ng
         property_prefix: vrang
+        installer_directory_name: vra-ng
+        installer_file_extension: vrang

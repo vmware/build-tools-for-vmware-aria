@@ -228,7 +228,7 @@ You need to add the following configurations to the Maven profile from the `sett
 <profile>
     <!--    ..... OTHER DIRECTIVES .....  -->
     <vrang.host>flt-auto01.corp.internal</vrang.host>
-    <vrang.csp.host>cloud.corp.internal</vrang.csp.host>
+    <vrang.csp.host>flt-auto01.corp.internal</vrang.csp.host>
     <vrang.proxy>http://proxy.host:80</vrang.proxy>
     <vrang.port>443</vrang.port>
     <vrang.username>administrator</vrang.username>
@@ -253,6 +253,8 @@ mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_p
 ```
 
 Following is a list of elements from the profile configuration with further description of their values and the behavior they cause.
+
+- In the `vrang.csp.host` element, specify the FQDN or IP address of the VCF Automation host (the same value that you use for the `vrang.host` element).
 
 - In the `vrang.username` element for VCF Automation VM Apps organizations, instead of using the `<vrang.tenant>` element for the organization, you can provide the user name in the format `user@domain` (or more precisely, `user@organization`). For example, use `admin@System` for the `admin` user from the Provider organization (the `System` domain identifies the Provider organization) or use `configurationadmin@Classic` for a `configurationadmin` user from an organization with the name `Classic`.
 
