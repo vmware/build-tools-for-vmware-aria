@@ -33,14 +33,14 @@ Following is a sample listing of the structure of the installation bundle ZIP fi
 ```ascii title="Sample structure of an installation bundle"
 {{ archetype.customer_project.group_id }}.{{ page.meta.vars.project.artifact_id }}-0.1.0-SNAPSHOT-bundle.zip
 └── bin
-    ├── installer
+    └── installer
     └── installer.bat
 └── etc
     └── logback.xml
 └── repo/
 └── {{ page.meta.vars.maven.installer_directory_name }} {% if product_type == "vro" %}
-    ├── {{ archetype.customer_project.group_id }}.dependency-package-1-1.1.0.{{ page.meta.vars.maven.installer_file_extension }}  
-    ├── {{ archetype.customer_project.group_id }}.dependency-package-2-1.2.0.{{ page.meta.vars.maven.installer_file_extension }}  {% endif %}
+    └── {{ archetype.customer_project.group_id }}.dependency-package-1-1.1.0.{{ page.meta.vars.maven.installer_file_extension }}  
+    └── {{ archetype.customer_project.group_id }}.dependency-package-2-1.2.0.{{ page.meta.vars.maven.installer_file_extension }}  {% endif %}
     └── {{ archetype.customer_project.group_id }}.{{ page.meta.vars.project.artifact_id }}-0.1.0-SNAPSHOT.{{ page.meta.vars.maven.installer_file_extension }}
 ```
 
