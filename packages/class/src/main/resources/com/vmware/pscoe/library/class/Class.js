@@ -155,17 +155,6 @@
 				cls = action();
 				loadStack.pop();
 
-				/* intercept Object exports and wrap them into a class (constructor function) */
-        		if (cls !== null && typeof cls === "object") {
-        		    var WrapperClass = function() {};
-        		    for (var key in cls) {
-        		        if (Object.prototype.hasOwnProperty.call(cls, key)) {
-        		            WrapperClass[key] = cls[key];
-        		        }
-        		    }
-        		    cls = WrapperClass;
-        		}
-
 				if (typeof cls !== "function") {
 					var shapeReport = Class.validateExportShape(cls, module, name);
 					System.warn("[Class][W_EXPORT_SHAPE_MISMATCH] Class.load('" + module + "', '" + name + "')" +

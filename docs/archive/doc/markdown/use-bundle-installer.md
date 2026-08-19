@@ -109,7 +109,6 @@ vrang_org_id
 vrang_org_name
 vrang_project.id
 vrang_project_name
-vrang_cloud_proxy_name
 vrang_import_overwrite_mode
 # vrang_vro_integration_name: The value of the <vrang.vro.integration> is used to change the integration endpoint of Workflow Content Sources and other resources that point to that type of integration. If the property is missing a default name "embedded-VRO" will be used. Additional info in ticket IAC-419
 vrang_vro_integration_name
