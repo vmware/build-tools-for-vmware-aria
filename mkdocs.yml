@@ -37,7 +37,7 @@ extra:
   version:
     provider: mike
   iac:
-    latest_release: 4.24.0
+    latest_release: 4.24.1
   general:
     bta_name: Build Tools for VMware Aria
     bta_short_name: BTVA
