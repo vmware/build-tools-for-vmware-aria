@@ -52,11 +52,11 @@ Following is a list of the directories in the installation bundle with a short d
 - The `{{ page.meta.vars.maven.installer_directory_name }}` directory contains the project file(s) with the components that you can import to the remote server.
 
     !!! Note
-        Based on your configurations and dependencies, you can have multiple Maven modules in a single installation bundle. So in addition to the `{{ page.meta.vars.maven.installer_directory_name }}` directory for the {{ project_type }} project, you can additional modules for projects of other types.
+        Based on your configurations and dependencies, you can have multiple Maven modules in a single installation bundle. So in addition to the `{{ page.meta.vars.maven.installer_directory_name }}` directory for the {{ project_type }} project, you can have additional modules for projects of other types.
 
 ##### Bundle Additional Files
 
-By default, the `-P{{ extra.general.installer_bundle_profile }}` Maven profile packages only the files and directories that are strictly necessary for importing the project components to the target system (as shown in the [Sample structure of an installation bundle](#bundle_default_structure) listing). However, it also allows you to package additional files or directories from you repository as part of the bundle ZIP and copy them to root of the installation bundle.
+By default, the `-P{{ extra.general.installer_bundle_profile }}` Maven profile packages only the files and directories that are strictly necessary for importing the project components to the target system (as shown in the [Sample structure of an installation bundle](#bundle_default_structure) listing). However, it also allows you to package additional files or directories from your repository as part of the bundle ZIP and copy them to the root of the installation bundle.
 
 You can use such additional files and directories to bundle supplementary version-controlled content (such as integration tests, files with sample inputs for Orchestrator workflows, properties files for the `installer` script, Ansible playbooks, etc.) in a single deliverable file.
 
