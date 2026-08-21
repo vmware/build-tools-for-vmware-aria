@@ -80,6 +80,24 @@ plugins:
       version_selector: true
       css_dir: css
       javascript_dir: js
+  - kroki:
+      # See plugin docs for more info: https://pypi.org/project/mkdocs-kroki-plugin/
+      server_url: !ENV [KROKI_SERVER_URL, 'https://kroki.io']
+      # Diagram prefix that specifies what diagrams are rendered using Kroki
+      fence_prefix: kroki-
+      # Enables BlockDiag (and related diagrams)
+      enable_block_diag: true
+      # HTTP to use; POST stores images in the build directory
+      http_method: POST
+      # File types to use; see https://kroki.io/#support
+      file_types: 
+        - svg
+      # How images are included in the resulting HTML (img, object, svg)
+      tag_format: svg
+      # Errors are raised as plugin errors
+      fail_fast: !ENV CI
+      # Custom directory for caching rendered diagrams; ".cache/kroki" stores cache in project directory
+      # cache_dir: .cache/kroki
 markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed:

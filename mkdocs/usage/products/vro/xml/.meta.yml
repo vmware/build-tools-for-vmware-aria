@@ -5,3 +5,4 @@ vars:
     project:
         artifact_id: vro-xml
         type: VCF Operations Orchestrator XML
+        workflows_path: integration-service/workflows
