@@ -58,7 +58,7 @@ This section provides details about using the Installer CLI tool.
 
 ### Run the Installer
 
-To run the Installer CLI tool, you first need extract the contents of the ZIP bundle that you created with the `-Pbundle-with-installer` Maven profile and open a terminal inside the extracted bundle directory. Then use one of the following options to start the Installer in the respective mode.
+To run the Installer CLI tool, you first need to extract the contents of the ZIP bundle that you created with the `-Pbundle-with-installer` Maven profile and open a terminal inside the extracted bundle directory. Then use one of the following options to start the Installer in the respective mode.
 
 - To start the Installer in interactive mode, run the following command, read carefully all prompts, and specify the correct values for your environment.
 
@@ -93,7 +93,7 @@ To run the Installer CLI tool, you first need extract the contents of the ZIP bu
         bin\installer.bat bin\environment.properties
         ```
 
-Following is a sample listing of an `environment.properties` file for a bundle that contains content for two project types, {{ products.vro_9_full_name }} and {{ products.vra_9_full_name }} for a VM Apps organization, but imports only the Orchestrator content (to a standalone Orchestrator instance) and then run the Orchestrator workflow with the ID `1944423533582937823496790834565483423`.
+Following is a sample listing of an `environment.properties` file for a bundle that contains content for two project types, {{ products.vro_9_full_name }} and {{ products.vra_9_full_name }} for a VM Apps organization, but imports only the Orchestrator content (to a standalone Orchestrator instance) and then runs the Orchestrator workflow with the ID `1944423533582937823496790834565483423`.
 
 ```properties
 # Example environment.properties file
@@ -125,7 +125,7 @@ vro_delete_old_versions=true                            # Starts the clean up op
 vro_run_workflow=true                                   # Starts the Run Workflow operations
 vro_run_workflow_id=1944423533582937823496790834565483423
 # input.json contains JSON where each first class KEY represents
-# the workflow input parameter name and its value are sent as value
+# the workflow input parameter name and its value is sent as value
 # Supported types of workflow in/output parameters are string, number, boolean, Array/string
 vro_run_workflow_input_file_path=./input.json
 # output.json contains JSON where each first class KEY represents
@@ -138,7 +138,7 @@ vra_ng_import_packages=false                            # Skips the import opera
 
 #### List of Properties
 
-Following is an exhaustive list of all properties that you can use with the Installer tool. The properties are grouped in sections per project type (that is available in the bundle). Within each sections, the properties are grouped in subsections based on their purpose and the operation they are used for.
+Following is an exhaustive list of all properties that you can use with the Installer tool. The properties are grouped in sections per project type (that is available in the bundle). Within each section, the properties are grouped in subsections based on their purpose and the operation they are used for.
 
 Note that the script uses the properties from the **Common properties** section for all operations.
 
@@ -235,7 +235,7 @@ Following is a sample listing (in both YAML and JSON format) of a file with inpu
 
 ??? "Expand for details of the workflow input parameters and how they are processed"
 
-    Following is a list of the input parameters of the workflow with details of how they are defined in the Orchestrator workflow, what is their data types in the sample input file, and how the Installer passes them to the Orchestrator workflow.
+    Following is a list of the input parameters of the workflow with details of how they are defined in the Orchestrator workflow, what are their data types in the sample input file, and how the Installer passes them to the Orchestrator workflow.
 
     | Parameter Name | Workflow Definition Data Type | Input File Data Type | Actual Input Data Type |
     | --- | --- | --- | --- | 
