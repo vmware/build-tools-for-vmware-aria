@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2538,9 +2538,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2554,7 +2575,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -3405,20 +3445,20 @@
 <p>You can use the method decorators to define various canvas items that will be included in the Workflow.</p>
 <h2 id="workflow-decorator">Workflow Decorator<a class="headerlink" href="#workflow-decorator" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample Workflow&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample workflow description&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Sample Workflow"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Sample workflow description"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">  </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">foo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nx">bar</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">foo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">bar</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w"> </span><span class="p">},</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nx">output</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Any&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Any"</span><span class="w"> </span><span class="p">},</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nx">presentation</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">presentation</span><span class="o">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">restartMode</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">resumeFromFailedMode</span><span class="o">:</span><span class="w"> </span><span class="kt">0</span>
 <span class="p">})</span>
@@ -3481,44 +3521,44 @@
 <span class="w">  </span><span class="nx">Item</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">DefaultErrorHandler</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">WorkflowEndItem</span><span class="p">,</span>
-<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Default Error Handler Workflow&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Default Error Handler Workflow"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">description</span><span class="o">:</span>
-<span class="w">    </span><span class="s2">&quot;Default error handler workflow with error handler redirecting to a workflow item&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"Default error handler workflow with error handler redirecting to a workflow item"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">DefaultErrorHandlerWorkflow</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;workflowEnd&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"workflowEnd"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">initiateWorkflow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Initiating workflow execution&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Initiating workflow execution"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@Item</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"end"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">goToEnd</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// NOOP</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@Item</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;workflowEnd&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"workflowEnd"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processError</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span>
-<span class="w">      </span><span class="sb">`Processing error using custom task with message &#39;</span><span class="si">${</span><span class="nx">errorMessage</span><span class="si">}</span><span class="sb">&#39;`</span>
+<span class="w">      </span><span class="sb">`Processing error using custom task with message '</span><span class="si">${</span><span class="nx">errorMessage</span><span class="si">}</span><span class="sb">'`</span>
 <span class="w">    </span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@DefaultErrorHandler</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processError&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">exceptionBinding</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;errorMessage&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"processError"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">exceptionBinding</span><span class="o">:</span><span class="w"> </span><span class="s2">"errorMessage"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">defaultErrorHandler</span><span class="p">(</span><span class="kd">@Out</span><span class="w"> </span><span class="kd">@Err</span><span class="w"> </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// NOOP</span>
@@ -3557,21 +3597,21 @@
 <li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
 </ul>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">In</span><span class="p">,</span><span class="w"> </span><span class="nx">WaitingTimerItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">In</span><span class="p">,</span><span class="w"> </span><span class="nx">WaitingTimerItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Waiting Timer Workflow&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Waiting timer will point with target to shouldGoHere&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Waiting Timer Workflow"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Waiting timer will point with target to shouldGoHere"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Date"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">WaitingTimerWorkflow</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">@WaitingTimerItem</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;shouldGoHere&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"shouldGoHere"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">waitForEvent</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// NOOP</span>
@@ -3593,23 +3633,23 @@
 <li><code>exception</code> - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to <code>null</code> or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.</li>
 </ul>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">DecisionItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">DecisionItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Decision Item Workflow&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Decision Item Workflow"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">description</span><span class="o">:</span>
-<span class="w">    </span><span class="s2">&quot;decisionElement is the root, it will point with else to end and target to shouldGoHere. shouldGoHere will point to end too&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"decisionElement is the root, it will point with else to end and target to shouldGoHere. shouldGoHere will point to end too"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Date"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">DecisionItemWorkflow</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">@DecisionItem</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;shouldGoHere&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="k">else</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"shouldGoHere"</span><span class="p">,</span>
+<span class="w">    </span><span class="k">else</span><span class="o">:</span><span class="w"> </span><span class="s2">"end"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">decisionElement</span><span class="p">(</span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
@@ -3651,21 +3691,21 @@
 <li><code>defaultTarget</code> - The name of the next item to execute when none of the cases match. If this is set to <code>end</code>, it will point to the end of the workflow. If this is set to <code>null</code>, it will point to the next item or if none, the end of the workflow.</li>
 </ul>
 <h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">SwitchItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">SwitchItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch Edge Cases&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch test covering edge cases - various operators, no default target, and complex conditions&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Switch Edge Cases"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Switch test covering edge cases - various operators, no default target, and complex conditions"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">errorCode</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">priority</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">})</span>
@@ -3673,99 +3713,99 @@
 
 <span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
 <span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">404</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleNotFound&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">500</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleServerError&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;different&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">404</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"handleNotFound"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"errorCode"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"equals"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">500</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"handleServerError"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"errorCode"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"different"</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;switchPriority&quot;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"switchPriority"</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchErrorCodes</span><span class="p">(</span><span class="nx">errorCode</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Error code switch without default using various equality operators</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing error code: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">errorCode</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing error code: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">errorCode</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
 <span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;lowPriority&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;priority&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;smaller&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;mediumPriority&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;priority&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;greater&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"lowPriority"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"priority"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"smaller"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"mediumPriority"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"priority"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"greater"</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;switchStatus&quot;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"switchStatus"</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchPriority</span><span class="p">(</span><span class="nx">priority</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Priority switch using comparison operators</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing priority: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">priority</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing priority: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">priority</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
 <span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processActive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;pending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processPending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;different&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"processActive"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"equals"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"processPending"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"different"</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleNotFound&quot;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"handleNotFound"</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchStatus</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// String status switch with mixed operators</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing status: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">status</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing status: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">status</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleNotFound</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;404 - Resource not found&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"404 - Resource not found"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleServerError</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;500 - Internal server error&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"500 - Internal server error"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleForbidden</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;403 - Access forbidden&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"403 - Access forbidden"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">lowPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Low priority task (&lt;=1)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Low priority task (&lt;=1)"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">mediumPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Medium priority task (&gt;5)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Medium priority task (&gt;5)"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">highPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;High priority task (&gt;=10)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"High priority task (&gt;=10)"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleInvalidPriority</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Invalid priority level&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Invalid priority level"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processActive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing active status&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing active status"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processPending</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing pending status (not equal to &#39;pending&#39;)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing pending status (not equal to 'pending')"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processInactive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing inactive status (not strictly equal to &#39;inactive&#39;)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing inactive status (not strictly equal to 'inactive')"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleUnknownStatus</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Unknown status - using default handler&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Unknown status - using default handler"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">fallbackHandler</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Not handled error code - using fallback&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Not handled error code - using fallback"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="switch-item-with-string-cases">Switch Item with String Cases<a class="headerlink" href="#switch-item-with-string-cases" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">SwitchItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Workflow</span><span class="p">,</span><span class="w"> </span><span class="nx">SwitchItem</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch String Cases&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Switch test with string conditions and exception handling&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Switch String Cases"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Switch test with string conditions and exception handling"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">})</span>
@@ -3773,38 +3813,38 @@
 
 <span class="w">  </span><span class="kd">@SwitchItem</span><span class="p">({</span>
 <span class="w">    </span><span class="nx">cases</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processActive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;pending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processPending&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;different&quot;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;inactive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;processInactive&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"processActive"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"equals"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"processPending"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"different"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">condition</span><span class="o">:</span><span class="w"> </span><span class="s2">"inactive"</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"processInactive"</span><span class="p">,</span><span class="w"> </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nx">comparator</span><span class="o">:</span><span class="w"> </span><span class="s2">"equals"</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleUnknownStatus&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">exception</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;handleError&quot;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"handleUnknownStatus"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">exception</span><span class="o">:</span><span class="w"> </span><span class="s2">"handleError"</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">switchByStatus</span><span class="p">(</span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Switch logic for string conditions</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Status cannot be null&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">"Status cannot be null"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processActive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing active status&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing active status"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processPending</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing pending status&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing pending status"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">processInactive</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Processing inactive status&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Processing inactive status"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleUnknownStatus</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Unknown status encountered&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Unknown status encountered"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">handleError</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error occurred in switch processing&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Error occurred in switch processing"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 <span class="sb">````</span>
@@ -3837,13 +3877,13 @@
 
 <span class="nx">Special</span><span class="w"> </span><span class="nx">input</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">needed</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">ScheduledWorkflowItem</span><span class="p">.</span>
 
-<span class="o">-</span><span class="w"> </span><span class="sb">`workflowScheduleDate`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">{</span><span class="nb">Date</span><span class="p">}</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">required</span><span class="p">.</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">**</span><span class="nx">must</span><span class="o">**</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="sb">`workflowScheduleDate`</span><span class="p">.</span><span class="w"> </span><span class="nx">If</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">missing</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">thrown</span><span class="p">.</span><span class="w"> </span><span class="nx">We</span><span class="w"> </span><span class="nx">don</span><span class="s1">&#39;t check if the type is `Date` but Aria Orchestrator will complain.</span>
+<span class="o">-</span><span class="w"> </span><span class="sb">`workflowScheduleDate`</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">{</span><span class="nb">Date</span><span class="p">}</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">required</span><span class="p">.</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">**</span><span class="nx">must</span><span class="o">**</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="sb">`workflowScheduleDate`</span><span class="p">.</span><span class="w"> </span><span class="nx">If</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">missing</span><span class="w"> </span><span class="nx">an</span><span class="w"> </span><span class="nx">error</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">thrown</span><span class="p">.</span><span class="w"> </span><span class="nx">We</span><span class="w"> </span><span class="nx">don</span><span class="s1">'t check if the type is `Date` but Aria Orchestrator will complain.</span>
 
 <span class="s1">#### Outputs</span>
 
 <span class="s1">Special output is needed for the ScheduledWorkflowItem.</span>
 
-<span class="s1">- `scheduledTask` - {Task} is optional. If it&#39;</span><span class="nx">s</span><span class="w"> </span><span class="nx">missing</span><span class="w"> </span><span class="nx">nothing</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">happen</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">it</span><span class="err">&#39;</span><span class="nx">s</span><span class="w"> </span><span class="nx">added</span><span class="p">,</span><span class="w"> </span><span class="nx">then</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">**</span><span class="nx">must</span><span class="o">**</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="sb">`scheduledTask`</span><span class="p">.</span><span class="w"> </span><span class="nx">This</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">scheduled</span><span class="p">.</span>
+<span class="s1">- `scheduledTask` - {Task} is optional. If it'</span><span class="nx">s</span><span class="w"> </span><span class="nx">missing</span><span class="w"> </span><span class="nx">nothing</span><span class="w"> </span><span class="nx">will</span><span class="w"> </span><span class="nx">happen</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">it</span><span class="err">'</span><span class="nx">s</span><span class="w"> </span><span class="nx">added</span><span class="p">,</span><span class="w"> </span><span class="nx">then</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">**</span><span class="nx">must</span><span class="o">**</span><span class="w"> </span><span class="nx">be</span><span class="w"> </span><span class="sb">`scheduledTask`</span><span class="p">.</span><span class="w"> </span><span class="nx">This</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="nx">that</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">scheduled</span><span class="p">.</span>
 
 <span class="err">####</span><span class="w"> </span><span class="nx">Example</span>
 
@@ -3855,35 +3895,35 @@
 <span class="sb">  Item,</span>
 <span class="sb">  RootItem,</span>
 <span class="sb">  ScheduledWorkflowItem,</span>
-<span class="sb">} from &quot;vrotsc-annotations&quot;;</span>
+<span class="sb">} from "vrotsc-annotations";</span>
 
 <span class="sb">@Workflow({</span>
-<span class="sb">  name: &quot;Scheduled Workflow&quot;,</span>
-<span class="sb">  path: &quot;VMware/PSCoE&quot;,</span>
-<span class="sb">  description: &quot;Scheduling another workflow and binding values correctly&quot;,</span>
+<span class="sb">  name: "Scheduled Workflow",</span>
+<span class="sb">  path: "VMware/PSCoE",</span>
+<span class="sb">  description: "Scheduling another workflow and binding values correctly",</span>
 <span class="sb">  attributes: {</span>
 <span class="sb">    workflowScheduleDate: {</span>
-<span class="sb">      type: &quot;Date&quot;,</span>
+<span class="sb">      type: "Date",</span>
 <span class="sb">    },</span>
 <span class="sb">    scheduledTask: {</span>
-<span class="sb">      type: &quot;Task&quot;,</span>
+<span class="sb">      type: "Task",</span>
 <span class="sb">    },</span>
 <span class="sb">  },</span>
 <span class="sb">})</span>
 <span class="sb">export class ScheduledWorkflow {</span>
-<span class="sb">  @RootItem({ target: &quot;prepareItems&quot; })</span>
+<span class="sb">  @RootItem({ target: "prepareItems" })</span>
 <span class="sb">  public start() {</span>
-<span class="sb">    System.log(&quot;Starting workflow&quot;);</span>
+<span class="sb">    System.log("Starting workflow");</span>
 <span class="sb">  }</span>
 
-<span class="sb">  @Item({ target: &quot;scheduleOtherWf&quot; })</span>
+<span class="sb">  @Item({ target: "scheduleOtherWf" })</span>
 <span class="sb">  public prepareItems(@In @Out workflowScheduleDate: Date) {</span>
-<span class="sb">    workflowScheduleDate = System.getDate(&quot;1 minute from now&quot;, null);</span>
+<span class="sb">    workflowScheduleDate = System.getDate("1 minute from now", null);</span>
 <span class="sb">  }</span>
 
 <span class="sb">  @ScheduledWorkflowItem({</span>
-<span class="sb">    target: &quot;printScheduledDetails&quot;,</span>
-<span class="sb">    linkedItem: &quot;c2c9d5c4-468e-3cde-a64a-d1de50989214&quot;,</span>
+<span class="sb">    target: "printScheduledDetails",</span>
+<span class="sb">    linkedItem: "c2c9d5c4-468e-3cde-a64a-d1de50989214",</span>
 <span class="sb">  })</span>
 <span class="sb">  public scheduleOtherWf(</span>
 <span class="sb">    @In first: number,</span>
@@ -3894,7 +3934,7 @@
 <span class="sb">    // NOOP</span>
 <span class="sb">  }</span>
 
-<span class="sb">  @Item({ target: &quot;end&quot; })</span>
+<span class="sb">  @Item({ target: "end" })</span>
 <span class="sb">  public printScheduledDetails(@In scheduledTask: Task) {</span>
 <span class="sb">    System.log(`</span><span class="nx">Scheduled</span><span class="w"> </span><span class="nx">task</span><span class="o">:</span><span class="w"> </span><span class="kt">$</span><span class="p">{</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">id</span><span class="p">},</span><span class="w"> </span><span class="p">[</span><span class="nx">$</span><span class="p">{</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">state</span><span class="p">}]</span><span class="sb">`);</span>
 <span class="sb">  }</span>
@@ -3969,46 +4009,46 @@ Those inputs are optional.</p>
 <span class="w">    </span><span class="nx">Item</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">RootItem</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">UserInteractionItem</span><span class="p">,</span>
-<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;User Interaction&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Adding user interaction parameters&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"User Interaction"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Adding user interaction parameters"</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">security_assignee_groups</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Array/LdapGroup&quot;</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Array/LdapGroup"</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nx">security_group</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;LdapGroup&quot;</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"LdapGroup"</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nx">timeout_date</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Date"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">security_assignees</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Array/LdapUser&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;configurationadmin&quot;</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Array/LdapUser"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">"configurationadmin"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">UserInteractionWorkflow</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;userInteraction1Enter&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">exception</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"userInteraction1Enter"</span><span class="p">,</span><span class="w"> </span><span class="nx">exception</span><span class="o">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">})</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">start</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Starting workflow&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Starting workflow"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="kd">@UserInteractionItem</span><span class="p">({</span>
-<span class="w">        </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;userInteraction2Enter&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"userInteraction2Enter"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">userInteraction1Enter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;User interaction component 1 activation&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"User interaction component 1 activation"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="kd">@UserInteractionItem</span><span class="p">({</span>
-<span class="w">        </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;userInteractionExit&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"userInteractionExit"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">userInteraction2Enter</span><span class="p">(</span>
 <span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">security_assignees</span><span class="o">:</span><span class="w"> </span><span class="kt">LdapUser</span><span class="p">[],</span>
@@ -4017,12 +4057,12 @@ Those inputs are optional.</p>
 <span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">timeout_date?</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">,</span>
 <span class="w">        </span><span class="kd">@In</span><span class="w"> </span><span class="nx">userInteractionAnswer?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span>
 <span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;User interaction component 2 activation&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"User interaction component 2 activation"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"end"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nx">userInteractionExit</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">userInteractionAnswer</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;User Interaction exit&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"User Interaction exit"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -4052,11 +4092,11 @@ Those inputs are optional.</p>
 <p>Only a single <code>Workflow Custom Form</code> is supported per <code>Workflow</code> and a single <code>User Interaction Custom Form</code> per <code>User Interaction</code> element (which can lead to having multiple <code>User Interaction Custom Form</code> definition files mapped to a single <code>wf.ts</code> file based on the number of <code>User Interactions</code> in the <code>Workflow</code>).</p>
 <p>If no <code>User Interaction Custom Form</code> file definition is provided (or the naming convention is not properly followed) the following default empty definition is used which can then be editted in the Orchestrator UI:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
-<span class="w">    </span><span class="nt">&quot;layout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="nt">"schema"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">    </span><span class="nt">"layout"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"pages"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;itemId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ itemId }}&quot;</span>
+<span class="w">    </span><span class="nt">"itemId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{{ itemId }}"</span>
 <span class="p">}</span>
 </code></pre></div></p>
 <p>:scroll:<strong>NOTE!</strong> Currently <code>pull</code> operation for <code>Custom Forms</code> is not supported. As a workaround you can:
@@ -4074,50 +4114,50 @@ Those inputs are optional.</p>
         └── workflows
             └── CreateIntegration.wf.ts
             └── CreateIntegration.wf.form.json
-            └── CreateIntegration_input_form_item2.wf.form.json                   // Corresponds to &#39;userInteraction1Enter&#39; item
-            └── CreateIntegration_input_form_userInteraction2Enter.wf.form.json   // Corresponds to &#39;userInteraction2Enter&#39; item
+            └── CreateIntegration_input_form_item2.wf.form.json                   // Corresponds to 'userInteraction1Enter' item
+            └── CreateIntegration_input_form_userInteraction2Enter.wf.form.json   // Corresponds to 'userInteraction2Enter' item
 </code></pre></div>
 <p>Example <code>User Interaction Custom Form</code> definition:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;layout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="nt">"layout"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"pages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;page_3efd02e1&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;sections&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"page_3efd02e1"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"sections"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">                    </span><span class="p">{</span>
-<span class="w">                        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;section_f2d0f1d1&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nt">&quot;fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"section_f2d0f1d1"</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">                            </span><span class="p">{</span>
-<span class="w">                                </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textArea_f5932870&quot;</span><span class="p">,</span>
-<span class="w">                                </span><span class="nt">&quot;display&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textArea&quot;</span><span class="p">,</span>
-<span class="w">                                </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                                    </span><span class="nt">&quot;visible&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">                                    </span><span class="nt">&quot;read-only&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">                                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"textArea_f5932870"</span><span class="p">,</span>
+<span class="w">                                </span><span class="nt">"display"</span><span class="p">:</span><span class="w"> </span><span class="s2">"textArea"</span><span class="p">,</span>
+<span class="w">                                </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                                    </span><span class="nt">"visible"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">                                    </span><span class="nt">"read-only"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">                                </span><span class="p">},</span>
-<span class="w">                                </span><span class="nt">&quot;signpostPosition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;right-middle&quot;</span>
+<span class="w">                                </span><span class="nt">"signpostPosition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"right-middle"</span>
 <span class="w">                            </span><span class="p">}</span>
 <span class="w">                        </span><span class="p">]</span>
 <span class="w">                    </span><span class="p">}</span>
 <span class="w">                </span><span class="p">],</span>
-<span class="w">                </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Approval details&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Approval details"</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;textArea_f5932870&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User name&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;placeholder&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;dataType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">    </span><span class="nt">"schema"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"textArea_f5932870"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User name"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"placeholder"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">"dataType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span>
 <span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="nt">&quot;constraints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">            </span><span class="nt">"constraints"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;externalValidations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="nt">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"externalValidations"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;itemId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;item2&quot;</span>
+<span class="w">    </span><span class="nt">"itemId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"item2"</span>
 <span class="p">}</span>
 </code></pre></div></p>
 <h2 id="example-workflow">Example Workflow<a class="headerlink" href="#example-workflow" title="Permanent link">&para;</a></h2>
@@ -4142,51 +4182,51 @@ Those inputs are optional.</p>
 <span class="w">  </span><span class="nx">WorkflowItem</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">WorkflowEndItem</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">ScheduledWorkflowItem</span><span class="p">,</span>
-<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Workflow</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Complex Workflow&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VMware/PSCoE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Complex Workflow"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"VMware/PSCoE"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Date"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">counter</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">workflowScheduleDate</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Date"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">scheduledTask</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Task&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Task"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">errorMessage</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">wfToken</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;WorkflowToken&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"WorkflowToken"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">actionResult</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;ActionResult&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"ActionResult"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">ComplexWorkflow</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;execute&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@RootItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"execute"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">start</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Starting workflow&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Starting workflow"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;decisionItem&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"decisionItem"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">execute</span><span class="p">(</span><span class="kd">@Out</span><span class="w"> </span><span class="kd">@In</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">,</span><span class="w"> </span><span class="kd">@Out</span><span class="w"> </span><span class="kd">@In</span><span class="w"> </span><span class="nx">counter</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">counter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
@@ -4198,23 +4238,23 @@ Those inputs are optional.</p>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">waitingTimer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Counter: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">counter</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Waiting Timer: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Counter: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">counter</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Waiting Timer: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@DecisionItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;waitForEvent&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">else</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;prepareItems&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@DecisionItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"waitForEvent"</span><span class="p">,</span><span class="w"> </span><span class="k">else</span><span class="o">:</span><span class="w"> </span><span class="s2">"prepareItems"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">decisionItem</span><span class="p">(</span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@WaitingTimerItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;callAction&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@WaitingTimerItem</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"callAction"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">waitForEvent</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">waitingTimer</span><span class="o">:</span><span class="w"> </span><span class="kt">Date</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// NOOP</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@ActionItem</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printActionResult&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">scriptModule</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;com.vmware.pscoe.library.ecmascript/Set&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"printActionResult"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">scriptModule</span><span class="o">:</span><span class="w"> </span><span class="s2">"com.vmware.pscoe.library.ecmascript/Set"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">callAction</span><span class="p">(</span>
 <span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
@@ -4224,7 +4264,7 @@ Those inputs are optional.</p>
 <span class="w">    </span><span class="c1">// NOOP</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;callOtherWf&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"callOtherWf"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">prepareItems</span><span class="p">(</span>
 <span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
 <span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="kd">@Out</span><span class="w"> </span><span class="nx">second</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
@@ -4232,12 +4272,12 @@ Those inputs are optional.</p>
 <span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
 <span class="w">    </span><span class="nx">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2</span><span class="p">;</span>
-<span class="w">    </span><span class="nx">workflowScheduleDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">System</span><span class="p">.</span><span class="nx">getDate</span><span class="p">(</span><span class="s2">&quot;1 minute from now&quot;</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">workflowScheduleDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">System</span><span class="p">.</span><span class="nx">getDate</span><span class="p">(</span><span class="s2">"1 minute from now"</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@WorkflowItem</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;print&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;c2c9d5c4-468e-3cde-a64a-d1de50989214&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"print"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">"c2c9d5c4-468e-3cde-a64a-d1de50989214"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">callOtherWf</span><span class="p">(</span>
 <span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
@@ -4247,14 +4287,14 @@ Those inputs are optional.</p>
 <span class="w">    </span><span class="c1">// NOOP</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;scheduleOtherWf&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"scheduleOtherWf"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">print</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Result: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Result: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@ScheduledWorkflowItem</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printScheduledDetails&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;9e4503db-cbaa-435a-9fad-144409c08df0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"printScheduledDetails"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">"9e4503db-cbaa-435a-9fad-144409c08df0"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">scheduleOtherWf</span><span class="p">(</span>
 <span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
@@ -4265,14 +4305,14 @@ Those inputs are optional.</p>
 <span class="w">    </span><span class="c1">// NOOP</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;asyncCall&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"asyncCall"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">printScheduledDetails</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">scheduledTask</span><span class="o">:</span><span class="w"> </span><span class="kt">Task</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Scheduled task: </span><span class="si">${</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">, [</span><span class="si">${</span><span class="nx">scheduledTask</span><span class="p">.</span><span class="nx">state</span><span class="si">}</span><span class="sb">]`</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kd">@AsyncWorkflowItem</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printAsync&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;9e4503db-cbaa-435a-9fad-144409c08df0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"printAsync"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">linkedItem</span><span class="o">:</span><span class="w"> </span><span class="s2">"9e4503db-cbaa-435a-9fad-144409c08df0"</span><span class="p">,</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">asyncCall</span><span class="p">(</span>
 <span class="w">    </span><span class="kd">@In</span><span class="w"> </span><span class="nx">first</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">,</span>
@@ -4282,12 +4322,12 @@ Those inputs are optional.</p>
 <span class="w">    </span><span class="c1">// NOOP</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;printActionResult&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"printActionResult"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">printAsync</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">wfToken</span><span class="o">:</span><span class="w"> </span><span class="kt">WorkflowToken</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Workflow token: </span><span class="si">${</span><span class="nx">wfToken</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb"> and state: </span><span class="si">${</span><span class="nx">wfToken</span><span class="p">.</span><span class="nx">state</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;end&quot;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="kd">@Item</span><span class="p">({</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s2">"end"</span><span class="w"> </span><span class="p">})</span>
 <span class="w">  </span><span class="k">public</span><span class="w"> </span><span class="nx">printActionResult</span><span class="p">(</span><span class="kd">@In</span><span class="w"> </span><span class="nx">actionResult</span><span class="o">:</span><span class="w"> </span><span class="kt">ActionResult</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Action result: </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">actionResult</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>

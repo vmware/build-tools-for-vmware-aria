@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2065,9 +2065,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2081,7 +2102,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2455,10 +2495,10 @@
 <p>When it comes to native actions items, using the old syntax of creating actions allow us to call the actions directly when needed. Mapping inputs and outputs according to the documentation/arguments.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>Test:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">sumAction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">System</span><span class="p">.</span><span class="nx">getModule</span><span class="p">(</span><span class="s2">&quot;com.vmware.pscoe.actions&quot;</span><span class="p">).</span><span class="nx">sumAction</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">sumAction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">System</span><span class="p">.</span><span class="nx">getModule</span><span class="p">(</span><span class="s2">"com.vmware.pscoe.actions"</span><span class="p">).</span><span class="nx">sumAction</span><span class="p">;</span>
 
-<span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;Sum Action test&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should add two numbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="nx">describe</span><span class="p">(</span><span class="s2">"Sum Action test"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s2">"should add two numbers"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">expect</span><span class="p">(</span><span class="w"> </span><span class="nx">sumAction</span><span class="p">(</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="mf">5</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="w"> </span><span class="mf">6</span><span class="w"> </span><span class="p">);</span>
 <span class="w">    </span><span class="p">});</span>
 <span class="p">})</span>

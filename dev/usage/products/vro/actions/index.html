@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -1994,9 +1994,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2010,7 +2031,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2478,6 +2518,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bundle-additional-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundle Additional Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -2911,15 +2968,60 @@
 </code></pre></div>
 <p>The output of the command will result in <strong>com.company.department.project.type-1.0.0-SNAPSHOT.package</strong> file generated in the target folder of the project. This is an Orchestrator native package that can be imported from Orchestrator UI -&gt; Assets -&gt; Packages.</p>
 <!-- Bundle Project Section -->
+
 <h3 id="bundle-the-project">Bundle the Project<a class="headerlink" href="#bundle-the-project" title="Permanent link">&para;</a></h3>
-<p>This section describes the operation for bundling the project.</p>
+<p>This section describes the operation for bundling the project into an installation bundle (ZIP file).</p>
 <h4 id="overview_2">Overview<a class="headerlink" href="#overview_2" title="Permanent link">&para;</a></h4>
-<p>A Maven goal for producing an installation bundle that contains the solution package, all its dependencies, and scripts for deploying them to a target environment.</p>
+<p>A Maven profile for producing an installation bundle that contains the solution package, all its dependencies, and scripts for deploying them to a target environment.</p>
 <h4 id="usage_1">Usage<a class="headerlink" href="#usage_1" title="Permanent link">&para;</a></h4>
 <p>To bundle the project, use the following command.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span>-Pbundle-with-installer
 </code></pre></div>
-<p>For more information about using the bundle, see the documentation of the <a href="../../../installer/">Installer</a> CLI tool.</p>
+<p>The command produces a ZIP file (installation bundle) with a name that follows the pattern <code>&lt;project.groupId&gt;.&lt;project.artifactId&gt;-&lt;project.version&gt;-bundle.zip</code>, where the values for the placeholders are retrieved from the respective properties of the project <code>pom.xml</code> file.</p>
+<p>Following is a sample listing of the structure of the installation bundle ZIP file for the VCF Operations Orchestrator Actions project in which the project version is <code>0.1.0-SNAPSHOT</code>.</p>
+<!-- markdownlint-disable MD033 -->
+<p><a id="bundle_default_structure"></a></p>
+<!-- markdownlint-enable MD033 -->
+<div class="highlight"><span class="filename">Sample structure of an installation bundle</span><pre><span></span><code>com.company.department.vro-actions-0.1.0-SNAPSHOT-bundle.zip
+└── bin
+    └── installer
+    └── installer.bat
+└── etc
+    └── logback.xml
+└── repo/
+└── vro 
+    └── com.company.department.dependency-package-1-1.1.0.package  
+    └── com.company.department.dependency-package-2-1.2.0.package  
+    └── com.company.department.vro-actions-0.1.0-SNAPSHOT.package
+</code></pre></div>
+<p>Following is a list of the directories in the installation bundle with a short description of their contents.</p>
+<ul>
+<li>The <code>bin</code> directory contains the <code>installer</code> script (CLI tool) for importing the solution components from the bundle in two formats, Bash (for Linux/Mac OS) and <code>.bat</code> (for Windows). For more information about using the CLI tool, see the documentation of the <a href="../../../installer/">Installer</a>.</li>
+<li>The <code>etc</code> directory contains configuration files of the Java binaries for the <code>installer</code> script, such as the logging configurations in the <code>logback.xml</code> file. For more information about the logging configuration file, see <a href="../../../installer/#logging-configuration">Logging Configuration</a>.</li>
+<li>The <code>repo</code> directory contains the Java binaries for the <code>installer</code> script.</li>
+<li>
+<p>The <code>vro</code> directory contains the project file(s) with the components that you can import to the remote server.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Based on your configurations and dependencies, you can have multiple Maven modules in a single installation bundle. So in addition to the <code>vro</code> directory for the VCF Operations Orchestrator Actions project, you can have additional modules for projects of other types.</p>
+</div>
+</li>
+</ul>
+<h5 id="bundle-additional-files">Bundle Additional Files<a class="headerlink" href="#bundle-additional-files" title="Permanent link">&para;</a></h5>
+<p>By default, the <code>-Pbundle-with-installer</code> Maven profile packages only the files and directories that are strictly necessary for importing the project components to the target system (as shown in the <a href="#bundle_default_structure">Sample structure of an installation bundle</a> listing). However, it also allows you to package additional files or directories from your repository as part of the bundle ZIP and copy them to the root of the installation bundle.</p>
+<p>You can use such additional files and directories to bundle supplementary version-controlled content (such as integration tests, files with sample inputs for Orchestrator workflows, properties files for the <code>installer</code> script, Ansible playbooks, etc.) in a single deliverable file.</p>
+<p>You specify the additional content that you want to add to the bundle in the <code>&lt;properties&gt;</code> element of the <code>pom.xml</code> file of the project. You can use up to nine <code>&lt;installer.included.item*&gt;</code> elements (in which <code>*</code> stands for a number between 1 and 9) to specify the paths to the files and directories that you want to include.</p>
+<p>For example, the following sample configuration of a <code>pom.xml</code> file includes a file with the name <code>environment.properties</code> as <code>item1</code> and the contents of the <code>integration-tests/</code> directory as <code>item2</code>.</p>
+<div class="highlight"><span class="filename">Sample pom.xml file</span><pre><span></span><code><span class="cm">&lt;!-- Parameters for including additional files in installation bundles in the pom.xml file --&gt;</span><span class="w"> </span>
+<span class="nt">&lt;project&gt;</span>
+<span class="w">    </span>...
+<span class="w">    </span><span class="nt">&lt;properties&gt;</span>
+<span class="w">        </span><span class="nt">&lt;installer.included.item1&gt;</span>environment.properties<span class="nt">&lt;/installer.included.item1&gt;</span>
+<span class="w">        </span><span class="nt">&lt;installer.included.item2&gt;</span>integration-tests/**<span class="nt">&lt;/installer.included.item2&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/properties&gt;</span>
+<span class="w">    </span>...
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div>
 <!-- Pull Content Section -->
 <h3 id="pull-content">Pull Content<a class="headerlink" href="#pull-content" title="Permanent link">&para;</a></h3>
 <h4 id="overview_3">Overview<a class="headerlink" href="#overview_3" title="Permanent link">&para;</a></h4>
@@ -3070,14 +3172,14 @@ Thus it is recommended to first push your current content (which also triggers a
 <div class="highlight"><pre><span></span><code><span class="gh"># General</span>
 <span class="gu">## This file contains glob patterns for file paths to be ignored during compilation, packaging and testing.</span>
 <span class="gu">## The file will be (re)generated when the project is rebuilt to maintain the default categories and patterns, ignoring blank lines and repeating comments.</span>
-<span class="gu">## The default categories, defined as rows starting with a single &#39;#&#39;, are &#39;General&#39;, &#39;Packaging&#39;, &#39;Compilation&#39;, &#39;Testing&#39;, &#39;TestHelpers&#39;.</span>
-<span class="gu">## Patterns not under one of those categories will be considered in the &#39;General&#39; category and ignored during all operations.</span>
-<span class="gu">## Patterns must be listed on separate rows (without in-line comments), can be negated with a single &#39;!&#39; at the start and will be trimmed before processing.</span>
-<span class="gu">## The &#39;TestHelpers&#39;category will contain these two patterns by default: &#39;**/*_helper.js&#39;, &#39;**/*.helper.[tj]s&#39;</span>
-<span class="gu">## Rows starting with &#39;##&#39; are considered as comments and will be ignored on processing.</span>
+<span class="gu">## The default categories, defined as rows starting with a single '#', are 'General', 'Packaging', 'Compilation', 'Testing', 'TestHelpers'.</span>
+<span class="gu">## Patterns not under one of those categories will be considered in the 'General' category and ignored during all operations.</span>
+<span class="gu">## Patterns must be listed on separate rows (without in-line comments), can be negated with a single '!' at the start and will be trimmed before processing.</span>
+<span class="gu">## The 'TestHelpers'category will contain these two patterns by default: '**/*_helper.js', '**/*.helper.[tj]s'</span>
+<span class="gu">## Rows starting with '##' are considered as comments and will be ignored on processing.</span>
 <span class="gh"># Packaging</span>
 <span class="gu">## Files with these paths will not be included in the vro package.</span>
-<span class="gu">## For Workflows, Configurations, Resources and Policies: it is recommended to use the &#39;General&#39; category (will skip xml element generation).</span>
+<span class="gu">## For Workflows, Configurations, Resources and Policies: it is recommended to use the 'General' category (will skip xml element generation).</span>
 <span class="gu">## Otherwise the patterns below must be based on the _element name_.element_info.xml files in target/vro-sources/xml.</span>
 <span class="gh"># Compilation</span>
 <span class="gu">## Files with these paths will be compiled without TS definitions</span>

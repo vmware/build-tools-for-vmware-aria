@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2210,6 +2210,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bundle-additional-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundle Additional Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -2429,9 +2446,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2445,7 +2483,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2997,6 +3054,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bundle-additional-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bundle Additional Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -3454,9 +3528,9 @@
 </ul>
 </li>
 </ul>
-<p>Use the profile by passing it with <code>-P</code>, e.g.:
+<p>Use the profile by passing it with <code>-P</code>, e.g.:</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>vrops:pull<span class="w"> </span>-Ptarget-env
-</code></pre></div></p>
+</code></pre></div>
 <h2 id="operations">Operations<a class="headerlink" href="#operations" title="Permanent link">&para;</a></h2>
 <!-- Build Project Section -->
 <h3 id="build-the-project">Build the Project<a class="headerlink" href="#build-the-project" title="Permanent link">&para;</a></h3>
@@ -3469,15 +3543,58 @@
 </code></pre></div>
 <p>The output of the command will result in <strong>com.company.department.project.type-1.0.0-SNAPSHOT.vrops</strong> file generated in the target folder of the project.</p>
 <!-- Bundle Project Section -->
+
 <h3 id="bundle-the-project">Bundle the Project<a class="headerlink" href="#bundle-the-project" title="Permanent link">&para;</a></h3>
-<p>This section describes the operation for bundling the project.</p>
+<p>This section describes the operation for bundling the project into an installation bundle (ZIP file).</p>
 <h4 id="overview_2">Overview<a class="headerlink" href="#overview_2" title="Permanent link">&para;</a></h4>
-<p>A Maven goal for producing an installation bundle that contains the solution package, all its dependencies, and scripts for deploying them to a target environment.</p>
+<p>A Maven profile for producing an installation bundle that contains the solution package, all its dependencies, and scripts for deploying them to a target environment.</p>
 <h4 id="usage_1">Usage<a class="headerlink" href="#usage_1" title="Permanent link">&para;</a></h4>
 <p>To bundle the project, use the following command.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span>-Pbundle-with-installer
 </code></pre></div>
-<p>For more information about using the bundle, see the documentation of the <a href="../../installer/">Installer</a> CLI tool.</p>
+<p>The command produces a ZIP file (installation bundle) with a name that follows the pattern <code>&lt;project.groupId&gt;.&lt;project.artifactId&gt;-&lt;project.version&gt;-bundle.zip</code>, where the values for the placeholders are retrieved from the respective properties of the project <code>pom.xml</code> file.</p>
+<p>Following is a sample listing of the structure of the installation bundle ZIP file for the VCF Operations project in which the project version is <code>0.1.0-SNAPSHOT</code>.</p>
+<!-- markdownlint-disable MD033 -->
+<p><a id="bundle_default_structure"></a></p>
+<!-- markdownlint-enable MD033 -->
+<div class="highlight"><span class="filename">Sample structure of an installation bundle</span><pre><span></span><code>com.company.department.vrops-project-0.1.0-SNAPSHOT-bundle.zip
+└── bin
+    └── installer
+    └── installer.bat
+└── etc
+    └── logback.xml
+└── repo/
+└── vrops 
+    └── com.company.department.vrops-project-0.1.0-SNAPSHOT.vrops
+</code></pre></div>
+<p>Following is a list of the directories in the installation bundle with a short description of their contents.</p>
+<ul>
+<li>The <code>bin</code> directory contains the <code>installer</code> script (CLI tool) for importing the solution components from the bundle in two formats, Bash (for Linux/Mac OS) and <code>.bat</code> (for Windows). For more information about using the CLI tool, see the documentation of the <a href="../../installer/">Installer</a>.</li>
+<li>The <code>etc</code> directory contains configuration files of the Java binaries for the <code>installer</code> script, such as the logging configurations in the <code>logback.xml</code> file. For more information about the logging configuration file, see <a href="../../installer/#logging-configuration">Logging Configuration</a>.</li>
+<li>The <code>repo</code> directory contains the Java binaries for the <code>installer</code> script.</li>
+<li>
+<p>The <code>vrops</code> directory contains the project file(s) with the components that you can import to the remote server.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Based on your configurations and dependencies, you can have multiple Maven modules in a single installation bundle. So in addition to the <code>vrops</code> directory for the VCF Operations project, you can have additional modules for projects of other types.</p>
+</div>
+</li>
+</ul>
+<h5 id="bundle-additional-files">Bundle Additional Files<a class="headerlink" href="#bundle-additional-files" title="Permanent link">&para;</a></h5>
+<p>By default, the <code>-Pbundle-with-installer</code> Maven profile packages only the files and directories that are strictly necessary for importing the project components to the target system (as shown in the <a href="#bundle_default_structure">Sample structure of an installation bundle</a> listing). However, it also allows you to package additional files or directories from your repository as part of the bundle ZIP and copy them to the root of the installation bundle.</p>
+<p>You can use such additional files and directories to bundle supplementary version-controlled content (such as integration tests, files with sample inputs for Orchestrator workflows, properties files for the <code>installer</code> script, Ansible playbooks, etc.) in a single deliverable file.</p>
+<p>You specify the additional content that you want to add to the bundle in the <code>&lt;properties&gt;</code> element of the <code>pom.xml</code> file of the project. You can use up to nine <code>&lt;installer.included.item*&gt;</code> elements (in which <code>*</code> stands for a number between 1 and 9) to specify the paths to the files and directories that you want to include.</p>
+<p>For example, the following sample configuration of a <code>pom.xml</code> file includes a file with the name <code>environment.properties</code> as <code>item1</code> and the contents of the <code>integration-tests/</code> directory as <code>item2</code>.</p>
+<div class="highlight"><span class="filename">Sample pom.xml file</span><pre><span></span><code><span class="cm">&lt;!-- Parameters for including additional files in installation bundles in the pom.xml file --&gt;</span><span class="w"> </span>
+<span class="nt">&lt;project&gt;</span>
+<span class="w">    </span>...
+<span class="w">    </span><span class="nt">&lt;properties&gt;</span>
+<span class="w">        </span><span class="nt">&lt;installer.included.item1&gt;</span>environment.properties<span class="nt">&lt;/installer.included.item1&gt;</span>
+<span class="w">        </span><span class="nt">&lt;installer.included.item2&gt;</span>integration-tests/**<span class="nt">&lt;/installer.included.item2&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/properties&gt;</span>
+<span class="w">    </span>...
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div>
 <h3 id="pull-content">Pull Content<a class="headerlink" href="#pull-content" title="Permanent link">&para;</a></h3>
 <h4 id="overview_3">Overview<a class="headerlink" href="#overview_3" title="Permanent link">&para;</a></h4>
 <p>When working on a VCF Ops project, you mainly make changes on a live server using the VCF Ops UI and then you need to capture those changes in the maven project on your filesystem to be able to store the content, track changes, collaborate, etc.</p>
@@ -3492,7 +3609,7 @@
 <h4 id="wildcard-support">Wildcard Support<a class="headerlink" href="#wildcard-support" title="Permanent link">&para;</a></h4>
 <p>The content descriptor supports wildcard for most of the asset types. This means that you can specify a wildcard (*) symbol in the asset names defined in the <code>content.yaml</code> file exporting all assets matching the wildcard expression. E.g.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">report</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*reports&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"*reports"</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3515,14 +3632,6 @@
 <p>To skip deploying the project dependencies, run the following command.</p>
 <div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-DincludeDependencies<span class="o">=</span><span class="nb">false</span>
 </code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Note that dependent packages are not deployed to the target environment if the Orchestrator server already has a newer version of the same package deployed.</p>
-<p>For example, if your project depends on <code>com.vmware.pscoe.example-2.4.0</code> but the target server already has <code>com.vmware.pscoe.example-2.4.2</code> deployed on it, the package on the server will not be downgraded and the dependency package will not be deployed. You can force the deployment of the older version of the dependency package on the remote server by adding the <code>-Dvro.importOldVersions</code> flag.</p>
-<p>The following command will forcefully deploy the exact versions of the dependent packages, downgrading anything it finds on the server.</p>
-<div class="highlight"><pre><span></span><code>mvn<span class="w"> </span>package<span class="w"> </span>vrealize:push<span class="w"> </span>-Ptarget-env<span class="w"> </span>-Dvro.importOldVersions
-</code></pre></div>
-</div>
 <h5 id="ignore-certificates">Ignore Certificates<a class="headerlink" href="#ignore-certificates" title="Permanent link">&para;</a></h5>
 <p>This section describes the flags that allow you to bypass the security feature for verifying the certificate and certificate hostname of the remote server in a <em>development/testing</em> environment.</p>
 <div class="admonition warning">

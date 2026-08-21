@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2065,9 +2065,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2081,7 +2102,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2461,12 +2501,12 @@
 
 <span class="w">  </span><span class="c1">// We can retrieve the RESTHost from a config element, but we have no way of creating mocks/spies/expectations</span>
 <span class="w">  </span><span class="nx">init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ConfigElementAccessor</span><span class="p">(</span><span class="s1">&#39;ing/testing/dependencyInjectionRestHost&#39;</span><span class="p">);</span>
-<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">&#39;restHost&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ConfigElementAccessor</span><span class="p">(</span><span class="s1">'ing/testing/dependencyInjectionRestHost'</span><span class="p">);</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">'restHost'</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="nx">doApiCall</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/ping&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/ping"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">request</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
 <span class="w">  </span><span class="p">}</span>
@@ -2478,11 +2518,11 @@
 
 <span class="w">  </span><span class="c1">// Retrieve the RESTHost from a config element</span>
 <span class="w">  </span><span class="kr">constructor</span><span class="p">(</span><span class="nx">restHostConfig</span><span class="o">:</span><span class="w"> </span><span class="kt">ConfigElementAccessor</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">&#39;restHost&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">'restHost'</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="nx">doApiCall</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/ping&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/ping"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">request</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
 <span class="w">  </span><span class="p">}</span>
@@ -2495,7 +2535,7 @@
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="nx">doApiCall</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/ping&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/ping"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">request</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
 <span class="w">  </span><span class="p">}</span>
@@ -2507,13 +2547,13 @@
 <span class="w">  </span><span class="c1">// When we create this class in our workflows or actions, do not pass a parameter, but when writing tests, create a mocked restHost</span>
 <span class="w">  </span><span class="kr">constructor</span><span class="p">(</span><span class="k">private</span><span class="w"> </span><span class="nx">restHost?</span><span class="o">:</span><span class="w"> </span><span class="kt">RESTHost</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">restHost</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ConfigElementAccessor</span><span class="p">(</span><span class="s1">&#39;ing/testing/dependencyInjectionRestHost&#39;</span><span class="p">);</span>
-<span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">&#39;restHost&#39;</span><span class="p">);</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ConfigElementAccessor</span><span class="p">(</span><span class="s1">'ing/testing/dependencyInjectionRestHost'</span><span class="p">);</span>
+<span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">restHostConfig</span><span class="p">.</span><span class="nx">get</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s1">'restHost'</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="nx">doApiCall</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/ping&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/ping"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">request</span><span class="p">.</span><span class="nx">execute</span><span class="p">();</span>
 <span class="w">  </span><span class="p">}</span>

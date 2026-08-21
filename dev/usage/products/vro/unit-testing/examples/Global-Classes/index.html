@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2065,9 +2065,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2081,7 +2102,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2456,18 +2496,18 @@
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>Example Class:</p>
 <div class="highlight"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">Server</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="w"> </span><span class="s2">&quot;Getting date&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="nx">Server</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="w"> </span><span class="s2">"Getting date"</span><span class="w"> </span><span class="p">);</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">vCACCAFEFilterParam</span><span class="p">.</span><span class="nx">date</span><span class="p">(</span><span class="w"> </span><span class="nx">date</span><span class="w"> </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Example test:</p>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">testOne</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;./testOne&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">testOne</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"./testOne"</span><span class="p">;</span>
 
-<span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="nx">describe</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">beforeEach</span><span class="p">(()=&gt;{</span>
 <span class="w">    </span><span class="p">(</span><span class="o">&lt;</span><span class="nx">any</span><span class="o">&gt;</span><span class="w"> </span><span class="nx">vCACCAFEFilterParam</span><span class="p">)</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="kt">function</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nx">date</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="w"> </span><span class="s2">&quot;Not Supported&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="w"> </span><span class="s2">"Not Supported"</span><span class="w"> </span><span class="p">);</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">};</span>
 <span class="w">  </span><span class="p">});</span>
@@ -2476,11 +2516,11 @@
 <span class="w">    </span><span class="p">(</span><span class="o">&lt;</span><span class="nx">any</span><span class="o">&gt;</span><span class="w"> </span><span class="nx">vCACCAFEFilterParam</span><span class="p">)</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
 <span class="w">  </span><span class="p">});</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should &#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">spyOn</span><span class="p">(</span><span class="w"> </span><span class="nx">Server</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;log&quot;</span><span class="w"> </span><span class="p">).</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="p">);</span>
-<span class="w">    </span><span class="nx">spyOn</span><span class="p">(</span><span class="w"> </span><span class="nx">vCACCAFEFilterParam</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;date&quot;</span><span class="w"> </span><span class="p">).</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="w"> </span><span class="s2">&quot;spy&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">'should '</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">spyOn</span><span class="p">(</span><span class="w"> </span><span class="nx">Server</span><span class="p">,</span><span class="w"> </span><span class="s2">"log"</span><span class="w"> </span><span class="p">).</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="nx">spyOn</span><span class="p">(</span><span class="w"> </span><span class="nx">vCACCAFEFilterParam</span><span class="p">,</span><span class="w"> </span><span class="s2">"date"</span><span class="w"> </span><span class="p">).</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="w"> </span><span class="s2">"spy"</span><span class="w"> </span><span class="p">);</span>
 
-<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="w"> </span><span class="nx">testOne</span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;test&#39;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="w"> </span><span class="s2">&quot;spy&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="w"> </span><span class="nx">testOne</span><span class="p">(</span><span class="w"> </span><span class="s1">'test'</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="w"> </span><span class="s2">"spy"</span><span class="w"> </span><span class="p">);</span>
 
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="w"> </span><span class="nx">vCACCAFEFilterParam</span><span class="p">.</span><span class="nx">date</span><span class="w"> </span><span class="p">).</span><span class="nx">toHaveBeenCalledTimes</span><span class="p">(</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">);</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="w"> </span><span class="nx">Server</span><span class="p">.</span><span class="nx">log</span><span class="w"> </span><span class="p">).</span><span class="nx">toHaveBeenCalledTimes</span><span class="p">(</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">);</span>

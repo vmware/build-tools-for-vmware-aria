@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2098,9 +2098,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2114,7 +2135,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2537,26 +2577,26 @@
 <details>
 <summary>src/main/resources/subscriptions/Add user to deployment.json</summary>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sub_1782898962554&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Add user to deployment&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RUNNABLE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;eventTopicId&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deployment.request.post&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ownerId&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;subscriberId&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;service-account-project-serviceaccount&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;blocking&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample subscription&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;criteria&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event.data.blueprintId ==&#39;cb5c3112-3a7e-46c5-be3a-2917d0aa7741&#39;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;constraints&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;projectId&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"sub_1782898962554"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Add user to deployment"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"RUNNABLE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"eventTopicId"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"deployment.request.post"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"ownerId"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"admin"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"subscriberId"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"service-account-project-serviceaccount"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"blocking"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"description"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Sample subscription"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"criteria"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"event.data.blueprintId =='cb5c3112-3a7e-46c5-be3a-2917d0aa7741'"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"constraints"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"projectId"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;timeout&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;broadcast&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;priority&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;disabled&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;system&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;contextual&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;runnableType&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extensibility.vro&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;runnableId&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;95808080808080808080808080808080F281808001175609873343b6bbd2e3eea&quot;</span>
+<span class="w">  </span><span class="nt">"timeout"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"broadcast"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"priority"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"disabled"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"system"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"contextual"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"runnableType"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"extensibility.vro"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"runnableId"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"95808080808080808080808080808080F281808001175609873343b6bbd2e3eea"</span>
 <span class="p">}</span>
 </code></pre></div>
 </details>

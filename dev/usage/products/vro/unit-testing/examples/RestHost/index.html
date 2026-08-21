@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2065,9 +2065,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2081,7 +2102,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2454,11 +2494,11 @@
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
 <p>Test:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;ApiCall&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should do an api call&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;RESTHost&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;createRequest&quot;</span><span class="p">]);</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restRequestTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTRequest</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;RESTRequest&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;execute&quot;</span><span class="p">]);</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restResponseTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;RESTResponse&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="p">{</span><span class="nx">contentAsString</span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">({</span><span class="nx">test</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">})});</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"ApiCall"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">'should do an api call'</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">"RESTHost"</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">"createRequest"</span><span class="p">]);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restRequestTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTRequest</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">"RESTRequest"</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">"execute"</span><span class="p">]);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restResponseTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">"RESTResponse"</span><span class="p">,</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="p">{</span><span class="nx">contentAsString</span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">({</span><span class="nx">test</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">})});</span>
 
 <span class="w">    </span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">.</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="nx">restRequestTestDouble</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">restRequestTestDouble</span><span class="p">.</span><span class="nx">execute</span><span class="p">.</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="nx">restResponseTestDouble</span><span class="p">);</span>
@@ -2469,7 +2509,7 @@
 
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">test</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="mf">2</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">).</span><span class="nx">toHaveBeenCalledTimes</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/api/v1/test&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/api/v1/test"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restRequestTestDouble</span><span class="p">.</span><span class="nx">execute</span><span class="p">).</span><span class="nx">toHaveBeenCalledTimes</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
 <span class="p">})</span>
@@ -2480,7 +2520,7 @@
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="nx">doApiCall</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restRequest</span><span class="o">:</span><span class="w"> </span><span class="kt">RESTRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/api/v1/test&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restRequest</span><span class="o">:</span><span class="w"> </span><span class="kt">RESTRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">restHost</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/api/v1/test"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
 <span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restResponse</span><span class="o">:</span><span class="w"> </span><span class="kt">RESTResponse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">restRequest</span><span class="p">.</span><span class="nx">execute</span><span class="p">()</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">restResponse</span><span class="p">.</span><span class="nx">contentAsString</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>

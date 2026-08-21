@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2220,9 +2220,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2236,7 +2257,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2773,81 +2813,81 @@
 <p class="admonition-title">Note</p>
 <p><code>templateVersion</code> attribute is optional. if not provided, templateVersion will be considered as v1 by default.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@PolicyTemplate</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample Policy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PSCoE/my-project&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Some Description&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;v2&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// or v1</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Sample Policy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"PSCoE/my-project"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Some Description"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">"v2"</span><span class="p">,</span><span class="w"> </span><span class="c1">// or v1</span>
 <span class="p">})</span>
 </code></pre></div>
 <h2 id="example-policy">Example Policy<a class="headerlink" href="#example-policy" title="Permanent link">&para;</a></h2>
 <p>A Example typescript policy with all posible configurations for Policy Template Version 2 (v2).</p>
 <h3 id="version-1">Version 1<a class="headerlink" href="#version-1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@PolicyTemplate</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Policy Template Amqp&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PSCoE/my-project&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;AMQP:Subscription&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;v1&quot;</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Policy Template Amqp"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"PSCoE/my-project"</span><span class="p">,</span>
+<span class="w">    </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"AMQP:Subscription"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">"v1"</span>
 <span class="p">})</span>
 <span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">PolicyTemplateAmqp</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">onMessage</span><span class="p">(</span><span class="nx">self</span><span class="o">:</span><span class="w"> </span><span class="kt">AMQPSubscription</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;onMessage&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">System</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"onMessage"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="version-2">Version 2<a class="headerlink" href="#version-2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@PolicyTemplate</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample Policy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PSCoE/my-project&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Some Description&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;v2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Sample Policy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"PSCoE/my-project"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Some Description"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">"v2"</span><span class="p">,</span>
 <span class="w">    </span><span class="nx">variables</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">sample</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;a string value with type mentioned&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A variable created with type and description&quot;</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">"a string value with type mentioned"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A variable created with type and description"</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Properties&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">configId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;8e2d3ba0-4e2c-4d4c-ad82-76de4967bf9f&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">configKey</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;props&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A variable created with configuration binding&quot;</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Properties"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">configId</span><span class="o">:</span><span class="w"> </span><span class="s2">"8e2d3ba0-4e2c-4d4c-ad82-76de4967bf9f"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">configKey</span><span class="o">:</span><span class="w"> </span><span class="s2">"props"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A variable created with configuration binding"</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nx">sample2</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;a direct string value&quot;</span>
+<span class="w">        </span><span class="nx">sample2</span><span class="o">:</span><span class="w"> </span><span class="s2">"a direct string value"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">elements</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">ElementOne</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;AMQP:Subscription&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"AMQP:Subscription"</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">onMessage</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;onMessage&quot;</span>
+<span class="w">                </span><span class="nx">onMessage</span><span class="o">:</span><span class="w"> </span><span class="s2">"onMessage"</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nx">ElementTwo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;SNMP:SnmpDevice&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"SNMP:SnmpDevice"</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="nx">OnTrap</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;56652d1b-f797-3e1c-a108-7db9ddfb1f42&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">"56652d1b-f797-3e1c-a108-7db9ddfb1f42"</span><span class="p">,</span>
 <span class="w">                    </span><span class="nx">bindings</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                        </span><span class="nx">workflowInputOne</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">                            </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sample&quot;</span>
+<span class="w">                            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<span class="w">                            </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"sample"</span>
 <span class="w">                        </span><span class="p">}</span>
 <span class="w">                    </span><span class="p">}</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">        </span><span class="nx">ElementThree</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Periodic Event&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Periodic Event"</span><span class="p">,</span>
 <span class="w">            </span><span class="nx">schedule</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;every-minutes&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;13,15&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Asia/Calcutta&quot;</span>
+<span class="w">                </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">"every-minutes"</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">"13,15"</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">"Asia/Calcutta"</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -2855,45 +2895,45 @@
 </code></pre></div>
 <h2 id="naming-convention">Naming Convention<a class="headerlink" href="#naming-convention" title="Permanent link">&para;</a></h2>
 <p>Naming convention for creating variables, elements with different types of elements and events.</p>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">PolicyTemplate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@PolicyTemplate</span><span class="p">({</span>
-<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample Policy&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PSCoE/my-project&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Some Description&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;v2&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Policy Template Version: v1 or v2</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Sample Policy"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"PSCoE/my-project"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Some Description"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">templateVersion</span><span class="o">:</span><span class="w"> </span><span class="s2">"v2"</span><span class="p">,</span><span class="w"> </span><span class="c1">// Policy Template Version: v1 or v2</span>
 <span class="w">    </span><span class="nx">variables</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">sample</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// variable name</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// variable type</span>
-<span class="w">            </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;a string value with type mentioned&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// variable value</span>
-<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A variable created with type and description&quot;</span><span class="w"> </span><span class="c1">// variable description</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="c1">// variable type</span>
+<span class="w">            </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">"a string value with type mentioned"</span><span class="p">,</span><span class="w"> </span><span class="c1">// variable value</span>
+<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A variable created with type and description"</span><span class="w"> </span><span class="c1">// variable description</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// variable name</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Properties&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// variable type</span>
-<span class="w">            </span><span class="nx">configId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;8e2d3ba0-4e2c-4d4c-ad82-76de4967bf9f&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// configuration element ID</span>
-<span class="w">            </span><span class="nx">configKey</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;props&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// configuration element key</span>
-<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A variable created with configuration binding&quot;</span><span class="w"> </span><span class="c1">// variable description</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Properties"</span><span class="p">,</span><span class="w"> </span><span class="c1">// variable type</span>
+<span class="w">            </span><span class="nx">configId</span><span class="o">:</span><span class="w"> </span><span class="s2">"8e2d3ba0-4e2c-4d4c-ad82-76de4967bf9f"</span><span class="p">,</span><span class="w"> </span><span class="c1">// configuration element ID</span>
+<span class="w">            </span><span class="nx">configKey</span><span class="o">:</span><span class="w"> </span><span class="s2">"props"</span><span class="p">,</span><span class="w"> </span><span class="c1">// configuration element key</span>
+<span class="w">            </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A variable created with configuration binding"</span><span class="w"> </span><span class="c1">// variable description</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nx">sample2</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;a direct string value&quot;</span><span class="w"> </span><span class="c1">// directly assiged string value to a variable</span>
+<span class="w">        </span><span class="nx">sample2</span><span class="o">:</span><span class="w"> </span><span class="s2">"a direct string value"</span><span class="w"> </span><span class="c1">// directly assiged string value to a variable</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">elements</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Policy with script for event</span>
 <span class="w">        </span><span class="nx">ElementOne</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Policy element name</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;AMQP:Subscription&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// policy element type</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"AMQP:Subscription"</span><span class="p">,</span><span class="w"> </span><span class="c1">// policy element type</span>
 <span class="w">            </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// list of events for element</span>
-<span class="w">                </span><span class="nx">onMessage</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;onMessage&quot;</span><span class="w"> </span><span class="c1">// event : method name in class</span>
+<span class="w">                </span><span class="nx">onMessage</span><span class="o">:</span><span class="w"> </span><span class="s2">"onMessage"</span><span class="w"> </span><span class="c1">// event : method name in class</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="c1">// Policy with workflow execution</span>
 <span class="w">        </span><span class="nx">ElementTwo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Policy element name</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;SNMP:SnmpDevice&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Policy element type</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"SNMP:SnmpDevice"</span><span class="p">,</span><span class="w"> </span><span class="c1">// Policy element type</span>
 <span class="w">            </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// list of events for element</span>
 <span class="w">                </span><span class="nx">OnTrap</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// event name</span>
-<span class="w">                    </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;56652d1b-f797-3e1c-a108-7db9ddfb1f42&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// workflow id to execute</span>
+<span class="w">                    </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">"56652d1b-f797-3e1c-a108-7db9ddfb1f42"</span><span class="p">,</span><span class="w"> </span><span class="c1">// workflow id to execute</span>
 <span class="w">                    </span><span class="nx">bindings</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// workflow input bindings</span>
 <span class="w">                        </span><span class="nx">workflowInputOne</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// workflow input name</span>
-<span class="w">                            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// workflow input type</span>
-<span class="w">                            </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sample&quot;</span><span class="w"> </span><span class="c1">// variable name for workflow input</span>
+<span class="w">                            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="c1">// workflow input type</span>
+<span class="w">                            </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"sample"</span><span class="w"> </span><span class="c1">// variable name for workflow input</span>
 <span class="w">                        </span><span class="p">}</span>
 <span class="w">                    </span><span class="p">}</span>
 <span class="w">                </span><span class="p">}</span>
@@ -2901,11 +2941,11 @@
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="c1">// Policy with Periodic Event</span>
 <span class="w">        </span><span class="nx">ElementThree</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Policy element name</span>
-<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Periodic Event&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Policy element type</span>
+<span class="w">            </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Periodic Event"</span><span class="p">,</span><span class="w"> </span><span class="c1">// Policy element type</span>
 <span class="w">            </span><span class="nx">schedule</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Periodic event schedule - mandatory for periodic event</span>
-<span class="w">                </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;every-minutes&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// period of schedule</span>
-<span class="w">                </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;13,15&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// time for schedule, can be multiple</span>
-<span class="w">                </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Asia/Calcutta&quot;</span><span class="w"> </span><span class="c1">// timezone for schedule</span>
+<span class="w">                </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">"every-minutes"</span><span class="p">,</span><span class="w"> </span><span class="c1">// period of schedule</span>
+<span class="w">                </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">"13,15"</span><span class="p">,</span><span class="w"> </span><span class="c1">// time for schedule, can be multiple</span>
+<span class="w">                </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">"Asia/Calcutta"</span><span class="w"> </span><span class="c1">// timezone for schedule</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -2916,21 +2956,21 @@
 <h3 id="creating-a-string-variable">Creating a String variable<a class="headerlink" href="#creating-a-string-variable" title="Permanent link">&para;</a></h3>
 <p>String variables can be added by directly assigning values to the them.</p>
 <div class="highlight"><pre><span></span><code><span class="nx">variables</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">sample2</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;a direct string value&quot;</span>
+<span class="w">    </span><span class="nx">sample2</span><span class="o">:</span><span class="w"> </span><span class="s2">"a direct string value"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="creating-variables-with-other-data-types">Creating Variables with other data types<a class="headerlink" href="#creating-variables-with-other-data-types" title="Permanent link">&para;</a></h3>
 <p>Other data type variables can be added by providing the additional information to them.</p>
 <div class="highlight"><pre><span></span><code><span class="nx">variables</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">sample</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A variable created with type and description&quot;</span>
+<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A variable created with type and description"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">sample2</span><span class="o">:</span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A Numeric value&quot;</span>
+<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A Numeric value"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -2938,10 +2978,10 @@
 <p>Variables can be binded to configurations by providing configuration ID and key.</p>
 <div class="highlight"><pre><span></span><code><span class="nx">variables</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Properties&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">configId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;8e2d3ba0-4e2c-4d4c-ad82-76de4967bf9f&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">configKey</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;props&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A variable created with configuration binding&quot;</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Properties"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">configId</span><span class="o">:</span><span class="w"> </span><span class="s2">"8e2d3ba0-4e2c-4d4c-ad82-76de4967bf9f"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">configKey</span><span class="o">:</span><span class="w"> </span><span class="s2">"props"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A variable created with configuration binding"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -2963,14 +3003,14 @@
 <p>Periodic Event element can be added by providing the list of events and schedules as below. Schedules are mandatory for Periodic Event type elements</p>
 <div class="highlight"><pre><span></span><code><span class="nx">elements</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">PeriodicEvent</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Periodic Event&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Periodic Event"</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">events</span><span class="o">:</span><span class="p">{</span>
-<span class="w">            </span><span class="nx">OnExecute</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;onExecuteEvent&quot;</span>
+<span class="w">            </span><span class="nx">OnExecute</span><span class="o">:</span><span class="w"> </span><span class="s2">"onExecuteEvent"</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nx">schedule</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;every-minutes&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;13,15&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Asia/Calcutta&quot;</span>
+<span class="w">            </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">"every-minutes"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">"13,15"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">"Asia/Calcutta"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -2986,22 +3026,22 @@
 <p>Events can either be a method defined in the typescipt Policy or can be bound to a workflow.</p>
 <div class="highlight"><pre><span></span><code><span class="nx">elements</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">PeriodicEvent</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Periodic Event&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Periodic Event"</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">events</span><span class="o">:</span><span class="p">{</span>
 <span class="w">            </span><span class="nx">OnExecute</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;56652d1b-f797-3e1c-a108-7db9ddfb1f42&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">"56652d1b-f797-3e1c-a108-7db9ddfb1f42"</span><span class="p">,</span>
 <span class="w">                </span><span class="nx">bindings</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                    </span><span class="nx">workflowInputOne</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sample&quot;</span>
+<span class="w">                        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<span class="w">                        </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"sample"</span>
 <span class="w">                    </span><span class="p">}</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nx">schedule</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;every-minutes&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;13,15&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Asia/Calcutta&quot;</span>
+<span class="w">            </span><span class="nx">periode</span><span class="o">:</span><span class="w"> </span><span class="s2">"every-minutes"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">when</span><span class="o">:</span><span class="w"> </span><span class="s2">"13,15"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">timezone</span><span class="o">:</span><span class="w"> </span><span class="s2">"Asia/Calcutta"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -3011,20 +3051,20 @@
 <p>Other supported element types can be as below. Events can be a method defined in the policy or can be binded to a workflow.</p>
 <div class="highlight"><pre><span></span><code><span class="nx">elements</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">ElementOne</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;AMQP:Subscription&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"AMQP:Subscription"</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nx">onMessage</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;onMessage&quot;</span>
+<span class="w">            </span><span class="nx">onMessage</span><span class="o">:</span><span class="w"> </span><span class="s2">"onMessage"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">ElementTwo</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;SNMP:SnmpDevice&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"SNMP:SnmpDevice"</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="nx">OnTrap</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;56652d1b-f797-3e1c-a108-7db9ddfb1f42&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">workflowId</span><span class="o">:</span><span class="w"> </span><span class="s2">"56652d1b-f797-3e1c-a108-7db9ddfb1f42"</span><span class="p">,</span>
 <span class="w">                </span><span class="nx">bindings</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                    </span><span class="nx">sourceGroup</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sample&quot;</span>
+<span class="w">                        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<span class="w">                        </span><span class="nx">variable</span><span class="o">:</span><span class="w"> </span><span class="s2">"sample"</span>
 <span class="w">                    </span><span class="p">}</span>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">            </span><span class="p">}</span>

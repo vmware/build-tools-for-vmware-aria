@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -1992,9 +1992,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2008,7 +2029,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2386,14 +2426,14 @@
 <div class="highlight"><pre><span></span><code><span class="gh"># General</span>
 <span class="gu">## This file contains glob patterns for file paths to be ignored during compilation, packaging and testing.</span>
 <span class="gu">## The file will be (re)generated when the project is rebuilt to maintain the default categories and patterns, ignoring blank lines and repeating comments.</span>
-<span class="gu">## The default categories, defined as rows starting with a single &#39;#&#39;, are &#39;General&#39;, &#39;Packaging&#39;, &#39;Compilation&#39;, &#39;Testing&#39;, &#39;TestHelpers&#39;.</span>
-<span class="gu">## Patterns not under one of those categories will be considered in the &#39;General&#39; category and ignored during all operations.</span>
-<span class="gu">## Patterns must be listed on separate rows (without in-line comments), can be negated with a single &#39;!&#39; at the start and will be trimmed before processing.</span>
-<span class="gu">## The &#39;TestHelpers&#39;category will contain these two patterns by default: &#39;**/*_helper.js&#39;, &#39;**/*.helper.[tj]s&#39;</span>
-<span class="gu">## Rows starting with &#39;##&#39; are considered as comments and will be ignored on processing.</span>
+<span class="gu">## The default categories, defined as rows starting with a single '#', are 'General', 'Packaging', 'Compilation', 'Testing', 'TestHelpers'.</span>
+<span class="gu">## Patterns not under one of those categories will be considered in the 'General' category and ignored during all operations.</span>
+<span class="gu">## Patterns must be listed on separate rows (without in-line comments), can be negated with a single '!' at the start and will be trimmed before processing.</span>
+<span class="gu">## The 'TestHelpers'category will contain these two patterns by default: '**/*_helper.js', '**/*.helper.[tj]s'</span>
+<span class="gu">## Rows starting with '##' are considered as comments and will be ignored on processing.</span>
 <span class="gh"># Packaging</span>
 <span class="gu">## Files with these paths will not be included in the vro package.</span>
-<span class="gu">## For Workflows, Configurations, Resources and Policies: it is recommended to use the &#39;General&#39; category (will skip xml element generation).</span>
+<span class="gu">## For Workflows, Configurations, Resources and Policies: it is recommended to use the 'General' category (will skip xml element generation).</span>
 <span class="gu">## Otherwise the patterns below must be based on the _element name_.element_info.xml files in target/vro-sources/xml.</span>
 <span class="gh"># Compilation</span>
 <span class="gu">## Files with these paths will be compiled without TS definitions</span>

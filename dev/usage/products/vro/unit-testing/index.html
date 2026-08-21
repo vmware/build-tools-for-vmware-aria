@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -1994,9 +1994,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2010,7 +2031,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2715,35 +2755,35 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 <p>The example below shows how to create a unit test for a simple "Hello World" library defining the following action:</p>
 <div class="highlight"><pre><span></span><code><span class="cm">/**</span>
 <span class="cm"> * Hello World</span>
-<span class="cm"> * Module: &quot;com.vmware.pscoe.library.helloworld&quot;</span>
+<span class="cm"> * Module: "com.vmware.pscoe.library.helloworld"</span>
 <span class="cm"> *</span>
 <span class="cm"> */</span>
 <span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;Hello World&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s2">"Hello World"</span><span class="p">;</span>
 <span class="p">})</span>
 </code></pre></div>
 <p>The unit test can be defined as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(){</span>
-<span class="w">   </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should Return Hello world&quot;</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">System</span><span class="p">.</span><span class="nx">getModule</span><span class="p">(</span><span class="s2">&quot;com.vmware.pscoe.library.helloworld&quot;</span><span class="p">).</span><span class="nx">helloworld</span><span class="p">()</span>
-<span class="w">      </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"Hello World"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(){</span>
+<span class="w">   </span><span class="nx">it</span><span class="p">(</span><span class="s2">"should Return Hello world"</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">System</span><span class="p">.</span><span class="nx">getModule</span><span class="p">(</span><span class="s2">"com.vmware.pscoe.library.helloworld"</span><span class="p">).</span><span class="nx">helloworld</span><span class="p">()</span>
+<span class="w">      </span><span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">'Hello World'</span><span class="p">);</span>
 <span class="w">   </span><span class="p">});</span>
 <span class="p">});</span><span class="w"> </span>
 </code></pre></div>
 <h3 id="suites-and-specs">Suites and Specs<a class="headerlink" href="#suites-and-specs" title="Permanent link">&para;</a></h3>
 <p>The <code>describe()</code> function groups related specs into a suite. It is common practise for each test file to have a single <code>describe()</code> at the top level. The string input parameter is for naming the collection of specs, and is concatenated with specs to make a spec's full name. This aids in finding specs in a large suite. If named well, specs should read as full sentences in traditional <a href="https://en.wikipedia.org/wiki/Behavior-driven_development">BDD</a> style.</p>
 <p>Specs are defined by calling the global Jasmine function <code>it()</code>, which, like <code>describe()</code> takes a string and a function inputs. The string is the title of the spec and the function is the spec, or test. A spec contains one or more expectations that test the state of the code. An expectation in Jasmine is an assertion that is either true or false. A spec with all true expectations is a passing spec. A spec with one or more false expectations is a failing spec.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;A suite&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;contains spec with an expectation&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"A suite"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"contains spec with an expectation"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>Since <code>describe()</code> and <code>it()</code> blocks are functions, they can contain any executable code necessary to implement the test. JavaScript scoping rules apply, so variables declared in a describe are available to any it block inside the suite.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;A suite is just a function&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"A suite is just a function"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="p">;</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;and so is a spec&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"and so is a spec"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
 
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">a</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
@@ -2753,25 +2793,25 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 <h3 id="expectations-and-matchers">Expectations and Matchers<a class="headerlink" href="#expectations-and-matchers" title="Permanent link">&para;</a></h3>
 <p>Expectations are built with the <code>expect()</code> function which takes a value, called the actual. It is chained with a Matcher function, which takes the expected value.</p>
 <p>Each matcher implements a boolean comparison between the actual value and the expected value. It is responsible for reporting to Jasmine if the expectation is true or false. Based on that Jasmine passes or fails the spec. Any matcher can evaluate to a negative assertion by chaining the call to expect with a <code>not</code> before calling the matcher. Jasmine has a rich set of matchers included, full list can be found in the <a href="https://jasmine.github.io/api/edge/matchers.html">API docs</a>.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;The &#39;toBe&#39; matcher compares with ===&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"The 'toBe' matcher compares with ==="</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;and has a positive case&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"and has a positive case"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;and can have a negative case&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"and can have a negative case"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="kc">false</span><span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
 
 <span class="p">});</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Array.prototype&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;.push(x)&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s1">'Array.prototype'</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">describe</span><span class="p">(</span><span class="s1">'.push(x)'</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">initialArray</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
 <span class="w">    </span><span class="p">});</span>
 
-<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;appends x to the Array&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s1">'appends x to the Array'</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">initialArray</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
 <span class="w">      </span><span class="nx">expect</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">initialArray</span><span class="p">).</span><span class="nx">toContain</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
 <span class="w">    </span><span class="p">});</span>
@@ -2784,7 +2824,7 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 <p class="admonition-title">Note</p>
 <p><code>beforeAll()</code> and <code>afterAll()</code> are not reset between specs. It is easy to accidentally leak state between specs so that they erroneously pass or fail.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;A suite with some shared setup&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"A suite with some shared setup"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">var</span><span class="w"> </span><span class="nx">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
 
 <span class="w">  </span><span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
@@ -2806,17 +2846,17 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 <span class="p">});</span>
 </code></pre></div>
 <p>You can use the <code>this</code> keyword to safely share variables between the <code>beforeEach()</code>, <code>it()</code> and <code>afterEach()</code> blocks. Each spec's <code>beforeEach()</code>/<code>it()</code>/<code>afterEach()</code> has the this as the same empty object that is set back to empty for the next spec's <code>beforeEach()</code>/<code>it()</code>/<code>afterEach()</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;A spec&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"A spec"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
 <span class="w">  </span><span class="p">});</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;can use the `this` to share state&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"can use the `this` to share state"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">foo</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
-<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">bar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;test pollution?&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">bar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"test pollution?"</span><span class="p">;</span>
 <span class="w">  </span><span class="p">});</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;prevents test pollution by having an empty `this` created for the next spec&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"prevents test pollution by having an empty `this` created for the next spec"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">foo</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mf">0</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">bar</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="kc">undefined</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
@@ -2824,23 +2864,23 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 </code></pre></div>
 <h3 id="failing-a-spec">Failing a spec<a class="headerlink" href="#failing-a-spec" title="Permanent link">&para;</a></h3>
 <p>The <code>fail()</code> function causes a spec to fail. It can take a failure message or an Error object as a parameter.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;A spec using the fail function&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"A spec using the fail function"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">var</span><span class="w"> </span><span class="nx">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="w"> </span><span class="nx">callBack</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">callBack</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">};</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should not call the callBack&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"should not call the callBack"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">foo</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nx">fail</span><span class="p">(</span><span class="s2">&quot;Callback has been called&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">fail</span><span class="p">(</span><span class="s2">"Callback has been called"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">});</span>
 <span class="w">  </span><span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div>
 <h3 id="nested-suites">Nested suites<a class="headerlink" href="#nested-suites" title="Permanent link">&para;</a></h3>
 <p><code>describe()</code> functions can be nested with specs defined at any level. This allows a suite to be composed as a tree of functions. Before a spec is executed, Jasmine walks down the tree executing each <code>beforeEach()</code> function in order. After the spec is executed, Jasmine walks through the <code>afterEach()</code> functions similarly.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;A spec&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"A spec"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">var</span><span class="w"> </span><span class="nx">foo</span><span class="p">;</span>
 
 <span class="w">  </span><span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
@@ -2852,23 +2892,23 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 <span class="w">    </span><span class="nx">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
 <span class="w">  </span><span class="p">});</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;is just a function, so it can contain any code&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"is just a function, so it can contain any code"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
 
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;can have more than one expectation&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"can have more than one expectation"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="kc">true</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
 
-<span class="w">  </span><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;nested inside a second describe&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">describe</span><span class="p">(</span><span class="s2">"nested inside a second describe"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">bar</span><span class="p">;</span>
 
 <span class="w">    </span><span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">bar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1</span><span class="p">;</span>
 <span class="w">    </span><span class="p">});</span>
 
-<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s2">&quot;can reference both scopes as needed&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">it</span><span class="p">(</span><span class="s2">"can reference both scopes as needed"</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="nx">bar</span><span class="p">);</span>
 <span class="w">    </span><span class="p">});</span>
 <span class="w">  </span><span class="p">});</span>
@@ -2880,22 +2920,22 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 <p><strong><em>createSpy()</em></strong></p>
 </blockquote>
 <p>Creates a "bare" spy when there is no existing function to mock. It tracks calls and arguments but has no implementation behind it.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">readFromDB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">(</span><span class="s1">&#39;readFromDB&#39;</span><span class="p">);</span>
-<span class="nx">readFromDB</span><span class="p">(</span><span class="s1">&#39;some&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;fake&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;data&#39;</span><span class="p">);</span>
-<span class="nx">expect</span><span class="p">(</span><span class="nx">readFromDB</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="s2">&quot;some&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;fake&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="nx">readFromDB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">(</span><span class="s1">'readFromDB'</span><span class="p">);</span>
+<span class="nx">readFromDB</span><span class="p">(</span><span class="s1">'some'</span><span class="p">,</span><span class="w"> </span><span class="s1">'fake'</span><span class="p">,</span><span class="w"> </span><span class="s1">'data'</span><span class="p">);</span>
+<span class="nx">expect</span><span class="p">(</span><span class="nx">readFromDB</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="s2">"some"</span><span class="p">,</span><span class="w"> </span><span class="s2">"fake"</span><span class="p">,</span><span class="w"> </span><span class="s2">"data"</span><span class="p">);</span>
 </code></pre></div>
 <blockquote>
 <p><strong><em>createSpyObj()</em></strong></p>
 </blockquote>
 <p>Creates a mock object that spies on multiple methods at once. Pass the name of the object and an array of method string names.</p>
-<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;ApiCall&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should do an api call&#39;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;RESTHost&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;createRequest&quot;</span><span class="p">]);</span>
+<div class="highlight"><pre><span></span><code><span class="nx">describe</span><span class="p">(</span><span class="s2">"ApiCall"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s1">'should do an api call'</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restHostTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTHost</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">"RESTHost"</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">"createRequest"</span><span class="p">]);</span>
 
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restRequestTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTRequest</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;RESTRequest&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;execute&quot;</span><span class="p">]);</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restRequestTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTRequest</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">"RESTRequest"</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">"execute"</span><span class="p">]);</span>
 
 <span class="w">        </span><span class="c1">// Properties mock</span>
-<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restResponseTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;RESTResponse&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="p">{</span><span class="nx">contentAsString</span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">({</span><span class="nx">test</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">})});</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">restResponseTestDouble</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpyObj</span><span class="o">&lt;</span><span class="nx">RESTResponse</span><span class="o">&gt;</span><span class="p">(</span><span class="s2">"RESTResponse"</span><span class="p">,</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="p">{</span><span class="nx">contentAsString</span><span class="o">:</span><span class="w"> </span><span class="kt">JSON.stringify</span><span class="p">({</span><span class="nx">test</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">})});</span>
 
 <span class="w">    </span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">.</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="nx">restRequestTestDouble</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">restRequestTestDouble</span><span class="p">.</span><span class="nx">execute</span><span class="p">.</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="nx">restResponseTestDouble</span><span class="p">);</span>
@@ -2906,7 +2946,7 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">test</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="mf">2</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">).</span><span class="nx">toHaveBeenCalledTimes</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
-<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/api/v1/test&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restHostTestDouble</span><span class="p">.</span><span class="nx">createRequest</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="s2">"GET"</span><span class="p">,</span><span class="w"> </span><span class="s2">"/api/v1/test"</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
 <span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">restRequestTestDouble</span><span class="p">.</span><span class="nx">execute</span><span class="p">).</span><span class="nx">toHaveBeenCalledTimes</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
 <span class="w">  </span><span class="p">});</span>
 <span class="p">})</span>
@@ -2931,7 +2971,7 @@ Refer to InstanbulJS documentation for more information: <a href="https://github
 <li>
 <p><strong>How do I identify if code is running in the NodeJS test environment vs. Orchestrator?</strong>
   If you need to simulate different behavior specific to NodeJS, you can check the environment. The following statement evaluates to false when running in Orchestrator:
-  <div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">module</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">&quot;undefined&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+  <div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">module</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">"undefined"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// do the coding</span>
 <span class="p">}</span>
 </code></pre></div></p>

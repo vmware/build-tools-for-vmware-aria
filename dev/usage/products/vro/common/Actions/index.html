@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -1992,9 +1992,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2008,7 +2029,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2568,13 +2608,13 @@ the typescript hints will be used.</p>
 <span class="cm"> * @returns {string} Generated timespan name</span>
 <span class="cm"> */</span>
 <span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">name</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">System</span><span class="p">.</span><span class="nx">formatDate</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(),</span><span class="w"> </span><span class="s2">&quot;dd.MM.yyyy HH:mm:ss&quot;</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">name</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">System</span><span class="p">.</span><span class="nx">formatDate</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(),</span><span class="w"> </span><span class="s2">"dd.MM.yyyy HH:mm:ss"</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
 <span class="p">})</span>
 
 <span class="c1">//......</span>
 
 <span class="c1">// Will be transpiled to</span>
-<span class="k">return</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot; &quot;</span><span class="p">).</span><span class="nx">concat</span><span class="p">(</span><span class="nx">System</span><span class="p">.</span><span class="nx">formatDate</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(),</span><span class="w"> </span><span class="s2">&quot;dd.MM.yyyy HH:mm:ss&quot;</span><span class="p">));</span>
+<span class="k">return</span><span class="w"> </span><span class="s2">""</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="s2">" "</span><span class="p">).</span><span class="nx">concat</span><span class="p">(</span><span class="nx">System</span><span class="p">.</span><span class="nx">formatDate</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(),</span><span class="w"> </span><span class="s2">"dd.MM.yyyy HH:mm:ss"</span><span class="p">));</span>
 </code></pre></div>
 <h3 id="orchestrator-action-containing-typescript-class-and-an-enumeration">Orchestrator Action containing Typescript class and an enumeration<a class="headerlink" href="#orchestrator-action-containing-typescript-class-and-an-enumeration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nx">VirtualMachine</span><span class="w"> </span><span class="p">{</span>
@@ -2589,14 +2629,14 @@ the typescript hints will be used.</p>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="nx">getAll</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="nx">VirtualMachine</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">VcPlugin</span><span class="p">.</span><span class="nx">getAllVirtualMachines</span><span class="p">([],</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="nx">vm</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VirtualMachine</span><span class="p">(</span><span class="nx">vm</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">VcPlugin</span><span class="p">.</span><span class="nx">getAllVirtualMachines</span><span class="p">([],</span><span class="w"> </span><span class="s2">""</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="nx">vm</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VirtualMachine</span><span class="p">(</span><span class="nx">vm</span><span class="p">));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
 <span class="k">export</span><span class="w"> </span><span class="kd">enum</span><span class="w"> </span><span class="nx">PowerState</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">POWERED_ON</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;poweredOn&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">POWERED_OFF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;poweredOff&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nx">SUSPENDED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;suspended&quot;</span>
+<span class="w">    </span><span class="nx">POWERED_ON</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"poweredOn"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">POWERED_OFF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"poweredOff"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">SUSPENDED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"suspended"</span>
 <span class="p">}</span>
 
 <span class="c1">//......</span>
@@ -2611,7 +2651,7 @@ the typescript hints will be used.</p>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">vm</span><span class="p">.</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">powerState</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
 <span class="w">    </span><span class="p">};</span>
 <span class="w">    </span><span class="nx">VirtualMachine</span><span class="p">.</span><span class="nx">getAll</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">VcPlugin</span><span class="p">.</span><span class="nx">getAllVirtualMachines</span><span class="p">([],</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">vm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VirtualMachine</span><span class="p">(</span><span class="nx">vm</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">VcPlugin</span><span class="p">.</span><span class="nx">getAllVirtualMachines</span><span class="p">([],</span><span class="w"> </span><span class="s2">""</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">vm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VirtualMachine</span><span class="p">(</span><span class="nx">vm</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
 <span class="w">    </span><span class="p">};</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">VirtualMachine</span><span class="p">;</span>
 <span class="p">}());</span>
@@ -2620,9 +2660,9 @@ the typescript hints will be used.</p>
 <span class="nx">exports</span><span class="p">.</span><span class="nx">PowerState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">PowerState</span><span class="p">;</span>
 <span class="kd">var</span><span class="w"> </span><span class="nx">PowerState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">exports</span><span class="p">.</span><span class="nx">PowerState</span><span class="p">;</span>
 <span class="p">(</span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="nx">PowerState</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">PowerState</span><span class="p">[</span><span class="s2">&quot;POWERED_ON&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;poweredOn&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="nx">PowerState</span><span class="p">[</span><span class="s2">&quot;POWERED_OFF&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;poweredOff&quot;</span><span class="p">;</span>
-<span class="w">    </span><span class="nx">PowerState</span><span class="p">[</span><span class="s2">&quot;SUSPENDED&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;suspended&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">PowerState</span><span class="p">[</span><span class="s2">"POWERED_ON"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"poweredOn"</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">PowerState</span><span class="p">[</span><span class="s2">"POWERED_OFF"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"poweredOff"</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">PowerState</span><span class="p">[</span><span class="s2">"SUSPENDED"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"suspended"</span><span class="p">;</span>
 <span class="p">})(</span><span class="nx">PowerState</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="nx">PowerState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}));</span>
 <span class="k">return</span><span class="w"> </span><span class="nx">exports</span><span class="p">;</span>
 </code></pre></div>

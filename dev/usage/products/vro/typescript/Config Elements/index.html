@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -2098,9 +2098,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2114,7 +2135,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2532,17 +2572,17 @@
 <h3 id="secure-strings">Secure Strings<a class="headerlink" href="#secure-strings" title="Permanent link">&para;</a></h3>
 <p>Up to version 2.23.0</p>
 <p>Secure strings in configuration elements are defined as shown below:</p>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Configuration</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Configuration</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Configuration</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Test&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PSCoE/Test&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Test"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"PSCoE/Test"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">password</span><span class="o">:</span>
 <span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;SecureString&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;36BJ62U35V34T31R64I31H38Q39L2DH62K37Q63T61M2DK34O62R66K35U2DY38Y32S66Q35G2DQ63K66U64Z62X33Q37T31R34Q37W31Z66M31K&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;some number&quot;</span>
+<span class="w">        </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"SecureString"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">"36BJ62U35V34T31R64I31H38Q39L2DH62K37Q63T61M2DK34O62R66K35U2DY38Y32S66Q35G2DQ63K66U64Z62X33Q37T31R34Q37W31Z66M31K"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"some number"</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">})</span>
@@ -2562,51 +2602,51 @@
 <p>Meaning that a Composite type can be a string, boolean, number or an array of each.</p>
 <h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
 <p>Example Typescript Configuration Element:</p>
-<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Configuration</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;vrotsc-annotations&quot;</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Configuration</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"vrotsc-annotations"</span><span class="p">;</span>
 
 <span class="kd">@Configuration</span><span class="p">({</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;GeneralConfig&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;PSCoE/my-project&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"GeneralConfig"</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s2">"PSCoE/my-project"</span><span class="p">,</span>
 <span class="w">  </span><span class="nx">attributes</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">composite</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;CompositeType(field1:number,field2:boolean,field3:string,field4:Array/string):ITest&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"CompositeType(field1:number,field2:boolean,field3:string,field4:Array/string):ITest"</span><span class="p">,</span>
 <span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nx">field1</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">field2</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">field3</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;2222&#39;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">field4</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="s2">&quot;test2&quot;</span><span class="p">,</span><span class="w"> </span><span class="sb">`test3`</span><span class="p">]</span>
+<span class="w">        </span><span class="nx">field3</span><span class="o">:</span><span class="w"> </span><span class="s1">'2222'</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">field4</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'test'</span><span class="p">,</span><span class="s2">"test2"</span><span class="p">,</span><span class="w"> </span><span class="sb">`test3`</span><span class="p">]</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A composite value with all the basics&quot;</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A composite value with all the basics"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">numericAttr</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"number"</span><span class="p">,</span>
 <span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="kt">123</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Represents a numeric variable&quot;</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"Represents a numeric variable"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">stringAttr</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Some String&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A string variable&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">"Some String"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A string variable"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">stringArray</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Array/string&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;first&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;second&quot;</span><span class="p">],</span>
-<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;This is an array of strings&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"Array/string"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"first"</span><span class="p">,</span><span class="w"> </span><span class="s2">"second"</span><span class="p">],</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"This is an array of strings"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">host</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;REST:RESTHost&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A RESTHost without any value ( placeholder )&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"REST:RESTHost"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A RESTHost without any value ( placeholder )"</span>
 <span class="w">      </span><span class="c1">//  Does not support values</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">vm</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VC:VirtualMachine&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;A VirtualMachine without any value ( placeholder )&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"VC:VirtualMachine"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"A VirtualMachine without any value ( placeholder )"</span>
 <span class="w">      </span><span class="c1">//  Does not support values</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;SecureString&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;36BJ62U35V34T31R64I31H38Q39L2DH62K37Q63T61M2DK34O62R66K35U2DY38Y32S66Q35G2DQ63K66U64Z62X33Q37T31R34Q37W31Z66M31K&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;some number&quot;</span>
+<span class="w">      </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s2">"SecureString"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">value</span><span class="o">:</span><span class="w"> </span><span class="s2">"36BJ62U35V34T31R64I31H38Q39L2DH62K37Q63T61M2DK34O62R66K35U2DY38Y32S66Q35G2DQ63K66U64Z62X33Q37T31R34Q37W31Z66M31K"</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">"some number"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">})</span>
@@ -2619,7 +2659,7 @@
 <span class="nt">attributes</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">field1</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CompositeType(field1:number,field2:boolean,field3:string,field4:Array/string):ITest</span>
-<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A</span><span class="nv"> </span><span class="s">composite</span><span class="nv"> </span><span class="s">type</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">primitives&quot;</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"A</span><span class="nv"> </span><span class="s">composite</span><span class="nv"> </span><span class="s">type</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">primitives"</span>
 <span class="w">    </span><span class="nt">value</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">field1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">      </span><span class="nt">field2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
@@ -2631,14 +2671,14 @@
 <span class="w">  </span><span class="nt">field2</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">number</span>
 <span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">123</span>
-<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">number&quot;</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Some</span><span class="nv"> </span><span class="s">number"</span>
 <span class="w">  </span><span class="nt">field3</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">boolean</span>
 <span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">boolean&quot;</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Some</span><span class="nv"> </span><span class="s">boolean"</span>
 <span class="w">  </span><span class="nt">field4</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
-<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">string&quot;</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">"Some</span><span class="nv"> </span><span class="s">string"</span>
 </code></pre></div>
 
 

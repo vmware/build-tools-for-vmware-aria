@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -1988,9 +1988,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -2004,7 +2025,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2494,9 +2534,9 @@
 <span class="w">        </span><span class="nt">&lt;vro.port&gt;</span>443<span class="nt">&lt;/vro.port&gt;</span>
 <span class="w">        </span><span class="nt">&lt;vro.username&gt;</span>administrator@vsphere.local<span class="nt">&lt;/vro.username&gt;</span>
 <span class="w">        </span><span class="nt">&lt;vro.password&gt;</span>myPlainTextPass<span class="nt">&lt;/vro.password&gt;</span>
-<span class="w">        </span><span class="nt">&lt;vro.auth&gt;</span>basic<span class="nt">&lt;/vro.auth&gt;</span><span class="w"> </span><span class="cm">&lt;!-- or &#39;vra&#39; for sso auth --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;vro.auth&gt;</span>basic<span class="nt">&lt;/vro.auth&gt;</span><span class="w"> </span><span class="cm">&lt;!-- or 'vra' for sso auth --&gt;</span>
 <span class="w">        </span><span class="nt">&lt;vro.tenant&gt;</span>vsphere.local<span class="nt">&lt;/vro.tenant&gt;</span>
-<span class="w">        </span><span class="nt">&lt;vro.authHost&gt;</span>10.27.120.27<span class="nt">&lt;/vro.authHost&gt;</span><span class="w"> </span><span class="cm">&lt;!-- required for &#39;vra&#39; auth --&gt;</span>
+<span class="w">        </span><span class="nt">&lt;vro.authHost&gt;</span>10.27.120.27<span class="nt">&lt;/vro.authHost&gt;</span><span class="w"> </span><span class="cm">&lt;!-- required for 'vra' auth --&gt;</span>
 <span class="w">        </span><span class="nt">&lt;vro.refresh.token&gt;</span>CrxGISrDKxqwfvitdnmlodXxneHARsFi<span class="nt">&lt;/vro.refresh.token&gt;</span>
 
 <span class="w">        </span><span class="cm">&lt;!-- vRA Connection --&gt;</span>
@@ -2547,20 +2587,20 @@
 
 <p><img alt="Push and Pull content" src="images/push-pull.png" /></p>
 <p>The <code>vrdev.tasks.exclude</code> setting can be used to <em>exclude</em> certain projects from the list of build tasks (<code>Cmd+Shift+B</code>) by using glob patterns</p>
-<div class="highlight"><pre><span></span><code><span class="s2">&quot;vrdev.tasks.exclude&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;my.example.library*&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude all libraries</span>
-<span class="w">    </span><span class="s2">&quot;!my.example.library*&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude everything, except libraries</span>
-<span class="w">    </span><span class="s2">&quot;my.example!(library*)&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude everything from &#39;my.example&#39;, except libraries</span>
-<span class="w">    </span><span class="s2">&quot;my.example.library:{nsx,vra,vc}&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude nsx, vra and vc libraries</span>
-<span class="w">    </span><span class="s2">&quot;my.example.library:util&quot;</span><span class="w"> </span><span class="c1">// Exclude util library (&lt;groupId&gt;:&lt;artifactId&gt;)</span>
+<div class="highlight"><pre><span></span><code><span class="s2">"vrdev.tasks.exclude"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"my.example.library*"</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude all libraries</span>
+<span class="w">    </span><span class="s2">"!my.example.library*"</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude everything, except libraries</span>
+<span class="w">    </span><span class="s2">"my.example!(library*)"</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude everything from 'my.example', except libraries</span>
+<span class="w">    </span><span class="s2">"my.example.library:{nsx,vra,vc}"</span><span class="p">,</span><span class="w"> </span><span class="c1">// Exclude nsx, vra and vc libraries</span>
+<span class="w">    </span><span class="s2">"my.example.library:util"</span><span class="w"> </span><span class="c1">// Exclude util library (&lt;groupId&gt;:&lt;artifactId&gt;)</span>
 <span class="p">]</span>
 </code></pre></div>
 <h4 id="display-hints-in-java-script-projects">Display Hints in Java Script Projects<a class="headerlink" href="#display-hints-in-java-script-projects" title="Permanent link">&para;</a></h4>
 <p>The VS Code plugin supports displaying action hints for modules and actions that are present in Orchestrator along with the modules and actions that are part of the currently opened project. If you type:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">System</span><span class="p">.</span><span class="nx">getModule</span><span class="p">(</span><span class="s2">&quot;com.module.path.&quot;</span><span class="p">).</span>
+<div class="highlight"><pre><span></span><code><span class="nx">System</span><span class="p">.</span><span class="nx">getModule</span><span class="p">(</span><span class="s2">"com.module.path."</span><span class="p">).</span>
 </code></pre></div>
 <p>or</p>
-<div class="highlight"><pre><span></span><code><span class="nx">Class</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">&quot;com.module.path.&quot;</span><span class="p">).</span>
+<div class="highlight"><pre><span></span><code><span class="nx">Class</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s2">"com.module.path."</span><span class="p">).</span>
 </code></pre></div>
 <p>a list of hints with modules available on Orchestrator and in locally opened projects would be presented as list, furthermore methods and parameters would be also present as hints, as shown in the example below:</p>
 <p><img alt="JS Code Hinting" src="images/js-code-hinting.png" /></p>

@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -1979,9 +1979,30 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../usage/installer/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../usage/installer/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -1995,7 +2016,26 @@
   
   
 
-      </a>
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installer
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2788,7 +2828,7 @@ java<span class="w"> </span>--version
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-o-<span class="w"> </span>https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/refs/heads/main/infrastructure/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash<span class="w"> </span>-s<span class="w"> </span>--<span class="w"> </span>&lt;dockerUsername&gt;<span class="w"> </span>&lt;dockerPAT&gt;
 </code></pre></div>
 <p>If you do not edit your host files, adjust the external URL in the <code>docker-compose.yml</code> to use <code>localhost</code> (or your machine's IP) and run the compose file:</p>
-<div class="highlight"><pre><span></span><code>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;s|external_url &#39;http://infra.corp.local/gitlab&#39;|external_url &#39;http://localhost:8082/gitlab&#39;|&quot;</span><span class="w"> </span>/opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml
+<div class="highlight"><pre><span></span><code>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">"s|external_url 'http://infra.corp.local/gitlab'|external_url 'http://localhost:8082/gitlab'|"</span><span class="w"> </span>/opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml
 docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>/opt/build-tools-for-vmware-aria/infrastructure/docker-compose.yml<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--wait
 </code></pre></div>
 <h3 id="advanced-manual-setup">Advanced Manual Setup<a class="headerlink" href="#advanced-manual-setup" title="Permanent link">&para;</a></h3>
@@ -2836,7 +2876,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <ol>
 <li>
 <p><strong>Retrieve the initial root password:</strong>
-   <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>gitlab-ce<span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;Password:&#39;</span><span class="w"> </span>/etc/gitlab/initial_root_password
+   <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>gitlab-ce<span class="w"> </span>grep<span class="w"> </span><span class="s1">'Password:'</span><span class="w"> </span>/etc/gitlab/initial_root_password
 </code></pre></div>
    <em>(Note: This file is automatically deleted 24 hours after the container starts).</em></p>
 </li>
@@ -2861,7 +2901,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> 
 <h3 id="nexus">Nexus<a class="headerlink" href="#nexus" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Retrieve the initial admin password:</strong>
-   <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>nexus<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;cat /nexus-data/admin.password &amp;&amp; echo&#39;</span>
+   <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>nexus<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">'cat /nexus-data/admin.password &amp;&amp; echo'</span>
 </code></pre></div></li>
 <li><strong>Log in:</strong> Navigate to <a href="http://infra.corp.local/nexus/">http://infra.corp.local/nexus/</a> and log in with the username <code>admin</code> and the password retrieved above.</li>
 <li><strong>Complete the setup wizard:</strong> Follow the prompts to set a new admin password and <strong>disable</strong> anonymous access.</li>
@@ -2935,9 +2975,9 @@ mvn<span class="w"> </span><span class="nb">test</span>
 <span class="nt">dynamic_variables</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">setup</span>
 <span class="w">  </span><span class="nt">script</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo &quot;GROUP_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.groupId -q -DforceStdout)&quot; &gt;&gt; build.env</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo &quot;ARTIFACT_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.artifactId -q -DforceStdout)&quot; &gt;&gt; build.env</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo &quot;PROJECT_VERSION=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.version -q -DforceStdout)&quot; &gt;&gt; build.env</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "GROUP_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.groupId -q -DforceStdout)" &gt;&gt; build.env</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "ARTIFACT_ID=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.artifactId -q -DforceStdout)" &gt;&gt; build.env</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo "PROJECT_VERSION=$(mvn help:evaluate $LOCAL_REPO -Dexpression=project.version -q -DforceStdout)" &gt;&gt; build.env</span>
 <span class="w">  </span><span class="nt">artifacts</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">expire_in</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3 hours</span>
 <span class="w">    </span><span class="nt">reports</span><span class="p">:</span>
@@ -2955,14 +2995,14 @@ mvn<span class="w"> </span><span class="nb">test</span>
 
 <span class="nt">install</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">install</span>
-<span class="w">  </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;dynamic_variables&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"dynamic_variables"</span><span class="p p-Indicator">]</span>
 <span class="w">  </span><span class="nt">script</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mvn $DEPLOY_OPTS clean package deploy</span>
 <span class="w">  </span><span class="nt">artifacts</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vra/target/*.zip</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vro/target/*.zip</span>
-<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$GROUP_ID.$ARTIFACT_ID-$PROJECT_VERSION-$CI_PIPELINE_IID&quot;</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"$GROUP_ID.$ARTIFACT_ID-$PROJECT_VERSION-$CI_PIPELINE_IID"</span>
 <span class="w">    </span><span class="nt">expire_in</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1 month</span>
 </code></pre></div></p>
 </li>
