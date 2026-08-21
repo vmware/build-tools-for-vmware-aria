@@ -201,7 +201,6 @@ enum Option {
 	VRANG_CLOUD_PROXY_NAME(
 			"vrang_cloud_proxy_name",
 			ConfigurationVraNg.CLOUD_PROXY_NAME),
-
 	/**
 	 * VRANG unrelease blueprint versions. Decides wether old versions need to be
 	 * unrelased
@@ -1213,20 +1212,10 @@ public final class Installer {
 	}
 
 	private static void loadInputInteractiveMode(final Input input) {
-		String ignoreCertCheck = System.getProperty(Option.IGNORE_SSL_CERT_CHECK.getMapping());
-		String ignoreHostCheck = System.getProperty(Option.IGNORE_SSL_HOST_CHECK.getMapping());
+		Boolean storedVRAConfigurations = false;
+		Boolean storedVCFAConfigurations = false;
 
-		if (ignoreCertCheck == null) {
-			userInput(input, Option.IGNORE_SSL_CERT_CHECK, "Ignore SSL Certificate Verification?", false);
-		} else {
-			input.put(Option.IGNORE_SSL_CERT_CHECK, Boolean.valueOf(ignoreCertCheck));
-		}
-		if (ignoreHostCheck == null) {
-			userInput(input, Option.IGNORE_SSL_HOST_CHECK, "Ignore SSL Hostname Verification?", false);
-		} else {
-			input.put(Option.IGNORE_SSL_HOST_CHECK, Boolean.valueOf(ignoreHostCheck));
-		}
-		// common properties (i.e. timeouts)
+		// common properties (i.e. timeouts, ignore certificates)
 		readCommonProperties(input);
 
 		// +-------------------------------------
@@ -1256,6 +1245,7 @@ public final class Installer {
 		}
 		if (input.anyTrue(Option.VRANG_IMPORT, Option.CS_IMPORT, Option.VRANG_DELETE_CONTENT, Option.ABX_IMPORT)) {
 			readVrangProperties(input);
+			storedVRAConfigurations = true;
 		}
 		if (input.anyTrue(Option.VRANG_IMPORT)) {
 			readVrangImportProperties(input);
@@ -1275,6 +1265,7 @@ public final class Installer {
 		}
 		if (input.anyTrue(Option.VCFA_IMPORT, Option.VCFA_DELETE_CONTENT)) {
 			readVcfaProperties(input);
+			storedVCFAConfigurations = true;
 		}
 		if (input.anyTrue(Option.VCFA_IMPORT)) {
 			readVcfaImportProperties(input);
@@ -1288,6 +1279,11 @@ public final class Installer {
 				userInput(input, Option.VRO_ENABLE_BACKUP, "Backup existing vRO packages?", true);
 				userInput(input, Option.VRO_EMBEDDED, "Is vRO Embedded (in vRA)?", hasVraNgPackages);
 				if (input.anyTrue(Option.VRO_EMBEDDED)) {
+					if (!storedVRAConfigurations && storedVCFAConfigurations) {
+						// since parameters can be copied, just put them
+						copyVcfaToVrangProperties(input);
+						storedVRAConfigurations = true;
+					}
 					readVroEmbeddedInVrangProperties(input, false);
 				} else {
 					readVroProperties(input, hasVraNgPackages);
@@ -1303,6 +1299,11 @@ public final class Installer {
 			if (input.anyTrue(Option.VRO_EMBEDDED)) {
 				if (hasVraNgPackages) {
 					input.put(Option.VRO_AUTH, "vra");
+				}
+				if (!storedVRAConfigurations && storedVCFAConfigurations) {
+					// since parameters can be copied, just put them
+					copyVcfaToVrangProperties(input);
+					storedVRAConfigurations = true;
 				}
 				readVroEmbeddedInVrangProperties(input, false);
 			} else {
@@ -1358,6 +1359,30 @@ public final class Installer {
 		storePropertiesForReusage(input);
 	}
 
+	private static void copyVcfaToVrangProperties(final Input input) {
+		// If VCFA was provided but VRANG was not, copy the properties over
+		input.put(Option.VRANG_SERVER, input.get(Option.VCFA_SERVER));
+
+		if (input.get(Option.VCFA_PORT) != null) {
+			input.put(Option.VRANG_PORT, input.get(Option.VCFA_PORT));
+		}
+		if (input.get(Option.VCFA_CSP_SERVER) != null) {
+			input.put(Option.VRANG_CSP_SERVER, input.get(Option.VCFA_CSP_SERVER));
+		}
+		if (input.get(Option.VCFA_AUTH_WITH_REFRESH_TOKEN) != null) {
+			input.put(Option.VRANG_AUTH_WITH_REFRESH_TOKEN, input.get(Option.VCFA_AUTH_WITH_REFRESH_TOKEN));
+		}
+		if (input.get(Option.VCFA_REFRESH_TOKEN) != null) {
+			input.put(Option.VRANG_REFRESH_TOKEN, input.get(Option.VCFA_REFRESH_TOKEN));
+		}
+		if (input.get(Option.VCFA_USERNAME) != null) {
+			input.put(Option.VRANG_USERNAME, input.get(Option.VCFA_USERNAME));
+		}
+		if (input.get(Option.VCFA_PASSWORD) != null) {
+			input.put(Option.VRANG_PASSWORD, input.get(Option.VCFA_PASSWORD));
+		}
+	}
+
 	private static void storePropertiesForReusage(final Input input) {
 		String location = "environment.properties";
 		File propsLocation = new File(location);
@@ -1377,6 +1402,20 @@ public final class Installer {
 	}
 
 	private static void readCommonProperties(final Input input) {
+		String ignoreCertCheck = System.getProperty(Option.IGNORE_SSL_CERT_CHECK.getMapping());
+		String ignoreHostCheck = System.getProperty(Option.IGNORE_SSL_HOST_CHECK.getMapping());
+
+		if (ignoreCertCheck == null) {
+			userInput(input, Option.IGNORE_SSL_CERT_CHECK, "Ignore SSL Certificate Verification?", false);
+		} else {
+			input.put(Option.IGNORE_SSL_CERT_CHECK, Boolean.valueOf(ignoreCertCheck));
+		}
+		if (ignoreHostCheck == null) {
+			userInput(input, Option.IGNORE_SSL_HOST_CHECK, "Ignore SSL Hostname Verification?", false);
+		} else {
+			input.put(Option.IGNORE_SSL_HOST_CHECK, Boolean.valueOf(ignoreHostCheck));
+		}
+
 		input.getText().getTextTerminal().println("HTTP Common Properties:");
 		userInput(input, Option.CONNECTION_TIMEOUT, "  HTTP connection timeout",
 				Configuration.DEFAULT_CONNECTION_TIMEOUT.toString());
@@ -1463,7 +1502,8 @@ public final class Installer {
 		}
 
 		if (needCspHost) {
-			userInput(input, Option.VRANG_CSP_SERVER, "  Authentication CSP FQDN:", input.get(Option.VRANG_SERVER));
+			// keep CSP (Authentication) server same as host server, without asking
+			input.put(Option.VRANG_CSP_SERVER, input.get(Option.VRANG_SERVER));
 		}
 		userInput(input, Option.VRANG_AUTH_WITH_REFRESH_TOKEN, "  Authenticate with refresh token?:", false);
 		if (input.allTrue(Option.VRANG_AUTH_WITH_REFRESH_TOKEN)) {
@@ -1507,7 +1547,8 @@ public final class Installer {
 		Validate.hostAndPort(input.get(Option.VCFA_SERVER), Integer.valueOf(input.get(Option.VCFA_PORT)),
 				input.getText());
 
-		userInput(input, Option.VCFA_CSP_SERVER, "  Authentication CSP FQDN:", input.get(Option.VCFA_SERVER));
+		// keep CSP (Authentication) server same as host server, without asking
+		input.put(Option.VCFA_CSP_SERVER, input.get(Option.VCFA_SERVER));
 
 		userInput(input, Option.VCFA_AUTH_WITH_REFRESH_TOKEN, "  Authenticate with refresh token?:", false);
 		if (input.allTrue(Option.VCFA_AUTH_WITH_REFRESH_TOKEN)) {
@@ -1554,7 +1595,8 @@ public final class Installer {
 
 	private static void readVrangImportProperties(final Input input) {
 		input.getText().getTextTerminal().println("vRealize Automation 8 Import Configuration:");
-		userInput(input, Option.VRANG_IMPORT_OVERWRITE_MODE, "  vRA8 Import Mode", "SKIP,OVERWRITE");
+		// keep default value for OVERWRITE MODE, as this option is not used anymore
+		input.put(Option.VRANG_IMPORT_OVERWRITE_MODE, "SKIP");
 		userInput(input, Option.VRANG_VRO_INTEGRATION_NAME, "  vRA8 integration name", "embedded-VRO");
 		userInput(input, Option.VRANG_IMPORT_TIMEOUT, "  vRA8 Import timeout",
 				ConfigurationVraNg.DEFAULT_IMPORT_TIMEOUT);
@@ -1564,7 +1606,8 @@ public final class Installer {
 
 	private static void readVcfaImportProperties(final Input input) {
 		input.getText().getTextTerminal().println("VCF Automation 9 Import Configuration:");
-		userInput(input, Option.VCFA_IMPORT_OVERWRITE_MODE, "  VCFA9 Import Mode", "SKIP,OVERWRITE");
+		// keep default value for OVERWRITE MODE, as this option is not used anymore
+		input.put(Option.VCFA_IMPORT_OVERWRITE_MODE, "SKIP");
 		userInput(input, Option.VCFA_VRO_INTEGRATION_NAME, "  VCFA9 integration name", "embedded-VRO");
 		userInput(input, Option.VCFA_IMPORT_TIMEOUT, "  VCFA9 Import timeout",
 				VcfAutoConfiguration.DEFAULT_IMPORT_TIMEOUT);

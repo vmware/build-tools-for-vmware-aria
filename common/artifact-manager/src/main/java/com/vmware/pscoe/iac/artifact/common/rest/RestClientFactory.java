@@ -257,39 +257,47 @@ public final class RestClientFactory {
 		return vraClient.getVersion();
 	}
 
-	private static String getVcdApiVersion(ConfigurationVcd configuration, RestTemplate restTemplate) {
-		RestClientVcd versionRestClient = new RestClientVcd(configuration, restTemplate);
+	private static String getVcdApiVersion(RestClientVcd vcdRestClient) {
 		// VCD API version is passed to Content-Type headers.
 		// No authentication is required to obtain API version
-		return versionRestClient.getVersion();
+		return vcdRestClient.getVersion();
 	}
 
-	private static ConfigurationVcd createConfigurationVcd(Configuration configuraiton) {
+	private static Boolean isExternalVro(RestClientVcd vcdRestClient) {
+		// VCD API version is passed to Content-Type headers.
+		// No authentication is required to obtain API version
+		return vcdRestClient.isExternalVro();
+	}
+
+	private static ConfigurationVcd createConfigurationVcd(Configuration configuration) {
 		Properties properties = new Properties();
 
 		String fullUsername;
 
-		if ((configuraiton instanceof ConfigurationVro)
-				&& ((ConfigurationVro) configuraiton).getAuth() == AuthProvider.BASIC) {
+		if ((configuration instanceof ConfigurationVro)
+				&& ((ConfigurationVro) configuration).getAuth() == AuthProvider.BASIC) {
 			// In case of external Orchestrator with BASIC auth the domain is extracted as
 			// part of the username so we need this check to prevent duplication
-			fullUsername = configuraiton.getUsername();
+			fullUsername = configuration.getUsername();
 		} else {
-			fullUsername = String.format(ConfigurationVcd.USER_AT_DOMAIN_STRING_FORMAT, configuraiton.getUsername(),
-					configuraiton.getDomain());
+			fullUsername = String.format(ConfigurationVcd.USER_AT_DOMAIN_STRING_FORMAT, configuration.getUsername(),
+					configuration.getDomain());
 		}
 
+		// define all variables, which can be accessed by VCD configurations
 		properties.setProperty(Configuration.USERNAME, fullUsername);
-		properties.setProperty(Configuration.PASSWORD, configuraiton.getPassword());
-		properties.setProperty(Configuration.PORT, configuraiton.getPort() + "");
-		properties.setProperty(Configuration.HOST, configuraiton.getHost());
+		properties.setProperty(Configuration.PASSWORD, configuration.getPassword());
+		properties.setProperty(Configuration.PORT, configuration.getPort() + "");
+		properties.setProperty(Configuration.HOST, configuration.getHost());
+		properties.setProperty(Configuration.AUTH_HOST, configuration.getAuthHost());
+		properties.setProperty(Configuration.AUTH_PORT, configuration.getAuthPort() + "");
 
-		if (configuraiton instanceof ConfigurationVraNg && ((ConfigurationVraNg) configuraiton).getOrgName() != null) {
+		if (configuration instanceof ConfigurationVraNg && ((ConfigurationVraNg) configuration).getOrgName() != null) {
 			// Set organization in case provider admin (user@System) is executing a vra-ng
 			// push for specific organization. Note that in ConfigurationVroNg organization
 			// is missing and not required
 			properties.setProperty(ConfigurationVraNg.ORGANIZATION_NAME,
-					((ConfigurationVraNg) configuraiton).getOrgName());
+					((ConfigurationVraNg) configuration).getOrgName());
 		}
 
 		return ConfigurationVcd.fromProperties(properties);
@@ -297,10 +305,18 @@ public final class RestClientFactory {
 
 	private static void attachVcdInterceptor(ConfigurationVcd configuration, RestTemplate restTemplate,
 			Boolean useProviderAuth) {
-		String vcdApiVersion = getVcdApiVersion(configuration, restTemplate);
-		RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
-				configuration, restTemplate, vcdApiVersion, useProviderAuth);
-		restTemplate.getInterceptors().add(vcdInterceptor);
+		RestClientVcd vcdRestClient = new RestClientVcd(configuration, restTemplate);
+
+		Boolean isExternalVro = isExternalVro(vcdRestClient);
+
+		if (!isExternalVro) {
+			String vcdApiVersion = getVcdApiVersion(vcdRestClient);
+			RestClientRequestInterceptor<ConfigurationVcd> vcdInterceptor = new RestClientVcdBasicAuthInterceptor(
+					configuration, restTemplate, vcdApiVersion, useProviderAuth);
+			restTemplate.getInterceptors().add(vcdInterceptor);
+		} else {
+			LOGGER.info("Skip adding VCD interceptor, as service works with external vRO");
+		}
 	}
 
 	/**
@@ -348,19 +364,21 @@ public final class RestClientFactory {
 		switch (configuration.getAuth()) {
 			case VRA:
 				String apiVersion = getVraApiVersion(configuration, restTemplate);
+
 				if (apiVersion.startsWith(VRA_9_VERSION_PREFIX)) {
 					// For VCF 9 use VCD based interceptor to authenticate
 					ConfigurationVcd vcdConfiguration = createConfigurationVcd(configuration);
-					attachVcdInterceptor(vcdConfiguration, restTemplate, configuration.getDomain().equals(SYSTEM_DOMAIN));
+					attachVcdInterceptor(vcdConfiguration, restTemplate,
+							configuration.getDomain().equals(SYSTEM_DOMAIN));
 				} else {
-					RestClientRequestInterceptor<ConfigurationVro> interceptor =
-						new RestClientVroSsoAuthNInterceptor(configuration, restTemplate);
+					RestClientRequestInterceptor<ConfigurationVro> interceptor = new RestClientVroSsoAuthNInterceptor(
+							configuration, restTemplate);
 					restTemplate.getInterceptors().add(interceptor);
 				}
 				break;
 			case BASIC:
-				RestClientRequestInterceptor<ConfigurationVro> interceptor =
-					new RestClientVroBasicAuthNInterceptor(configuration, restTemplate);
+				RestClientRequestInterceptor<ConfigurationVro> interceptor = new RestClientVroBasicAuthNInterceptor(
+						configuration, restTemplate);
 				restTemplate.getInterceptors().add(interceptor);
 				break;
 			default:

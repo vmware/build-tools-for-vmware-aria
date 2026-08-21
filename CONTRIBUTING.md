@@ -57,14 +57,15 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
 4. Testing guide - follow the steps bellow to do a local test of a new functionality or a bugfix.
    - Create or reuse an existing project with the type of archetype that you need.
      - Example: For VMware Aria Automation 8 you will need a `vra-ng` project archetype.
-   - Bump the test project's Build Tools for VMware Aria version to the latest **SNAPSHOT** version. The version number is located in the `pom.xml` file/s between the `<parent>` tags. Each project can have multiple `pom.xml` files. If that's the case, change all of them.
+   - Bump the test project's Build Tools for VMware Aria version to the latest **SNAPSHOT** version. The version number is located in the [`pom.xml`](pom.xml) file in `<properties><revision>` tag.
    - Run `mvn clean package` from the main test project directory so you can download the latest Build Tools for VMware Aria artifacts.
    - After you make the proper changes under your local Build Tools for VMware Aria source, you will need to install the modified artifacts (locally), so you can test them. This is done by running the `mvn clean install` command from a *particular modified* Build Tools for VMware Aria directory (this will save you time, so you will not need to install all artifacts locally).
      - Example: If you have modified the `VraNgPackageStore.java` or the `RestClientVraNg.java` class, you can run the `mvn clean install` command from the `/common/artifact-manager` directory.
      - Example: If you have modified a `PullMojo.java` class, you can run the `mvn clean install` command from the `/maven/plugins/` directory.
      - If for some reason you have to re-build the whole project run the following two commands in order from the Build Tools for Aria root folder:
-       - `mvn clean install -D modules.plugins`
-       - `mvn clean install -D modules.tools`
+       - `mvn clean install -D modules.plugins # -DskipTests, if you're in a hurry`
+       - `mvn clean install -D modules.tools # -DskipTests, if you're in a hurry`
+       - `mvn clean package -D modules.repository`
      - If you are using IntelliJ IDEA you can perform the following steps to use actual debugging (using breakpoints etc):
        - From the "Run" menu select "Edit Configurations..."
        - Add new configuration of type "Remote JVM Debug"
@@ -72,12 +73,12 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
        - Set the "Debugger mode" to "Attach to Remote JVM"
        - Set the "Host" to "localhost"
        - Set the "Port" to 8000
+     - To get the latest version of an artifact in your project, you need to clean repository files, example: `rm -rf ~/.m2/repository/com/vmware/pscoe/iac/${SUB_PACKAGE_NAME}/${VERSION}-SNAPSHOT/`
      - Now test the modifications by executing `mvndebug clean package/pull/push` command from the test project.
      - Start the debugger you created in the previous step: "Run" => "Debug 'vrbt'"
 
 ### Documentation
-Please navigate to [the following page](./docs/versions/latest/) for the latest version of Build Tools for VMware Aria documentation.
-When contributing, please refer to our [How to write documentation](./docs/Documentation.md) guide.
+Please navigate to [index.md](./mkdocs/release-notes/index.md) for describing all changes you did during the development. You can use [this as example](https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/c85a181234ae39927fc295e56cc47de9b2b59c34/mkdocs/release-notes/index.md).
 
 ## Contributing Code
 When adding new code make sure to cover the following mandatory points:
@@ -116,7 +117,7 @@ When commiting to a branch, please follow the following convention: [Semantic Co
 
 ## Submitting a Pull Request
 
-Please follow the instructions in the [PR template](./.github/pull_request_template.md).
+Please follow the instructions in the [PR template](./.github/pull_request_template.md). Once done, revise for failed automated workflow executions (Release Drafter, Trivy, Super-Linter, Builder) - make sure those are fixed before proceeding with a main/master merge.
 
 ## Reporting Issues
 

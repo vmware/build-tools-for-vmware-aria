@@ -151,6 +151,7 @@ public class RestClientVro extends RestClient {
 		if (isVraCloud(url)) {
 			return VRA_CLOUD_VERSION;
 		}
+
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, getDefaultHttpEntity(),
 				String.class);
 

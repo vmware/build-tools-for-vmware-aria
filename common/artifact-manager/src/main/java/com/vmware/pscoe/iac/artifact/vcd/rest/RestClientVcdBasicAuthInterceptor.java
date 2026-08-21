@@ -33,6 +33,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.http.client.support.HttpRequestWrapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.JsonElement;
@@ -67,6 +68,11 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 	 * authentication.
 	 */
 	private Boolean useProviderAuth;
+
+	/**
+	 * defines information in case this is Vro. Indicates if vro is external
+	 */
+	private Boolean isExternalVro = false;
 
 	/**
 	 * provider session api path.
@@ -192,7 +198,8 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 			String apiVersion, Boolean useProviderAuth) {
 		super(configuration, restTemplate);
 		// Preserving API version check for backwards compatibility
-		if (apiVersion.indexOf(".") == apiVersion.lastIndexOf(".") // This check eliminates the versions post VCFA 9.0.1. 40.0 changed to 9.0.0
+		if (apiVersion.indexOf(".") == apiVersion.lastIndexOf(".") // This check eliminates the versions post VCFA
+																	// 9.0.1. 40.0 changed to 9.0.0
 				&& Double.parseDouble(apiVersion) >= Double.parseDouble(RestClientVcd.API_VERSION_38)
 				&& Double.parseDouble(apiVersion) < Double.parseDouble(RestClientVcd.API_VERSION_40)) {
 			logger.info("Unsupported version: {}", apiVersion);
@@ -225,13 +232,25 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 					&& !request.getURI().getPath().contains(URL_PROVIDER_SESSION_FOR_TENANT)
 					&& !request.getURI().getPath().contains(RestClientVcd.URL_VERSIONS)) {
 				if (this.bearerToken == null) {
-					acquireToken(request, sessionUrl);
+					ConfigurationVcd configuration = this.getConfiguration();
+
+					// in case this is external vro (and not embedded) use auth host instead of just
+					// host
+					this.checkIfEmbedded(request);
+					HttpRequest actualRequest = request;
+
+					if (this.isExternalVro) {
+						logger.info("Replace vro authentication host with {}", configuration.getAuthHost());
+						actualRequest = replaceHost(request, configuration.getAuthHost());
+					}
+
+					acquireToken(actualRequest, sessionUrl);
 
 					// In case of provider (System) domain additional calls are required that use
 					// the bearer token acquired above in order to create a provider admin session
 					// for a specific organization. An exception is embedded Orchestrator where
 					// organization input is not required
-					ConfigurationVcd configuration = this.getConfiguration();
+
 					if (configuration.getDomain().equals(PROVIDER_DOMAIN) && configuration.getOrgName() != null) {
 						acquireProviderToken(request);
 					}
@@ -256,6 +275,7 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 				this.getConfiguration().getDomain(), this.getConfiguration().getPassword()));
 
 		final HttpEntity<String> entity = new HttpEntity<>(headers);
+
 		final ResponseEntity<String> response = getRestTemplate().exchange(tokenUri, HttpMethod.POST, entity,
 				String.class);
 
@@ -346,11 +366,67 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 				.toUri();
 	}
 
+	private HttpRequest replaceHost(HttpRequest request, String newHost) {
+		// Wrap the original request to override its URI behavior
+		return new HttpRequestWrapper(request) {
+			@Override
+			public URI getURI() {
+				// Get the original URI from the wrapped request
+				URI originalUri = super.getURI();
+
+				// Build and return a new URI with the replaced host
+				return UriComponentsBuilder.fromUri(originalUri)
+						.host(newHost)
+						.build()
+						.toUri();
+			}
+		};
+	}
+
 	private HttpHeaders generateDefaultHeaders() {
 		final HttpHeaders headers = new HttpHeaders();
 		List<MediaType> acceptableMediaTypes = new ArrayList<>();
 		acceptableMediaTypes.add(contentType);
 		headers.setAccept(acceptableMediaTypes);
 		return headers;
+	}
+
+	private void checkIfEmbedded(HttpRequest request) {
+		URI url = this.generateUri(request, RestClientVcd.URL_VERSIONS);
+
+		HttpHeaders headers = new HttpHeaders();
+		MediaType contentType = VcdApiHelper.buildMediaType("application/*+json", null);
+
+		List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+		acceptableMediaTypes.add(contentType);
+		headers.setAccept(acceptableMediaTypes);
+
+		ResponseEntity<String> response = getRestTemplate().exchange(url, HttpMethod.GET,
+				new HttpEntity<String>(headers), String.class);
+
+		MediaType contentTypeResp = response.getHeaders().getContentType();
+
+		logger.debug("VCD API version response: {}", response);
+		logger.debug("VCD API HTTP response code: {}", response.getStatusCode());
+		logger.debug("VCD API HTTP response content type: {}", contentTypeResp);
+		// API does not work for external orchestrator, hence should ignore it
+		if (response.getStatusCode().is3xxRedirection()) {
+			// 302 is a typical error, returned for external vro, put a default value (API
+			// version 40)
+			this.isExternalVro = true;
+			logger.debug(
+					"Received 302 redirect HTTP status code from {}. Endpoint belongs to an External vRO instance.",
+					url);
+
+		} else if (response.getStatusCode().is2xxSuccessful()) {
+			// 2. Check if the response is HTML (the vRO UI fallback page)
+			if (contentTypeResp != null && contentTypeResp.includes(MediaType.TEXT_HTML)) {
+				logger.debug("Received HTML UI fallback from {}. Endpoint belongs to an External vRO instance.", url);
+				this.isExternalVro = true;
+			}
+		} else {
+			throw new RuntimeException(
+					"Wrong status code returned from %s: %s".formatted(url, response.getStatusCode()));
+		}
 	}
 }

@@ -157,7 +157,7 @@
 
 				if (typeof cls !== "function") {
 					var shapeReport = Class.validateExportShape(cls, module, name);
-					System.error("[Class][W_EXPORT_SHAPE_MISMATCH] Class.load('" + module + "', '" + name + "')" +
+					System.warn("[Class][W_EXPORT_SHAPE_MISMATCH] Class.load('" + module + "', '" + name + "')" +
 						" returned a " + shapeReport.exportType + " instead of a constructor function." +
 						(shapeReport.exportKeys.length ? " Export keys: [" + shapeReport.exportKeys.join(", ") + "]." : "") +
 						" If this is unexpected, check for module path misconfiguration (e.g. 'com.vmware.pscoe.library.ts.*' aliases)." +

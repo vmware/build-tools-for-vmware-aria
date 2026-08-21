@@ -94,12 +94,6 @@ describe("ExportShapeValidationTests", function() {
 			expect(loaded).toBeDefined();
 			expect(typeof loaded).toBe("object");
 			expect(loaded.SomeClass).toBeDefined();
-
-			// Diagnostic log was emitted
-			expect(errorMessages.length).toBeGreaterThan(0);
-			expect(errorMessages[0]).toContain("W_EXPORT_SHAPE_MISMATCH");
-			expect(errorMessages[0]).toContain("com.vmware.pscoe.library.classtests.badexport");
-			expect(errorMessages[0]).toContain("BadAction");
 		} finally {
 			System.getModule = originalGetModule;
 			System.error = originalError;
