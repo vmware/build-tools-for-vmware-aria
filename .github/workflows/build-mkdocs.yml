@@ -38,7 +38,8 @@ jobs:
             mkdocs-awesome-pages-plugin \
             mkdocs-macros-plugin \
             mkdocs-include-markdown-plugin \
-            mike 
+            mkdocs-kroki-plugin \
+            mike
 
       - name: Configure Git user
         run: |

@@ -7,13 +7,17 @@ vars:
     project:
         artifact_id: vrli-project
         type: VCF Operations for Logs
+        product_type: non-vro
+    maven:
+        installer_directory_name: vrli
+        installer_file_extension: vrli
 ---
 
 ## Overview
 
 <!-- markdownlint-disable MD033 -->
 | Field | Value |
-|---|---|
+| --- | --- |
 | Name | vrli |
 | Archetype Group ID | com.vmware.pscoe.vrli.archetypes |
 | Archetype Artifact ID | package-vrli-archetype |
@@ -32,6 +36,7 @@ vars:
 - `content-packs`
 
 ## Create New {{ products.vrli_9_full_name }} Project
+
 {{ general.bta_name }} provides ready to use {{ products.vrli_9_full_name }} project templates (*maven archetypes*).
 
 To create a new {{ products.vrli_9_full_name }} project from archetype use the following command:
@@ -128,6 +133,7 @@ The following need to be added to the profile that you intend to use:
 - `vrli.provider` - specifies the authentication provider used to connect to the vRLI / VCF Operations for Logs server. Currently supported providers are Local, active directory and VIDM.
 
 Use the profile by passing it with `-P`, e.g.:
+
 ``` bash
 mvn vrli:pull -P{{ archetype.customer_project.maven_profile_name}}
 ```

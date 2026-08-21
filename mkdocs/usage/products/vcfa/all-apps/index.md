@@ -178,7 +178,7 @@ You need to add the following configurations to the Maven profile from the `sett
 <profile>
     <!--    ..... OTHER DIRECTIVES .....  -->
     <vcfa.host>flt-auto01.corp.internal</vcfa.host>
-    <vcfa.csp.host>cloud.corp.internal</vcfa.csp.host>
+    <vcfa.csp.host>flt-auto01.corp.internal</vcfa.csp.host>
     <vcfa.proxy>http://proxy.host:80</vcfa.proxy>
     <vcfa.port>443</vcfa.port>
     <vcfa.username>administrator@tenant</vcfa.username>
@@ -202,6 +202,8 @@ mvn {{ page.meta.vars.maven.goal }}:pull -P{{ archetype.customer_project.maven_p
 ```
 
 Following is a list of elements from the profile configuration with further description of their values and the behavior they cause.
+
+- In the `vcfa.csp.host` element, specify the FQDN or IP address of the VCF Automation host (the same value that you use for the `vcfa.host` element).
 
 - In the `vcfa.username` element for VCF Automation All Apps organizations, you need to provide the user name in the format `user@domain`, or more precisely, `user@organization`. For example, use `admin@System` for the `admin` user from the Provider organization (the `System` domain identifies the Provider organization) or use `configurationadmin@AllApps` for a `configurationadmin` user from an organization with the name `AllApps`.
 
@@ -230,7 +232,7 @@ This section describes the operations that you can perform with the {{ products.
 <!-- Build Project Section -->
 {% include-markdown "../../../../assets/docs/mvn/build-project.md" %}
 
-The result of the command is a file with the name **{{ archetype.customer_project.group_id}}.{{ archetype.customer_project.artifact_id}}-1.0.0-SNAPSHOT.vcfaa** that is generated in the `target` directory of the project.
+The result of the command is a file with the name **{{ archetype.customer_project.group_id}}.{{ page.meta.vars.project.artifact_id }}-1.0.0-SNAPSHOT.vcfaa** that is generated in the `target` directory of the project.
 
 ### Pull Content
 
