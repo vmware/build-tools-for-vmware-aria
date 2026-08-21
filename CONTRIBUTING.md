@@ -78,8 +78,7 @@ git clone https://github.com/vmware/build-tools-for-vmware-aria.git
      - Start the debugger you created in the previous step: "Run" => "Debug 'vrbt'"
 
 ### Documentation
-Please navigate to [the following page](./docs/versions/latest/) for the latest version of Build Tools for VMware Aria documentation.
-When contributing, please refer to our [How to write documentation](./docs/Documentation.md) guide.
+Please navigate to [index.md](./mkdocs/release-notes/index.md) for describing all changes you did during the development. You can use [this as example](https://raw.githubusercontent.com/vmware/build-tools-for-vmware-aria/c85a181234ae39927fc295e56cc47de9b2b59c34/mkdocs/release-notes/index.md).
 
 ## Contributing Code
 When adding new code make sure to cover the following mandatory points:
@@ -118,7 +117,7 @@ When commiting to a branch, please follow the following convention: [Semantic Co
 
 ## Submitting a Pull Request
 
-Please follow the instructions in the [PR template](./.github/pull_request_template.md). Once done, revise for failed automated workflow executions (Release Drafter, Trivy, Super-Linter, Builder) - make sure those are fixed before proceeding with 
+Please follow the instructions in the [PR template](./.github/pull_request_template.md). Once done, revise for failed automated workflow executions (Release Drafter, Trivy, Super-Linter, Builder) - make sure those are fixed before proceeding with a main/master merge.
 
 ## Reporting Issues
 
