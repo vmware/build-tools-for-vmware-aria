@@ -1212,22 +1212,10 @@ public final class Installer {
 	}
 
 	private static void loadInputInteractiveMode(final Input input) {
-		String ignoreCertCheck = System.getProperty(Option.IGNORE_SSL_CERT_CHECK.getMapping());
-		String ignoreHostCheck = System.getProperty(Option.IGNORE_SSL_HOST_CHECK.getMapping());
 		Boolean storedVRAConfigurations = false;
 		Boolean storedVCFAConfigurations = false;
 
-		if (ignoreCertCheck == null) {
-			userInput(input, Option.IGNORE_SSL_CERT_CHECK, "Ignore SSL Certificate Verification?", false);
-		} else {
-			input.put(Option.IGNORE_SSL_CERT_CHECK, Boolean.valueOf(ignoreCertCheck));
-		}
-		if (ignoreHostCheck == null) {
-			userInput(input, Option.IGNORE_SSL_HOST_CHECK, "Ignore SSL Hostname Verification?", false);
-		} else {
-			input.put(Option.IGNORE_SSL_HOST_CHECK, Boolean.valueOf(ignoreHostCheck));
-		}
-		// common properties (i.e. timeouts)
+		// common properties (i.e. timeouts, ignore certificates)
 		readCommonProperties(input);
 
 		// +-------------------------------------
@@ -1414,6 +1402,20 @@ public final class Installer {
 	}
 
 	private static void readCommonProperties(final Input input) {
+		String ignoreCertCheck = System.getProperty(Option.IGNORE_SSL_CERT_CHECK.getMapping());
+		String ignoreHostCheck = System.getProperty(Option.IGNORE_SSL_HOST_CHECK.getMapping());
+
+		if (ignoreCertCheck == null) {
+			userInput(input, Option.IGNORE_SSL_CERT_CHECK, "Ignore SSL Certificate Verification?", false);
+		} else {
+			input.put(Option.IGNORE_SSL_CERT_CHECK, Boolean.valueOf(ignoreCertCheck));
+		}
+		if (ignoreHostCheck == null) {
+			userInput(input, Option.IGNORE_SSL_HOST_CHECK, "Ignore SSL Hostname Verification?", false);
+		} else {
+			input.put(Option.IGNORE_SSL_HOST_CHECK, Boolean.valueOf(ignoreHostCheck));
+		}
+
 		input.getText().getTextTerminal().println("HTTP Common Properties:");
 		userInput(input, Option.CONNECTION_TIMEOUT, "  HTTP connection timeout",
 				Configuration.DEFAULT_CONNECTION_TIMEOUT.toString());

@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro.AuthProvider;
 import com.vmware.pscoe.iac.artifact.aria.orchestrator.model.SsoEndpointDto;
-import com.vmware.pscoe.iac.artifact.common.rest.RestClientFactory;
 
 import net.minidev.json.JSONArray;
 

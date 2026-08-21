@@ -38,11 +38,8 @@ import org.springframework.http.client.support.HttpRequestWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.jayway.jsonpath.JsonPath;
 import com.vmware.pscoe.iac.artifact.common.rest.RestClientRequestInterceptor;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
-
-import net.minidev.json.JSONArray;
 
 public class RestClientVcdBasicAuthInterceptor extends RestClientRequestInterceptor<ConfigurationVcd> {
 
