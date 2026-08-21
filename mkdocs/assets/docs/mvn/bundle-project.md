@@ -31,7 +31,7 @@ Following is a sample listing of the structure of the installation bundle ZIP fi
 <a id="bundle_default_structure"></a>
 <!-- markdownlint-enable MD033 -->
 ```ascii title="Sample structure of an installation bundle"
-{{ archetype.customer_project.group_id }}.{{ project.artifact_id }}-0.1.0-SNAPSHOT-bundle.zip
+{{ archetype.customer_project.group_id }}.{{ project_artifact_id }}-0.1.0-SNAPSHOT-bundle.zip
 └── bin
     └── installer
     └── installer.bat
@@ -41,7 +41,7 @@ Following is a sample listing of the structure of the installation bundle ZIP fi
 └── {{ installer_directory_name }} {% if product_type == "vro" %}
     └── {{ archetype.customer_project.group_id }}.dependency-package-1-1.1.0.{{ installer_file_extension }}  
     └── {{ archetype.customer_project.group_id }}.dependency-package-2-1.2.0.{{ installer_file_extension }}  {% endif %}
-    └── {{ archetype.customer_project.group_id }}.{{ project.artifact_id }}-0.1.0-SNAPSHOT.{{ installer_file_extension }}
+    └── {{ archetype.customer_project.group_id }}.{{ project_artifact_id }}-0.1.0-SNAPSHOT.{{ installer_file_extension }}
 ```
 
 Following is a list of the directories in the installation bundle with a short description of their contents.
