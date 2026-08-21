@@ -31,17 +31,17 @@ Following is a sample listing of the structure of the installation bundle ZIP fi
 <a id="bundle_default_structure"></a>
 <!-- markdownlint-enable MD033 -->
 ```ascii title="Sample structure of an installation bundle"
-{{ archetype.customer_project.group_id }}.{{ page.meta.vars.project.artifact_id }}-0.1.0-SNAPSHOT-bundle.zip
+{{ archetype.customer_project.group_id }}.{{ project.artifact_id }}-0.1.0-SNAPSHOT-bundle.zip
 └── bin
     └── installer
     └── installer.bat
 └── etc
     └── logback.xml
 └── repo/
-└── {{ page.meta.vars.maven.installer_directory_name }} {% if product_type == "vro" %}
-    └── {{ archetype.customer_project.group_id }}.dependency-package-1-1.1.0.{{ page.meta.vars.maven.installer_file_extension }}  
-    └── {{ archetype.customer_project.group_id }}.dependency-package-2-1.2.0.{{ page.meta.vars.maven.installer_file_extension }}  {% endif %}
-    └── {{ archetype.customer_project.group_id }}.{{ page.meta.vars.project.artifact_id }}-0.1.0-SNAPSHOT.{{ page.meta.vars.maven.installer_file_extension }}
+└── {{ installer_directory_name }} {% if product_type == "vro" %}
+    └── {{ archetype.customer_project.group_id }}.dependency-package-1-1.1.0.{{ installer_file_extension }}  
+    └── {{ archetype.customer_project.group_id }}.dependency-package-2-1.2.0.{{ installer_file_extension }}  {% endif %}
+    └── {{ archetype.customer_project.group_id }}.{{ project.artifact_id }}-0.1.0-SNAPSHOT.{{ installer_file_extension }}
 ```
 
 Following is a list of the directories in the installation bundle with a short description of their contents.
@@ -49,10 +49,10 @@ Following is a list of the directories in the installation bundle with a short d
 - The `bin` directory contains the `installer` script (CLI tool) for importing the solution components from the bundle in two formats, Bash (for Linux/Mac OS) and `.bat` (for Windows). For more information about using the CLI tool, see the documentation of the [Installer](../../../usage/installer/index.md).
 - The `etc` directory contains configuration files of the Java binaries for the `installer` script, such as the logging configurations in the `logback.xml` file. For more information about the logging configuration file, see [Logging Configuration](../../../usage/installer/index.md#logging-configuration).
 - The `repo` directory contains the Java binaries for the `installer` script.
-- The `{{ page.meta.vars.maven.installer_directory_name }}` directory contains the project file(s) with the components that you can import to the remote server.
+- The `{{ installer_directory_name }}` directory contains the project file(s) with the components that you can import to the remote server.
 
     !!! Note
-        Based on your configurations and dependencies, you can have multiple Maven modules in a single installation bundle. So in addition to the `{{ page.meta.vars.maven.installer_directory_name }}` directory for the {{ project_type }} project, you can have additional modules for projects of other types.
+        Based on your configurations and dependencies, you can have multiple Maven modules in a single installation bundle. So in addition to the `{{ installer_directory_name }}` directory for the {{ project_type }} project, you can have additional modules for projects of other types.
 
 ##### Bundle Additional Files
 
