@@ -1,0 +1,201 @@
+@startuml
+title Process Flow of the Installer Script for Content Import and Clean Up
+
+skinparam TitleFontSize 16
+skinparam ActivityFontSize 12
+skinparam ActivityBorderColor #2B579A
+skinparam ActivityBackgroundColor #EFF6FF
+skinparam activityDiamondBackgroundColor #90EE90
+skinparam activityDiamondFontColor #003366
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #B0BEC5
+skinparam NoteFontSize 12
+skinparam ConditionEndStyle hline 
+
+start
+if (\n     Is the Script Started with an Argument     \n     (Path to "".properties"" file)\n) then (Yes)
+  :Load properties from "".properties"" file
+  from command argument and proceed with the import;
+else (No)
+  :Start in Interactive Mode and show prompts
+  to collect all required properties;
+  start
+endif
+
+partition "Common Properties" {
+  :
+  ===Load Common Properties
+                                                                                                     ;
+}
+
+partition Import Orchestrator Content {
+
+  if (\n         Is the value of the ""vro_import_packages"" property         \n         set to ""true"" (""vro_import_packages=true"")?         \n) then (Yes - Import Orchestrator Content)
+
+    :===Import Orchestrator Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Import Code Stream Content {
+
+  if (\n          Is the value of the ""cs_import_packages"" property          \n          set to ""true"" (""cs_import_packages=true"")?          \n) then (Yes - Import Code Stream Content)
+
+    :===Import Code Stream Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Import ABX Content {
+
+  if (\n         Is the value of the ""abx_import_packages"" property         \n         set to ""true"" (""abx_import_packages=true"")?         \n) then (Yes - Import ABX Content)
+
+    :===Import ABX Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Import VCF Automation VM Apps Content {
+
+  if (\n      Is the value of the ""vra_ng_import_packages"" property      \n      set to ""true"" (""vra_ng_import_packages=true"")?      \n) then (Yes - Import VCF Automation VM Apps Content)
+
+    :===Import VCF Automation VM Apps Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Import VCF Automation All Apps Content {
+
+  if (\n       Is the value of the ""vcfaa_import_packages"" property       \n       set to ""true"" (""vcfaa_import_packages=true"")?       \n) then (Yes - Import VCF Automation All Apps Content)
+
+    :===Import VCF Automation All Apps Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Import VCD Content {
+
+  if (\n         Is the value of the ""vcd_import_packages"" property         \n         set to ""true"" (""vcd_import_packages=true"")?         \n) then (Yes - Import VCD Content)
+
+    :===Import VCD Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Clean Up Orchestrator Content - Bundle Versions {
+
+  if (\n     Is the value of the ""vro_delete_last_version"" property     \n     set to ""true"" (""vro_delete_last_version=true"")?     \n) then (Yes - Clean Up Bundle Orchestrator Content)
+
+    :===Clean Up Bundle Orchestrator Content
+    (Current Versions from Bundle Packages);
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Clean Up Orchestrator Content - Old Versions {
+
+  if (\n     Is the value of the ""vro_delete_old_versions"" property     \n     set to ""true"" (""vro_delete_old_versions=true"")?     \n) then (Yes - Clean Up Old Versions of Orchestrator Content)
+
+    :===Clean Up Old Versions of Orchestrator Content
+    (Old Versions of Bundle Packages);
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Clean Up VCF Automation VM Apps Content {
+
+  if (\n        Is the value of the ""vrang_delete_content"" property        \n        set to ""true"" (""vrang_delete_content=true"")?        \n) then (Yes - Clean Up VCF Automation VM Apps Content)
+
+    :===Clean Up VCF Automation VM Apps Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Clean Up VCF Automation All Apps Content {
+
+
+  if (\n         Is the value of the ""vcfa_delete_content"" property         \n         set to ""true"" (""vcfa_delete_content=true"")?         \n) then (Yes - Clean Up VCF Automation All Apps Content)
+
+    :===Clean Up VCF Automation All Apps Content;
+
+  else (No - Proceed with Next Step)
+  endif
+}
+
+partition Import VCF Operations Content {
+
+  if (\n       Is the value of the ""vrops_import_packages"" property       \n       set to ""true"" (""vrops_import_packages=true"")?       \n) then (Yes - Import VCF Operations Content)
+
+    :===Import VCF Operations Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Import VCF Operations for Logs Content {
+
+  if (\n        Is the value of the ""vrli_import_packages"" property        \n        set to ""true"" (""vrli_import_packages=true"")?        \n) then (Yes - Import VCF Operations for Logs Content)
+
+    :===Import VCF Operations for Logs Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Clean Up VCD Content {
+
+  if (\n     Is the value of the ""vcd_delete_old_versions"" property     \n     set to ""true"" (""vcd_delete_old_versions=true"")?     \n) then (Yes - Print Log Message About VCD Content Cleanup)
+
+  :===Print Log Message About VCD Content Cleanup
+  VMware Cloud Director clean up is not supported yet.
+  ;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Import SSH (Basic) Content {
+
+  if (\n         Is the value of the ""ssh_import_packages"" property         \n         set to ""true"" (""ssh_import_packages=true"")?         \n) then (Yes - Import SSH Content)
+
+    :===Import SSH (Basic) Content;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+partition Run Orchestrator Workflow {
+
+  if (\n            Is the value of the ""vro_run_workflow"" property            \n            set to ""true"" (""vro_run_workflow=true"")?            \n) then (Yes - Run Orchestrator Workflow)
+
+    :===Run Orchestrator Workflow;
+
+  else (No - Proceed with Next Step)
+  endif
+
+}
+
+stop
+@enduml

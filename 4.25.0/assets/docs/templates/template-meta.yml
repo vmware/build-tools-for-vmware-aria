@@ -1,0 +1,45 @@
+vars:
+    archetype:
+        group_id: archetype.group.id                # Stores the archetype group ID in cmd for generating project from archetype
+        artifact_id: archetype.artifact.id          # Stores the archetype artifact ID in cmd for generating project from archetype
+    project:
+        artifact_id: project.artifact.id            # Stores the artifact ID of the generated project (per product)
+        type: project type name                     # Stores the name of the project type (per product)
+        product_type: vro                           # Stores the identifier of "vro" product for project types. Values are "vro" | "non-vro"
+        workflows_path: project_workflows_path      # Stores the path to workflows in XML vro project - required in cmd for generating the project
+    maven:
+        goal: vcfa-all-apps                         # Stores the goal for Maven commands
+        property_prefix: prefix                     # Stores the prefix of properties per product (WITHOUT underscore)
+        installer_directory_name: dir_name          # Stores the name of the directory per product that the installer expects
+        installer_file_extension: ext               # Stores the extension of package files (without the dot) per product that the installer expects
+
+# List of Jinja variables that map to frontmatter `vars` for reusable pages:
+#   # Placeholder for `vars` object
+#   {% set page_vars = page.meta.vars | default({}) %}
+#   # Placeholder for `vars.archetype` object
+#   {% set page_archetype = page_vars.archetype | default({}) %}
+#   # Placeholder for `vars.project` object
+#   {% set page_project = page_vars.project | default({}) %}
+#   # Placeholder for `vars.maven` object
+#   {% set page_maven = page_vars.maven | default({}) %}
+
+#   # = page.meta.vars.archetype.group_id
+#   {% set archetype_group_id = page_archetype.group_id | default('archetype_group_id') %}
+#   # = page.meta.vars.archetype.artifact_id
+#   {% set archetype_artifact_id = page_archetype.artifact_id | default('archetype_artifact_id') %}
+#   # = page.meta.vars.project.artifact_id
+#   {% set project_artifact_id = page_project.artifact_id | default('project_artifact_id') %}
+#   # = page.meta.vars.project.type
+#   {% set project_type = page_project.type | default('the current type of') %}
+#   # = page.meta.vars.project.product_type
+#   {% set product_type = page_project.product_type | default('non-vro') %}
+#   # = page.meta.vars.project.workflows_path
+#   {% set workflows_path = page_project.workflows_path | default('project_workflows_path') %}
+#   # = page.meta.vars.maven.goal
+#   {% set maven_goal = page_maven.goal | default('vrealize') %}
+#   # = page.meta.vars.maven.property_prefix
+#   {% set property_prefix = page_maven.property_prefix | default('') %}
+#   # = page.meta.vars.maven.installer_directory_name
+#   {% set installer_directory_name = page_maven.installer_directory_name | default('') %}
+#   # = page.meta.vars.maven.installer_file_extension
+#   {% set installer_file_extension = page_maven.installer_file_extension | default('') %}
