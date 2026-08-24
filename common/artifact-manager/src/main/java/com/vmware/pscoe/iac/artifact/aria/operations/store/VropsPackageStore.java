@@ -376,7 +376,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 		final List<String> customGroupNames = vropsPackageDescriptor.getCustomGroup();
 		if (customGroupNames != null) {
-			exportCustomGroups(vropsPackage, customGroupNames);
+			exportCustomGroups(vropsPackage, customGroupNames, vropsPackageDescriptor.getDefaultPolicy());
 		} else {
 			logger.info("No custom group configurations found in content.yaml");
 		}
@@ -1378,7 +1378,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @param customGroupNames names of the custom groups to be exported.
 	 * @throws RuntimeException if the export fails.
 	 */
-	private void exportCustomGroups(final Package vropsPackage, final List<String> customGroupNames) {
+	private void exportCustomGroups(final Package vropsPackage, final List<String> customGroupNames,
+			final String defaultPolicyName) {
 		File customGroupTargetDir = new File(this.tempVropsExportDir, "custom_groups");
 		if (!customGroupTargetDir.exists()) {
 			logger.info("Created temporary directory {}", customGroupTargetDir.getAbsolutePath());
@@ -1390,6 +1391,34 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			logger.error("No custom groups found in vROPs");
 			return;
 		}
+
+		String resolvedDefaultPolicy = null;
+
+		try {
+			PolicyDTO.Policy systemDefaultPolicy = restClient.getDefaultPolicy();
+			if (systemDefaultPolicy != null) {
+				resolvedDefaultPolicy = systemDefaultPolicy.getName();
+			}
+		} catch (Exception e) {
+			logger.warn(
+					"Could not retrieve default policy from vROps. Message: {}. Falling back to default policy defined in the descriptor.",
+					e.getMessage());
+		}
+
+		// If default policy is not resolved via API, extract from the descriptor
+		// (content.yaml)
+		if (StringUtils.isBlank(resolvedDefaultPolicy)) {
+			logger.warn(
+					"Could not retrieve default policy from descriptor, falling back to static string 'Default Policy'.");
+			resolvedDefaultPolicy = defaultPolicyName;
+		}
+
+		// If default policy is not resolved via API and not defined in descriptor -
+		// fallback to "Default Policy"
+		if (StringUtils.isBlank(resolvedDefaultPolicy)) {
+			resolvedDefaultPolicy = RestClientVrops.DEFAULT_POLICY_NAME;
+		}
+
 		// extract all policies in order to assign name of the policy in the target JSON
 		// file
 		List<PolicyDTO.Policy> policies = restClient.getAllPolicies();
@@ -1406,6 +1435,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 						messages.append(e.getMessage());
 						continue;
 					}
+				} else {
+					customGroup.setPolicy(resolvedDefaultPolicy);
 				}
 				String payload = this.serializeObject(customGroup);
 				if (StringUtils.isEmpty(payload)) {
