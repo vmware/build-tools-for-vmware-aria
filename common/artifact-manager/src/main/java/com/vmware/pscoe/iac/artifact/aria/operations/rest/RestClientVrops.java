@@ -227,6 +227,10 @@ public class RestClientVrops extends RestClient {
 	 * VROPS_8_17_0 version.
 	 */
 	private static final String VROPS_8_17 = "8.17";
+	/**
+	 * Default Policy name constant.
+	 */
+	public static final String DEFAULT_POLICY_NAME = "Default Policy";
 
 	/**
 	 * configuration.
@@ -848,7 +852,7 @@ public class RestClientVrops extends RestClient {
 	 * @param customGroupName    - the custom group name.
 	 * @param customGroupPayload - the payload of the custom group as json.
 	 */
-	public void importCustomGroupInVrops(String customGroupName, String customGroupPayload) {
+	public void importCustomGroupInVrops(String customGroupName, String customGroupPayload, String defaultPolicyName) {
 		if (StringUtils.isEmpty(customGroupPayload)) {
 			return;
 		}
@@ -857,8 +861,43 @@ public class RestClientVrops extends RestClient {
 		HttpMethod method = customGroupExists(customGroupPayload) ? HttpMethod.PUT : HttpMethod.POST;
 		CustomGroupDTO.Group customGroup = serializeCustomGroup(customGroupPayload);
 
+		// resolve the policy id from the name. If policy is not explicitly set use
+		// Default Policy otherwise the group will not actually be functional
+
 		// resolve the policy id from the name
-		PolicyDTO.Policy policy = this.findPolicyByName(customGroup.getPolicy());
+		String policyName = customGroup.getPolicy();
+
+		if (StringUtils.isBlank(policyName)) {
+			policyName = defaultPolicyName;
+			System.out.println("IS BLANK 1. use fefault= " + defaultPolicyName);
+
+		}
+
+		if (StringUtils.isBlank(policyName)) {
+			System.out.println("IS BLANK 2 - use system");
+			try {
+				PolicyDTO.Policy systemDefaultPolicy = this.getDefaultPolicy();
+				System.out.println("System default policy:::::: " + systemDefaultPolicy.getName());
+
+				if (systemDefaultPolicy != null) {
+					policyName = systemDefaultPolicy.getName();
+				}
+			} catch (Exception e) {
+				logger.warn(
+						"Could not retrieve default policy from vROPs, falling back to static string 'Default Policy'. Message: {}",
+						e.getMessage());
+			}
+		}
+
+		if (StringUtils.isBlank(policyName)) {
+			policyName = DEFAULT_POLICY_NAME;
+			System.out.println("IS blank 3 - use static " + policyName);
+
+		}
+
+		System.out.println("POLICY push  ?  " + customGroup.getPolicy());
+		System.out.println("FINAL RES " + policyName);
+		PolicyDTO.Policy policy = this.findPolicyByName(policyName);
 		customGroup.setPolicy(policy.getId());
 
 		// vROPs requires the group type to exists prior to creating
@@ -2262,9 +2301,9 @@ public class RestClientVrops extends RestClient {
 		if (!(definition instanceof AlertDefinitionDTO.AlertDefinition)) {
 			return;
 		}
-		//remove alert id
+		// remove alert id
 		((AlertDefinitionDTO.AlertDefinition) definition).setId(null);
-		//remove alert condition ids 
+		// remove alert condition ids
 		for (State state : ((AlertDefinitionDTO.AlertDefinition) definition).getStates()) {
 			if (state.getBaseSymptomSet() == null) {
 				continue;

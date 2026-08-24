@@ -183,7 +183,8 @@ public class VropsPackageStoreTest {
 				VropsPackageMemberType.SYMPTOM_DEFINITION, new HashMap<>());
 		Mockito.doNothing().when(restClientMock).importDefinitionsInVrops(new HashMap<>(),
 				VropsPackageMemberType.RECOMMENDATION, new HashMap<>());
-		Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload);
+		Mockito.doNothing().when(restClientMock).importCustomGroupInVrops(testCustomGroupName, testCustomGroupPayload,
+				defaultPolicy);
 		Mockito.doNothing().when(restClientMock).setDefaultPolicy(defaultPolicy);
 		Mockito.doNothing().when(restClientMock).setPolicyPriorities(Arrays.asList(new String[] { policyId }));
 		Mockito.doNothing().when(restClientMock).importPolicyFromZip(any(), Mockito.isA(File.class), anyBoolean());

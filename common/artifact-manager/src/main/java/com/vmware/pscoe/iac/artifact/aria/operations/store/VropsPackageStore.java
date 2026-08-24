@@ -1104,13 +1104,24 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			return;
 		}
 
+		String defaultPolicyFromDescriptor = null;
+		File contentYamlFile = new File(tmpDir, CONTENT_YAML_FILE_NAME);
+		if (contentYamlFile.exists()) {
+			try {
+				VropsPackageDescriptor descriptor = this.parseContentYamlFile(contentYamlFile);
+				defaultPolicyFromDescriptor = descriptor.getDefaultPolicy();
+			} catch (Exception e) {
+				logger.warn("Could not parse content.yaml for default policy fallback: {}", e.getMessage());
+			}
+		}
+
 		StringBuilder messages = new StringBuilder();
 		for (File customGroupFile : FileUtils.listFiles(customGroupsDir, new String[] { "json" }, false)) {
 			String customGroup = FilenameUtils.removeExtension(customGroupFile.getName());
 			try {
 				logger.info("Importing custom group: '{}'", customGroup);
 				String customGroupPayload = readCustomGroupFile(customGroupFile);
-				restClient.importCustomGroupInVrops(customGroup, customGroupPayload);
+				restClient.importCustomGroupInVrops(customGroup, customGroupPayload, defaultPolicyFromDescriptor);
 				logger.info("Imported custom group: '{}'", customGroup);
 			} catch (Exception e) {
 				messages.append(String.format("The custom group '%s' could not be imported : %s %n", customGroup,

@@ -1,13 +1,13 @@
-describe("ExportShapeValidationTests", function() {
+describe("ExportShapeValidationTests", function () {
 	const Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
-	it("Class.load() should accept constructor function exports", function() {
+	it("Class.load() should accept constructor function exports", function () {
 		const SingleExport = Class.load("com.vmware.pscoe.library.classtests.mocks", "singleExport");
 		expect(SingleExport).toBeDefined();
 		expect(typeof SingleExport).toBe("function");
 	});
 
-	it("Class.load() should accept object exports with constructor functions", function() {
+	it("Class.load() should accept object exports with constructor functions", function () {
 		const MultiExport = Class.load("com.vmware.pscoe.library.classtests.mocks", "multiExport");
 		expect(MultiExport).toBeDefined();
 		expect(typeof MultiExport).toBe("object");
@@ -15,10 +15,10 @@ describe("ExportShapeValidationTests", function() {
 		expect(MultiExport.Multi2Cls).toBeDefined();
 	});
 
-	it("Class.validateExportShape() should pass for constructor function", function() {
-		const TestClass = Class.define(function TestClass() {}, {});
+	it("Class.validateExportShape() should pass for constructor function", function () {
+		const TestClass = Class.define(function TestClass() { }, {});
 		const report = Class.validateExportShape(TestClass, "test.module", "TestClass");
-		
+
 		expect(report).toBeDefined();
 		expect(report.exportType).toBe("function");
 		expect(report.isFunction).toBe(true);
@@ -26,13 +26,13 @@ describe("ExportShapeValidationTests", function() {
 		expect(report.issues.length).toBe(0);
 	});
 
-	it("Class.validateExportShape() should detect object export shapes", function() {
-		const objExport = { 
-			BaseClass: Class.define(function BaseClass() {}, {}),
-			ExtendedClass: Class.define(function ExtendedClass() {}, {})
+	it("Class.validateExportShape() should detect object export shapes", function () {
+		const objExport = {
+			BaseClass: Class.define(function BaseClass() { }, {}),
+			ExtendedClass: Class.define(function ExtendedClass() { }, {})
 		};
 		const report = Class.validateExportShape(objExport, "com.test.module", "MultiClass");
-		
+
 		expect(report).toBeDefined();
 		expect(report.exportType).toBe("object");
 		expect(report.isFunction).toBe(false);
@@ -42,18 +42,18 @@ describe("ExportShapeValidationTests", function() {
 		expect(report.issues[0]).toContain("E_EXPORT_SHAPE_MISMATCH");
 	});
 
-	it("Class.validateExportShape() should report on invalid exports", function() {
+	it("Class.validateExportShape() should report on invalid exports", function () {
 		const report = Class.validateExportShape(null, "com.test.module", "NullClass");
-		
+
 		expect(report).toBeDefined();
 		expect(report.isFunction).toBe(false);
 		expect(report.issues.length).toBeGreaterThan(0);
 		expect(report.issues[0]).toContain("E_EXPORT_SHAPE_INVALID");
 	});
 
-	it("Class.validateExportShape() should detect non-function/non-object exports", function() {
+	it("Class.validateExportShape() should detect non-function/non-object exports", function () {
 		const report = Class.validateExportShape("string value", "com.test.module", "StringClass");
-		
+
 		expect(report).toBeDefined();
 		expect(report.exportType).toBe("string");
 		expect(report.isFunction).toBe(false);
@@ -61,27 +61,27 @@ describe("ExportShapeValidationTests", function() {
 		expect(report.issues[0]).toContain("E_EXPORT_SHAPE_INVALID");
 	});
 
-	it("Class.load() should log and still return the value when export is not a constructor", function() {
+	it("Class.load() should log and still return the value when export is not a constructor", function () {
 		// Verify Class.load() emits a diagnostic log but remains backward-compatible for object exports.
 		const originalGetModule = System.getModule;
-		const errorMessages = [];
+		const warnMessages = [];
 		const originalError = System.error;
 		try {
-			System.getModule = function(moduleName) {
+			System.getModule = function (moduleName) {
 				if (moduleName === "com.vmware.pscoe.library.classtests.badexport") {
 					return {
 						name: moduleName,
 						actionDescriptions: [{ name: "BadAction" }],
-						BadAction: function() {
+						BadAction: function () {
 							return {
-								SomeClass: Class.define(function SomeClass() {}, {})
+								SomeClass: Class.define(function SomeClass() { }, {})
 							};
 						}
 					};
 				}
 				return originalGetModule(moduleName);
 			};
-			System.error = function(msg) { errorMessages.push(msg); };
+			System.warn = function (msg) { warnMessages.push(msg); };
 
 			// Must clear the class cache so Class.load() actually invokes the action
 			if (global.__classes__) {
@@ -94,16 +94,22 @@ describe("ExportShapeValidationTests", function() {
 			expect(loaded).toBeDefined();
 			expect(typeof loaded).toBe("object");
 			expect(loaded.SomeClass).toBeDefined();
+
+			// Diagnostic log was emitted
+			expect(warnMessages.length).toBeGreaterThan(0);
+			expect(warnMessages[0]).toContain("W_EXPORT_SHAPE_MISMATCH");
+			expect(warnMessages[0]).toContain("com.vmware.pscoe.library.classtests.badexport");
+			expect(warnMessages[0]).toContain("BadAction");
 		} finally {
 			System.getModule = originalGetModule;
 			System.error = originalError;
 		}
 	});
 
-	it("validateExportShape() report should include metadata", function() {
-		const TestClass = Class.define(function TestClass() {}, {});
+	it("validateExportShape() report should include metadata", function () {
+		const TestClass = Class.define(function TestClass() { }, {});
 		const report = Class.validateExportShape(TestClass, "com.example.module", "ExampleClass");
-		
+
 		expect(report.timestamp).toBeDefined();
 		expect(report.module).toBe("com.example.module");
 		expect(report.name).toBe("ExampleClass");

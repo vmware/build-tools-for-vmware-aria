@@ -1,0 +1,14 @@
+#!/bin/sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
+BASEDIR="$(dirname "$DIR")"
+REPO="$BASEDIR/repo"
+
+exec java $JAVA_OPTS \
+  -Djline.expandevents="false" \
+  -Djdk.tls.client.protocols="TLSv1,TLSv1.1,TLSv1.2" \
+  -Dapp.name="installer" \
+  -Dapp.repo="$REPO" \
+  -Dapp.home="$BASEDIR" \
+  -Dbasedir="$BASEDIR" \
+  -cp "$REPO/*" \
+  com.vmware.pscoe.iac.installer.Installer "$@"
