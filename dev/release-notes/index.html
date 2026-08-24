@@ -2406,10 +2406,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#fix-issue-with-connection-to-external-vro-for-vcf-9" class="md-nav__link">
+  <a href="#fix-issue-with-connection-to-external-orchestrator-for-vcf-9" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fix issue with connection to external VRO for VCF 9
+        Fix issue with connection to external Orchestrator for VCF 9
       
     </span>
   </a>
@@ -2417,10 +2417,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-vro-is-used-for-vcfa-host" class="md-nav__link">
+  <a href="#fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-orchestrator-is-used-for-vcfa-host" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fix issue with asking for VRA authentication parameters twice, when embedded VRO is used for VCFA host
+        Fix issue with asking for VRA authentication parameters twice, when embedded Orchestrator is used for VCFA host
       
     </span>
   </a>
@@ -2439,13 +2439,52 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#removed-import-mode-ask-in-interactive-mode-for-vro-packages" class="md-nav__link">
+  <a href="#removed-import-mode-ask-in-interactive-mode-for-orchestrator-packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Removed Import mode ask in interactive mode for VRO packages
+        Removed Import mode ask in interactive mode for Orchestrator packages
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fix-push-operation-failure-for-vcf-ops-custom-groups-import-when-no-policy-is-defined" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fix push operation failure for VCF Ops Custom Groups import when no Policy is defined
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fix push operation failure for VCF Ops Custom Groups import when no Policy is defined">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#previous-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previous Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2491,14 +2530,19 @@
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
-<h3 id="fix-issue-with-connection-to-external-vro-for-vcf-9"><em>Fix issue with connection to external VRO for VCF 9</em><a class="headerlink" href="#fix-issue-with-connection-to-external-vro-for-vcf-9" title="Permanent link">&para;</a></h3>
-<p>So far, it wasn't possible to connect to external VRO using BTVA, because it always used external VRO host as authentication host. Now BTVA autodetects if this is external VRO, and in case it is, it replaces host with authhost, just for authentication.</p>
-<h3 id="fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-vro-is-used-for-vcfa-host"><em>Fix issue with asking for VRA authentication parameters twice, when embedded VRO is used for VCFA host</em><a class="headerlink" href="#fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-vro-is-used-for-vcfa-host" title="Permanent link">&para;</a></h3>
-<p>This bug was observed only in interactive mode for the installer - it asked twice for same authentication parameters when both VCFA and embedded VRO are used.</p>
+<h3 id="fix-issue-with-connection-to-external-orchestrator-for-vcf-9"><em>Fix issue with connection to external Orchestrator for VCF 9</em><a class="headerlink" href="#fix-issue-with-connection-to-external-orchestrator-for-vcf-9" title="Permanent link">&para;</a></h3>
+<p>So far, it wasn't possible to connect to external Orchestrator using BTVA, because it always used external Orchestrator host as authentication host. Now BTVA autodetects if this is external Orchestrator, and in case it is, it replaces host with authhost, just for authentication.</p>
+<h3 id="fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-orchestrator-is-used-for-vcfa-host"><em>Fix issue with asking for VRA authentication parameters twice, when embedded Orchestrator is used for VCFA host</em><a class="headerlink" href="#fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-orchestrator-is-used-for-vcfa-host" title="Permanent link">&para;</a></h3>
+<p>This bug was observed only in interactive mode for the installer - it asked twice for same authentication parameters when both VCFA and embedded Orchestrator are used.</p>
 <h3 id="removed-csp-host-ask-in-interactive-mode-for-vravcfa-packages"><em>Removed CSP host ask in interactive mode for VRA/VCFA packages</em><a class="headerlink" href="#removed-csp-host-ask-in-interactive-mode-for-vravcfa-packages" title="Permanent link">&para;</a></h3>
-<p>For both VRA and VCFA packages, installer with stop asking for CSP (authentication host, a legacy coming from cloud VRA). Instead, CSP will be always same as VRA/VCFA host.</p>
-<h3 id="removed-import-mode-ask-in-interactive-mode-for-vro-packages"><em>Removed Import mode ask in interactive mode for VRO packages</em><a class="headerlink" href="#removed-import-mode-ask-in-interactive-mode-for-vro-packages" title="Permanent link">&para;</a></h3>
-<p>For VRO packages, installer with stop asking for Import mode (a legacy coming from VRO 7). Instead, this value will be always set to SKIP.</p>
+<p>For both VRA and VCFA packages, installer will stop asking for CSP (authentication host, a legacy coming from cloud VRA). Instead, CSP will be always same as VRA/VCFA host.</p>
+<h3 id="removed-import-mode-ask-in-interactive-mode-for-orchestrator-packages"><em>Removed Import mode ask in interactive mode for Orchestrator packages</em><a class="headerlink" href="#removed-import-mode-ask-in-interactive-mode-for-orchestrator-packages" title="Permanent link">&para;</a></h3>
+<p>For Orchestrator packages, installer will stop asking for Import mode (a legacy coming from VRO 7). Instead, this value will be always set to SKIP.</p>
+<h3 id="fix-push-operation-failure-for-vcf-ops-custom-groups-import-when-no-policy-is-defined"><em>Fix push operation failure for VCF Ops Custom Groups import when no Policy is defined</em><a class="headerlink" href="#fix-push-operation-failure-for-vcf-ops-custom-groups-import-when-no-policy-is-defined" title="Permanent link">&para;</a></h3>
+<h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>
+<p>During push operation if a Custom Group doesn't have "policy" field or the value is empty the operation fails with the following error: <code>Policy 'null' could not be found on the target system</code>.</p>
+<h4 id="new-behavior">New Behavior<a class="headerlink" href="#new-behavior" title="Permanent link">&para;</a></h4>
+<p>The import (push) operation for Custom Group allows for impty "policy" field and skips the operation that explicitly assigns a Policy to the Custom Group. This allows VCF Ops to use the system Default Policy for the Custom Group and dynamically update (assign) it when a new Policy is set as Default.</p>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
 
 
