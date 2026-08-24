@@ -39,21 +39,35 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
-### *Fix issue with connection to external VRO for VCF 9*
+### *Fix issue with connection to external Orchestrator for VCF 9*
 
-So far, it wasn't possible to connect to external VRO using BTVA, because it always used external VRO host as authentication host. Now BTVA autodetects if this is external VRO, and in case it is, it replaces host with authhost, just for authentication.
+So far, it wasn't possible to connect to external Orchestrator using BTVA, because it always used external Orchestrator host as authentication host. Now BTVA autodetects if this is external Orchestrator, and in case it is, it replaces host with authhost, just for authentication.
 
-### *Fix issue with asking for VRA authentication parameters twice, when embedded VRO is used for VCFA host*
+### *Fix issue with asking for VRA authentication parameters twice, when embedded Orchestrator is used for VCFA host*
 
-This bug was observed only in interactive mode for the installer - it asked twice for same authentication parameters when both VCFA and embedded VRO are used.
+This bug was observed only in interactive mode for the installer - it asked twice for same authentication parameters when both VCFA and embedded Orchestrator are used.
 
 ### *Removed CSP host ask in interactive mode for VRA/VCFA packages*
 
-For both VRA and VCFA packages, installer with stop asking for CSP (authentication host, a legacy coming from cloud VRA). Instead, CSP will be always same as VRA/VCFA host.
+For both VRA and VCFA packages, installer will stop asking for CSP (authentication host, a legacy coming from cloud VRA). Instead, CSP will be always same as VRA/VCFA host.
 
-### *Removed Import mode ask in interactive mode for VRO packages*
+### *Removed Import mode ask in interactive mode for Orchestrator packages*
 
-For VRO packages, installer with stop asking for Import mode (a legacy coming from VRO 7). Instead, this value will be always set to SKIP.
+For Orchestrator packages, installer will stop asking for Import mode (a legacy coming from VRO 7). Instead, this value will be always set to SKIP.
+
+### *Update push and pull operation for VCF Ops Custom Groups to evaluate and set the Default Policy when no Policy is defined*
+
+When a Custom Group is created from the UI and no Policy is explicitly selected, the Default Policy is applied. However, the API still returns an empty string / null for Policy ID. We explicitly force a Default Policy in that case.
+
+#### Previous Behavior
+
+During pull operation the local JSON file doesn't contain "policy" field. During push operation, the operation fails with the following error: `Policy 'null' could not be found on the target system`.
+
+#### New Behavior
+
+During export (pull) operation if no Policy is present on the retrieved Custom Group, the system Default Policy is retrieved from VCF Operations via REST API and set in "policy" field. If the REST operation fails or no system Default Policy is returned, the value defined in "default-policy" in the descriptor file is used. If that field is not defined, "Default Policy" is used as fallback string.
+
+During import (push) operation if no "policy" field is set for the Custom Group in the local JSON file the value defined in "default-policy" in the descriptor file is used. If that field is not defined the system Default Policy is retrieved from VCF Operations via REST API. If the REST operation fails or no system Default Policy is returned, "Default Policy" is used as fallback string.
 
 ## Upgrade procedure
 
