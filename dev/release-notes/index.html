@@ -2402,6 +2402,56 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fix-issue-with-connection-to-external-vro-for-vcf-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fix issue with connection to external VRO for VCF 9
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-vro-is-used-for-vcfa-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fix issue with asking for VRA authentication parameters twice, when embedded VRO is used for VCFA host
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed-csp-host-ask-in-interactive-mode-for-vravcfa-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removed CSP host ask in interactive mode for VRA/VCFA packages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed-import-mode-ask-in-interactive-mode-for-vro-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removed Import mode ask in interactive mode for VRO packages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2441,6 +2491,14 @@
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
+<h3 id="fix-issue-with-connection-to-external-vro-for-vcf-9"><em>Fix issue with connection to external VRO for VCF 9</em><a class="headerlink" href="#fix-issue-with-connection-to-external-vro-for-vcf-9" title="Permanent link">&para;</a></h3>
+<p>So far, it wasn't possible to connect to external VRO using BTVA, because it always used external VRO host as authentication host. Now BTVA autodetects if this is external VRO, and in case it is, it replaces host with authhost, just for authentication.</p>
+<h3 id="fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-vro-is-used-for-vcfa-host"><em>Fix issue with asking for VRA authentication parameters twice, when embedded VRO is used for VCFA host</em><a class="headerlink" href="#fix-issue-with-asking-for-vra-authentication-parameters-twice-when-embedded-vro-is-used-for-vcfa-host" title="Permanent link">&para;</a></h3>
+<p>This bug was observed only in interactive mode for the installer - it asked twice for same authentication parameters when both VCFA and embedded VRO are used.</p>
+<h3 id="removed-csp-host-ask-in-interactive-mode-for-vravcfa-packages"><em>Removed CSP host ask in interactive mode for VRA/VCFA packages</em><a class="headerlink" href="#removed-csp-host-ask-in-interactive-mode-for-vravcfa-packages" title="Permanent link">&para;</a></h3>
+<p>For both VRA and VCFA packages, installer with stop asking for CSP (authentication host, a legacy coming from cloud VRA). Instead, CSP will be always same as VRA/VCFA host.</p>
+<h3 id="removed-import-mode-ask-in-interactive-mode-for-vro-packages"><em>Removed Import mode ask in interactive mode for VRO packages</em><a class="headerlink" href="#removed-import-mode-ask-in-interactive-mode-for-vro-packages" title="Permanent link">&para;</a></h3>
+<p>For VRO packages, installer with stop asking for Import mode (a legacy coming from VRO 7). Instead, this value will be always set to SKIP.</p>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
 
 
