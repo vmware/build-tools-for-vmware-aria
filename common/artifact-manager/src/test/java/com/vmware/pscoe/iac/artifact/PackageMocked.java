@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -74,7 +75,9 @@ public final class PackageMocked {
 	 */
 	public static File createSamplePackageZip(File dir, String viewName, String viewId, String dashboardName, String alertDefinitionName) throws IOException {
 		String contentXml = "<Content><Views><ViewDef id=\"" + viewId + "\"></ViewDef></Views></Content>";
-		String contentYaml = "---\npolicy:\n  - policy1\ndefault-policy: policy1\n";
+		// content.yaml must list exactly what the package contains (view + alert-definition).
+		// No policy entry because there is no policies/<name>.zip file in the package.
+		String contentYaml = "---\nview:\n  - " + viewName + "\nalert-definition:\n  - " + alertDefinitionName + "\ndefault-policy: policy1\n";
 
 		String resourceProp = "view." + viewId + ".title: value\nview." + viewId + ".something: value2\n";
 
@@ -129,6 +132,37 @@ public final class PackageMocked {
 		zipOut.close();
 		fos.close();
 
+		return tempZip;
+	}
+
+	/**
+	 * Creates a vROps package ZIP with the given content.yaml and arbitrary file entries.
+	 * Use this for precise control over the package structure in validation tests.
+	 *
+	 * @param dir         directory where to write the generated ZIP file
+	 * @param contentYaml content of the content.yaml file, or {@code null} to omit it
+	 * @param entries     map of zip-entry path (e.g. "views/MyView.xml") to UTF-8 file content
+	 * @return file handle to the generated ZIP
+	 * @throws IOException if ZIP creation fails
+	 */
+	public static File createVropsPackageZip(File dir, String contentYaml,
+			Map<String, String> entries) throws IOException {
+		File tempZip = new File(dir, UUID.randomUUID() + ".zip");
+		try (FileOutputStream fos = new FileOutputStream(tempZip);
+				ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+
+			if (contentYaml != null) {
+				ZipEntry yamlEntry = new ZipEntry("content.yaml");
+				zipOut.putNextEntry(yamlEntry);
+				zipOut.write(contentYaml.getBytes(StandardCharsets.UTF_8));
+			}
+
+			for (Map.Entry<String, String> entry : entries.entrySet()) {
+				ZipEntry zipEntry = new ZipEntry(entry.getKey());
+				zipOut.putNextEntry(zipEntry);
+				zipOut.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
+			}
+		}
 		return tempZip;
 	}
 }
