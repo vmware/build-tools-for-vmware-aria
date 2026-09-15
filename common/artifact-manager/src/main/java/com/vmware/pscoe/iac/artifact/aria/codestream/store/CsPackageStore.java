@@ -18,12 +18,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.vmware.pscoe.iac.artifact.aria.codestream.configuration.ConfigurationCs;
+import com.vmware.pscoe.iac.artifact.aria.codestream.models.Variable;
 import com.vmware.pscoe.iac.artifact.aria.codestream.rest.RestClientCs;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageContent;
 import com.vmware.pscoe.iac.artifact.aria.codestream.store.models.CsPackageDescriptor;
@@ -197,6 +202,14 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 			throw new RuntimeException("Unable to extract pacakge.", e);
 		}
 
+		// If content.yaml is present in the package, validate its content against the unpacked files
+		File contentYamlFile = new File(tmp, "content.yaml");
+		if (contentYamlFile.exists()) {
+			logger.info("Validating package content against content.yaml descriptor.");
+			CsPackageDescriptor descriptor = CsPackageDescriptor.getInstance(contentYamlFile);
+			validateContentMatchesDescriptor(tmp, descriptor);
+		}
+
 		CsTypeStoreFactory storeFactory = CsTypeStoreFactory.withConfig(restClient, csPackage, config, null);
 		for (CsPackageContent.ContentType type : CsTypeStoreFactory.importOrder) {
 			logger.info("IMPORTING : {}", type.getTypeValue());
@@ -204,6 +217,129 @@ public class CsPackageStore extends GenericPackageStore<CsPackageDescriptor> {
 		}
 
 		return csPackage;
+	}
+
+	/**
+	 * Validates that the content in the given directory matches the content described in the package descriptor.
+	 * Both directions are checked for each content type.
+	 *
+	 * @param directory  the directory containing the unpacked package content
+	 * @param descriptor the package descriptor loaded from content.yaml
+	 * @throws RuntimeException if the content does not match the descriptor
+	 */
+	private void validateContentMatchesDescriptor(final File directory, final CsPackageDescriptor descriptor) {
+		List<String> errors = new ArrayList<>();
+
+		validateOneFilePerItem(directory, "pipelines", "yaml", descriptor.getPipeline(), "pipeline", errors);
+		validateVariables(directory, descriptor.getVariable(), errors);
+		validateOneFilePerItem(directory, "endpoints", "yaml", descriptor.getEndpoint(), "endpoint", errors);
+		validateOneFilePerItem(directory, "custom-integrations", "yaml",
+				descriptor.getCustomIntegration(), "custom-integration", errors);
+		validateOneFilePerItem(directory, "git-webhooks", "yaml", descriptor.getGitWebhook(), "git-webhook", errors);
+		validateOneFilePerItem(directory, "docker-webhooks", "yaml",
+				descriptor.getDockerWebhook(), "docker-webhook", errors);
+		validateOneFilePerItem(directory, "gerrit-triggers", "yaml",
+				descriptor.getGerritTrigger(), "gerrit-trigger", errors);
+		validateOneFilePerItem(directory, "gerrit-listeners", "yaml",
+				descriptor.getGerritListener(), "gerrit-listener", errors);
+
+		if (!errors.isEmpty()) {
+			throw new RuntimeException(
+				"Package content does not match content.yaml descriptor. Please update either the package "
+					+ "content or content.yaml to match the existing state:\n" + String.join("\n", errors));
+		}
+	}
+
+	/**
+	 * Validates a content type where each item has exactly one corresponding file on disk.
+	 */
+	private void validateOneFilePerItem(final File directory, final String subDir, final String extension,
+			final List<String> descriptorItems, final String contentType, final List<String> errors) {
+		List<String> inDescriptor = descriptorItems != null ? descriptorItems : Collections.emptyList();
+		File dir = new File(directory, subDir);
+		List<String> onDisk = getFilesWithoutExtension(dir, extension);
+		reportMismatches(contentType, inDescriptor, onDisk, errors);
+	}
+
+	/**
+	 * Validates variables: all variables are stored in a single variables/variables.yaml file.
+	 * Checks that the variable names in the file match those listed in the descriptor.
+	 */
+	private void validateVariables(final File directory, final List<String> descriptorVars,
+			final List<String> errors) {
+		List<String> inDescriptor = descriptorVars != null ? descriptorVars : Collections.emptyList();
+		File variablesFile = new File(new File(directory, "variables"), "variables.yaml");
+
+		if (inDescriptor.isEmpty() && !variablesFile.exists()) {
+			return;
+		}
+		if (!inDescriptor.isEmpty() && !variablesFile.exists()) {
+			errors.add(String.format(
+					"  [variable] Variables are listed in content.yaml %s but '%s' does not exist.",
+					inDescriptor, variablesFile.getPath()));
+			return;
+		}
+		if (inDescriptor.isEmpty() && variablesFile.exists()) {
+			errors.add(String.format(
+					"  [variable] '%s' exists but no variables are listed in content.yaml.",
+					variablesFile.getPath()));
+			return;
+		}
+
+		// Both have content — parse the file and compare variable names
+		try {
+			YAMLMapper yamlMapper = new YAMLMapper();
+			Variable[] variables = yamlMapper.readValue(variablesFile, Variable[].class);
+			List<String> onDisk = Arrays.stream(variables)
+					.map(Variable::getName)
+					.sorted()
+					.collect(Collectors.toList());
+			reportMismatches("variable", inDescriptor, onDisk, errors);
+		} catch (IOException e) {
+			errors.add(String.format("  [variable] Unable to read variables file '%s': %s",
+					variablesFile.getPath(), e.getMessage()));
+		}
+	}
+
+	/**
+	 * Returns a sorted list of file names (without extension) in the given directory.
+	 */
+	private List<String> getFilesWithoutExtension(final File dir, final String extension) {
+		if (!dir.exists() || !dir.isDirectory()) {
+			return Collections.emptyList();
+		}
+		File[] files = dir.listFiles(f -> f.isFile() && f.getName().endsWith("." + extension));
+		if (files == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.stream(files)
+				.map(f -> f.getName().substring(0, f.getName().length() - extension.length() - 1))
+				.sorted()
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Compares two lists and adds error messages to the errors list if they differ.
+	 */
+	private void reportMismatches(final String contentType, final List<String> inDescriptor,
+			final List<String> onDisk, final List<String> errors) {
+		List<String> missingOnDisk = inDescriptor.stream()
+				.filter(name -> !onDisk.contains(name))
+				.sorted()
+				.collect(Collectors.toList());
+		List<String> missingInDescriptor = onDisk.stream()
+				.filter(name -> !inDescriptor.contains(name))
+				.sorted()
+				.collect(Collectors.toList());
+
+		if (!missingOnDisk.isEmpty()) {
+			errors.add(String.format("  [%s] Listed in content.yaml but missing in package: %s",
+					contentType, missingOnDisk));
+		}
+		if (!missingInDescriptor.isEmpty()) {
+			errors.add(String.format("  [%s] Found in package but not listed in content.yaml: %s",
+					contentType, missingInDescriptor));
+		}
 	}
 
 	/**

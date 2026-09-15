@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1186,6 +1187,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			return;
 		}
 		File contentYamlFile = new File(tmpDir, CONTENT_YAML_FILE_NAME);
+		if (!contentYamlFile.exists()) {
+			return;
+		}
 		VropsPackageDescriptor descriptor = this.parseContentYamlFile(contentYamlFile);
 
 		if (descriptor.getDefaultPolicy() == null || descriptor.getDefaultPolicy().isEmpty()) {
@@ -1218,6 +1222,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			return;
 		}
 		File contentYamlFile = new File(tmpDir, CONTENT_YAML_FILE_NAME);
+		if (!contentYamlFile.exists()) {
+			return;
+		}
 		VropsPackageDescriptor descriptor = this.parseContentYamlFile(contentYamlFile);
 
 		if (descriptor.getPolicy() == null || descriptor.getPolicy().isEmpty()) {
@@ -1608,6 +1615,14 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		try {
 			new PackageManager(pkg).unpack(tmpDir);
 
+			// If content.yaml is present in the package, validate its content against the unpacked files
+			File contentYamlFile = new File(tmpDir, CONTENT_YAML_FILE_NAME);
+			if (contentYamlFile.exists()) {
+				logger.info("Validating package content against content.yaml descriptor.");
+				VropsPackageDescriptor descriptor = this.parseContentYamlFile(contentYamlFile);
+				validateContentMatchesDescriptor(tmpDir, descriptor);
+			}
+
 			addViewToImportList(pkg, tmpDir);
 			addDashboardToImportList(pkg, tmpDir);
 			addReportToImportList(pkg, tmpDir);
@@ -1936,6 +1951,169 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		}
 
 		filtered.store(out, null);
+	}
+
+	/**
+	 *
+	 * @param view View file
+	 * @return Returns View ID
+	 * @throws ConfigurationException throws configuration exception incase of
+	 *                                parsing error
+	 * @throws IOException            throws IO exception if input stream not
+	 *                                available
+	 */
+	/**
+	 * Validates that the content in the given directory matches the content described in the package descriptor.
+	 * Both directions are checked for each content type. Wildcard entries in the descriptor are used for matching
+	 * files on disk but do not require a matching file to be present (since wildcards may match zero items).
+	 *
+	 * @param tmpDir     the directory containing the unpacked package content
+	 * @param descriptor the package descriptor loaded from content.yaml
+	 * @throws RuntimeException if the content does not match the descriptor
+	 */
+	private void validateContentMatchesDescriptor(final File tmpDir, final VropsPackageDescriptor descriptor) {
+		List<String> errors = new ArrayList<>();
+
+		validateFilesForDescriptor(tmpDir, "views", "xml", descriptor.getView(), "view", errors);
+		validateFilesForDescriptor(tmpDir, "dashboards", "json", descriptor.getDashboard(), "dashboard", errors);
+		validateReportsForDescriptor(tmpDir, descriptor.getReport(), errors);
+		validateFilesForDescriptor(tmpDir, "alert_definitions", "json",
+				descriptor.getAlertDefinition(), "alert-definition", errors);
+		validateFilesForDescriptor(tmpDir, "symptom_definitions", "json",
+				descriptor.getSymptomDefinition(), "symptom-definition", errors);
+		validateFilesForDescriptor(tmpDir, "recommendations", "json",
+				descriptor.getRecommendation(), "recommendation", errors);
+		validateFilesForDescriptor(tmpDir, "supermetrics", "json", descriptor.getSuperMetric(), "super-metric", errors);
+		validateFilesForDescriptor(tmpDir, "metricconfigs", null, descriptor.getMetricConfig(), "metric-config", errors);
+		validateFilesForDescriptor(tmpDir, "custom_groups", "json", descriptor.getCustomGroup(), "custom-group", errors);
+		validateFilesForDescriptor(tmpDir, "policies", "zip", descriptor.getPolicy(), "policy", errors);
+
+		if (!errors.isEmpty()) {
+			throw new RuntimeException(
+				"Package content does not match content.yaml descriptor. Please update either the package "
+					+ "content or content.yaml to match the existing state:\n" + String.join("\n", errors));
+		}
+	}
+
+	/**
+	 * Validates a content type where items correspond to files in a subdirectory.
+	 * Wildcard descriptor entries are matched against disk files but do not require a file to exist.
+	 * Exact descriptor entries require at least one matching file on disk.
+	 *
+	 * @param tmpDir          the unpacked package directory
+	 * @param subDir          the subdirectory name within the package (e.g. "views")
+	 * @param extension       the file extension to match (e.g. "xml"), or {@code null} for all files
+	 * @param descriptorItems the list of items from content.yaml (may contain wildcards)
+	 * @param contentType     a display label used in error messages
+	 * @param errors          accumulated error messages
+	 */
+	private void validateFilesForDescriptor(final File tmpDir, final String subDir, final String extension,
+			final List<String> descriptorItems, final String contentType, final List<String> errors) {
+		List<String> inDescriptor = descriptorItems != null ? descriptorItems : Collections.emptyList();
+		File dir = new File(tmpDir, subDir);
+		List<String> onDisk = getFilesWithoutExtension(dir, extension);
+		reportWildcardAwareMismatches(contentType, inDescriptor, onDisk, errors);
+	}
+
+	/**
+	 * Validates reports, which are stored as subdirectories (one per report) rather than individual files.
+	 *
+	 * @param tmpDir          the unpacked package directory
+	 * @param descriptorItems the list of report names from content.yaml (may contain wildcards)
+	 * @param errors          accumulated error messages
+	 */
+	private void validateReportsForDescriptor(final File tmpDir, final List<String> descriptorItems,
+			final List<String> errors) {
+		List<String> inDescriptor = descriptorItems != null ? descriptorItems : Collections.emptyList();
+		File reportsDir = new File(tmpDir, "reports");
+		List<String> onDisk = getSubDirectoryNames(reportsDir);
+		reportWildcardAwareMismatches("report", inDescriptor, onDisk, errors);
+	}
+
+	/**
+	 * Returns a sorted list of names for the direct children of {@code dir} that are files.
+	 * When {@code extension} is non-null, only files with that extension are included and the
+	 * extension is stripped from the returned names.  When {@code extension} is {@code null},
+	 * all files are returned with their full names.
+	 *
+	 * @param dir       the directory to inspect
+	 * @param extension the required file extension (without the leading dot), or {@code null}
+	 * @return sorted list of names (without extension when extension is specified)
+	 */
+	private List<String> getFilesWithoutExtension(final File dir, final String extension) {
+		if (!dir.exists() || !dir.isDirectory()) {
+			return Collections.emptyList();
+		}
+		File[] files = extension != null
+				? dir.listFiles(f -> f.isFile() && f.getName().endsWith("." + extension))
+				: dir.listFiles(File::isFile);
+		if (files == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.stream(files)
+				.map(f -> extension != null
+						? f.getName().substring(0, f.getName().length() - extension.length() - 1)
+						: f.getName())
+				.sorted()
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Returns a sorted list of direct subdirectory names within {@code dir}.
+	 *
+	 * @param dir the directory to inspect
+	 * @return sorted list of subdirectory names
+	 */
+	private List<String> getSubDirectoryNames(final File dir) {
+		if (!dir.exists() || !dir.isDirectory()) {
+			return Collections.emptyList();
+		}
+		File[] subdirs = dir.listFiles(File::isDirectory);
+		if (subdirs == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.stream(subdirs)
+				.map(File::getName)
+				.sorted()
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Compares descriptor entries against names on disk, respecting wildcard patterns.
+	 * <ul>
+	 *   <li>Exact descriptor entries (no wildcard) that have no matching name on disk are reported.</li>
+	 *   <li>Wildcard descriptor entries skip the "must have a matching file" check.</li>
+	 *   <li>Names on disk not covered by any descriptor entry (exact or wildcard) are reported.</li>
+	 * </ul>
+	 *
+	 * @param contentType  display label for error messages
+	 * @param inDescriptor list of entries from content.yaml (may contain wildcards)
+	 * @param onDisk       list of names found on disk
+	 * @param errors       accumulated error messages
+	 */
+	private void reportWildcardAwareMismatches(final String contentType, final List<String> inDescriptor,
+			final List<String> onDisk, final List<String> errors) {
+		// Exact entries must have at least one matching file on disk
+		List<String> missingOnDisk = inDescriptor.stream()
+				.filter(entry -> !entry.contains(WILDCARD_MATCH_SYMBOL))
+				.filter(entry -> onDisk.stream().noneMatch(file -> this.isPackageAssetMatching(entry, file)))
+				.sorted()
+				.collect(Collectors.toList());
+
+		// Every file on disk must be covered by at least one descriptor entry (exact or wildcard)
+		List<String> missingInDescriptor = onDisk.stream()
+				.filter(file -> inDescriptor.stream().noneMatch(entry -> this.isPackageAssetMatching(entry, file)))
+				.sorted()
+				.collect(Collectors.toList());
+
+		if (!missingOnDisk.isEmpty()) {
+			errors.add(String.format("  [%s] Listed in content.yaml but missing in package: %s",
+					contentType, missingOnDisk));
+		}
+		if (!missingInDescriptor.isEmpty()) {
+			errors.add(String.format("  [%s] Found in package but not listed in content.yaml: %s",
+					contentType, missingInDescriptor));
+		}
 	}
 
 	/**
