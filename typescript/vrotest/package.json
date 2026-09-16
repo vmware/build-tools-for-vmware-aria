@@ -23,7 +23,7 @@
     "npm": ">=10.9.2"
   },
   "dependencies": {
-    "browserslist": "4.24.2",
+    "browserslist": "4.28.8",
     "iconv-lite": "0.6.3",
     "nyc": "17.1.0",
     "minimatch": "^10.2.4",
