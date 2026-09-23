@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * artifact-manager
  * %%
@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class VraNgReleaseManagerTest {
@@ -58,5 +58,47 @@ public class VraNgReleaseManagerTest {
 
 		// Then
 		verify(restClientVrang, Mockito.times(2)).releaseBlueprintVersion(Mockito.anyString(), Mockito.anyString());
+	}
+
+	/**
+	 * Verifies the fix for issue #1205:
+	 * When forceRelease=true (only a companion custom form changed, not the
+	 * blueprint YAML), releaseVersion must NOT be suppressed by the isUpdated()
+	 * check even though the YAML content is identical to the last released version.
+	 */
+	@Test
+	public void testForceReleaseIgnoresIsUpdatedCheck() {
+		// Given: blueprint content has NOT changed — isUpdated() would return false
+		String latestVersion = "1";
+		String identicalContent = "blueprint_content_1"; // same as bp.getContent()
+		when(restClientVrang.getBlueprintLastUpdatedVersion(bp.getId())).thenReturn(latestVersion);
+		when(restClientVrang.getBlueprintVersionContent(bp.getId(), latestVersion)).thenReturn(identicalContent);
+
+		// When: forceRelease=true (triggered when custom form changed)
+		vraNgReleaseManager.releaseNextVersion(bp, true);
+
+		// Then: a release MUST still be triggered
+		verify(restClientVrang, times(1)).releaseBlueprintVersion(anyString(), anyString());
+		// updateBlueprint must be called to touch the blueprint draft on vRA NG
+		verify(restClientVrang, times(1)).updateBlueprint(bp);
+	}
+
+	/**
+	 * When forceRelease=false and content has not changed, no release should happen.
+	 */
+	@Test
+	public void testNoReleaseWhenContentUnchangedAndNoForceRelease() {
+		// Given: content unchanged, no force
+		String latestVersion = "1";
+		String identicalContent = "blueprint_content_1";
+		when(restClientVrang.getBlueprintLastUpdatedVersion(bp.getId())).thenReturn(latestVersion);
+		when(restClientVrang.getBlueprintVersionContent(bp.getId(), latestVersion)).thenReturn(identicalContent);
+
+		// When
+		vraNgReleaseManager.releaseNextVersion(bp, false);
+
+		// Then: no release, no updateBlueprint
+		verify(restClientVrang, never()).releaseBlueprintVersion(anyString(), anyString());
+		verify(restClientVrang, never()).updateBlueprint(any());
 	}
 }

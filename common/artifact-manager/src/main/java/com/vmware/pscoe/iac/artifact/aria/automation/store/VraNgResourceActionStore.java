@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * artifact-manager
  * %%
@@ -6,14 +6,11 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
- */
-/** 
- * Package
  */
 package com.vmware.pscoe.iac.artifact.aria.automation.store;
 
@@ -35,7 +32,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgResourceAction;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgCustomFormSerializer;
 import com.vmware.pscoe.iac.artifact.aria.automation.utils.VraNgProjectUtil;
@@ -47,12 +47,16 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
 	/**
 	 * Separator for the Resource Type and the Resource Action Name. Used so we can
-	 * have unique names even if we have
-	 * two resource actions of same name with different types. You can have a
-	 * resource action with __ in the name
-	 * but not Source name with it.
+	 * have unique names even if we have two resource actions of same name with
+	 * different types.
 	 */
 	private static final String RESOURCE_ACTION_SEPARATOR = "__";
+
+	/**
+	 * The sourceType string used by vRA NG when a custom form belongs to a
+	 * resource action.
+	 */
+	private static final String RESOURCE_ACTION_FORM_SOURCE_TYPE = "resource.action";
 
 	/**
 	 * Get all server contents.
@@ -64,7 +68,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * The deleteResourecAction takes in name just for logging purposes...
+	 * The deleteResourceAction takes in name just for logging purposes.
 	 *
 	 * @param resId resource id
 	 */
@@ -74,7 +78,7 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
 	/**
 	 * Import Content.
-	 * 
+	 *
 	 * @param sourceDirectory source directory
 	 */
 	public void importContent(final File sourceDirectory) {
@@ -123,8 +127,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Exports all resource actions that do not match the filter passed.
-	 * 
+	 * Exports all resource actions that match the filter passed.
+	 *
 	 * @param resourceActionsToExport filtered list of resource actions to export
 	 */
 	protected void exportStoreContent(final List<String> resourceActionsToExport) {
@@ -164,30 +168,28 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	/**
 	 * Sanitize ResourceAction json from unnecessary elements that prevent store or
 	 * publish later the content.
-	 * 
+	 *
 	 * @param resourceActionJsonElement Resource Action Json Element
 	 */
 	private void sanitizeResourceActionJsonElement(final JsonObject resourceActionJsonElement) {
-
 		// leaving orgId in the JSON prevents pushing to different vRA organizations
-		// orgId is optional when importing in vRA, so it can be safely removed
 		resourceActionJsonElement.remove("orgId");
 
 		logger.debug("Removing id property from formDefinition element ...");
 		String formDefinitionItemName = "formDefinition";
 		String formDefinitionIdName = "id";
-		// When create new resource action, formDefinition element do not have to
-		// contain id property. See IAC-400.
+		// When creating a new resource action, formDefinition element must not
+		// contain an id property. See IAC-400.
 		resourceActionJsonElement.getAsJsonObject(formDefinitionItemName).remove(formDefinitionIdName);
 	}
 
 	/**
 	 * Save a resource action to a JSON file.
-	 * 
+	 *
 	 * @param pkg                source package
 	 * @param resourceActionName source resource action name
 	 * @param resourceActionJson source resource action json
-	 * @return Resoruce Action File
+	 * @return Resource Action File
 	 */
 	private File storeResourceActionOnFilesystem(final Package pkg, final String resourceActionName,
 			final String resourceActionJson) {
@@ -213,8 +215,10 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * Import resource actions from a file.
-	 * 
+	 * Import resource action from a file. After the two-phase import the companion
+	 * catalog-item custom form (if present) is applied via
+	 * {@link #processResourceActionCustomForm}.
+	 *
 	 * @param jsonFile file of the resource action
 	 */
 	private void importResourceAction(final File jsonFile) {
@@ -234,10 +238,8 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 			VraNgProjectUtil.changeProjectIdBetweenOrganizations(this.restClient, resourceActionJsonElement,
 					"projectId");
 
-			// Get resource action id property and use it to try to delete existing one
-			// resource action
+			// Get resource action id and try to delete existing one
 			String resourceActionId = resourceActionJsonElement.get("id").getAsString();
-			// Let's try to delete resource action first before import it.
 			try {
 				logger.info("Deleting resource action '{}' ('{}') if exists ...", resourceActionName, resourceActionId);
 				restClient.deleteResourceAction(resourceActionName, resourceActionId);
@@ -249,10 +251,19 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 			VraNgCustomFormSerializer.serialize(resourceActionJsonElement);
 			resourceActionJson = gson.toJson(resourceActionJsonElement);
 
+			// Phase 1: create the resource action → server returns the assigned form id
 			String resultResourceActionJson = restClient.importResourceAction(resourceActionName, resourceActionJson);
 			JsonObject resultJsonObject = updateFormInfoOnTopOfResult(
 					gson.fromJson(resultResourceActionJson, JsonObject.class), resourceActionJsonElement);
+
+			// Phase 2: re-import with the correct form id wired in
 			restClient.importResourceAction(resourceActionName, gson.toJson(resultJsonObject));
+
+			// Apply catalog-item-level custom form if one exists alongside this action
+			File sourceDirectory = jsonFile.getParentFile().getParentFile();
+			String resultResourceActionId = resultJsonObject.get("id").getAsString();
+			this.processResourceActionCustomForm(sourceDirectory, resourceActionName, resultResourceActionId);
+
 		} catch (ConfigurationException e) {
 			logger.error("Error importing resource action {}...", resourceActionName);
 			throw new RuntimeException(e);
@@ -265,28 +276,27 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 
 	/**
 	 * Populate Vro Endpoint.
-	 * 
-	 * @param resourceActionJsonElement file of the resource action
+	 *
+	 * @param resourceActionJsonElement the resource action JSON element
 	 */
 	private void populateVroEndpoint(final JsonObject resourceActionJsonElement) throws ConfigurationException {
 		String runnableItemName = "runnableItem";
 		String endpointLinkName = "endpointLink";
 
-		// remove endpointLink from the runnable item, it will be populated automaticaly
+		// remove endpointLink from the runnable item, it will be populated automatically
 		resourceActionJsonElement.getAsJsonObject(runnableItemName).remove(endpointLinkName);
 
-		// add the updated endpointLink fetched from the target
-		// environment/configuration
+		// add the updated endpointLink fetched from the target environment/configuration
 		resourceActionJsonElement.getAsJsonObject(runnableItemName).addProperty(endpointLinkName,
 				this.getVroTargetIntegrationEndpointLink());
 	}
 
 	/**
 	 * Update Form Info On Top Of Result.
-	 * 
-	 * @param resultJsonObject file of the resource action
-	 * @param sourceJsonObject file of the resource action
-	 * @return Json Object
+	 *
+	 * @param resultJsonObject the JSON returned by the first import call
+	 * @param sourceJsonObject the local JSON that was sent
+	 * @return updated Json Object
 	 */
 	private JsonObject updateFormInfoOnTopOfResult(final JsonObject resultJsonObject,
 			final JsonObject sourceJsonObject) {
@@ -296,5 +306,111 @@ public class VraNgResourceActionStore extends AbstractVraNgStore {
 		sourceForm.addProperty("id", newFormId);
 		resultJsonObject.add("formDefinition", sourceForm);
 		return resultJsonObject;
+	}
+
+	/**
+	 * Mirrors the blueprint companion-form detection pattern for resource actions.
+	 * <p>
+	 * Looks for {@code catalog-items/custom-forms/<resourceActionName>__FormData.json}
+	 * (and an optional {@code __FormStyles.css}) relative to the package root.
+	 * If the file does not exist, any orphaned server form is logged but left
+	 * unchanged. If the file exists and differs from the server form, the updated
+	 * form is applied via {@link com.vmware.pscoe.iac.artifact.aria.automation.rest.RestClientVraNg#importCustomForm}.
+	 * </p>
+	 *
+	 * @param sourceDirectory    the package root directory (parent of resource-actions/)
+	 * @param resourceActionName the resource action name, without the .json extension
+	 * @param resourceActionId   the resource action id returned after import
+	 */
+	private void processResourceActionCustomForm(final File sourceDirectory, final String resourceActionName,
+			final String resourceActionId) {
+
+		File customFormsFolder = Paths.get(sourceDirectory.getPath(), "catalog-items", "custom-forms").toFile();
+		File customFormDataFile = new File(customFormsFolder, resourceActionName + "__FormData.json");
+		File customFormStylesFile = new File(customFormsFolder, resourceActionName + "__FormStyles.css");
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+		// Step 1: If no local form file exists, check whether an orphaned one is
+		//         still on the server and log a notice.
+		if (!customFormDataFile.exists()) {
+			try {
+				VraNgCustomForm serverForm = this.restClient.getCustomFormByTypeAndSource(
+						RESOURCE_ACTION_FORM_SOURCE_TYPE, resourceActionId);
+				if (serverForm != null) {
+					logger.info(
+							"Orphaned catalog-item custom form detected on server for resource action '{}'. "
+									+ "No local form file found; server form remains unchanged.",
+							resourceActionName);
+				}
+			} catch (Exception e) {
+				logger.debug(
+						"No catalog-item custom form on server for resource action '{}'. Skipping.",
+						resourceActionName);
+			}
+			return;
+		}
+
+		// Step 2: Read local form, compare with server, apply if different.
+		try {
+			String localFormContent = new String(Files.readAllBytes(customFormDataFile.toPath()),
+					StandardCharsets.UTF_8);
+			JsonElement localFormJson = JsonParser.parseString(localFormContent);
+			String localFormNormalized = gson.toJson(localFormJson);
+
+			String localCssContent = "";
+			if (customFormStylesFile.exists()) {
+				localCssContent = new String(Files.readAllBytes(customFormStylesFile.toPath()),
+						StandardCharsets.UTF_8).trim();
+			}
+
+			boolean formChanged = true;
+			try {
+				VraNgCustomForm serverForm = this.restClient.getCustomFormByTypeAndSource(
+						RESOURCE_ACTION_FORM_SOURCE_TYPE, resourceActionId);
+				if (serverForm != null) {
+					String serverFormJsonNormalized = "";
+					String serverStyles = "";
+
+					if (serverForm.getForm() != null) {
+						serverFormJsonNormalized = gson.toJson(JsonParser.parseString(serverForm.getForm()));
+					}
+					if (serverForm.getStyles() != null) {
+						serverStyles = serverForm.getStyles().trim();
+					}
+
+					if (localFormNormalized.equals(serverFormJsonNormalized)
+							&& localCssContent.equals(serverStyles)) {
+						logger.debug(
+								"Catalog-item custom form for resource action '{}' matches server. Skipping update.",
+								resourceActionName);
+						formChanged = false;
+					}
+				}
+			} catch (Exception fe) {
+				logger.info(
+						"No catalog-item custom form on server for resource action '{}'. Treating as new.",
+						resourceActionName);
+			}
+
+			if (formChanged) {
+				logger.info("Applying catalog-item custom form for resource action '{}'.", resourceActionName);
+				VraNgCustomForm customForm = new VraNgCustomForm(
+						null,
+						resourceActionName,
+						localFormContent,
+						localCssContent.isEmpty() ? null : localCssContent,
+						resourceActionId,
+						RESOURCE_ACTION_FORM_SOURCE_TYPE,
+						"requestForm",
+						"ON",
+						"JSON");
+				this.restClient.importCustomForm(customForm, resourceActionId);
+			}
+
+		} catch (Exception e) {
+			logger.error("Failed to process catalog-item custom form for resource action '{}': {}",
+					resourceActionName, e.getMessage());
+		}
 	}
 }
