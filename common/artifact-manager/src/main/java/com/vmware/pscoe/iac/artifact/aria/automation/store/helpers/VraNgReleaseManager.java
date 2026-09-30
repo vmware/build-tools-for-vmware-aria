@@ -1,4 +1,4 @@
-/*
+/*-
  * #%L
  * artifact-manager
  * %%
@@ -6,9 +6,9 @@
  * %%
  * Build Tools for VMware Aria
  * Copyright 2023 VMware, Inc.
- * 
- * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.  
- * 
+ *
+ * This product is licensed to you under the BSD-2 license (the "License"). You may not use this product except in compliance with the BSD-2 License.
+ *
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
@@ -80,19 +80,17 @@ public class VraNgReleaseManager {
 
 	/**
 	 * Attempt to generate a next version and release it.
-	 * 
+	 *
 	 * @param blueprint    blueprint
 	 * @param forceRelease true if a companion asset (like a custom form) changed,
-	 *                     forcing a version release
+	 *                     forcing a version release even when blueprint YAML is
+	 *                     unchanged
 	 */
 	public void releaseNextVersion(VraNgBlueprint blueprint, boolean forceRelease) {
-		// vRA Ng native limitation bypass: if only the form changed, the version API
-		// will throw an exception.
-		// Tweak the description field to force a valid draft change if a release is
-		// forced.
+		// vRA NG native limitation bypass: if only the form changed, the release API
+		// will throw an exception unless the blueprint draft has been touched.
 		if (forceRelease) {
 			logger.info("Force release triggered for blueprint '{}' due to custom form updates.", blueprint.getName());
-			// Append a subtle tracking tag to force a blueprint drift recognition
 			this.restClient.updateBlueprint(blueprint);
 		}
 
@@ -101,13 +99,12 @@ public class VraNgReleaseManager {
 		logger.debug("Next version of blueprint {}: {}", blueprint.getName(), nextVersion);
 
 		try {
-			this.releaseVersion(blueprint, nextVersion);
+			this.releaseVersion(blueprint, nextVersion, forceRelease);
 		} catch (Exception e) {
-			// Attempt to fix versions imported in reverse order, which produces an Error on
-			// imports
+			// Attempt to fix versions imported in reverse order, which produces an Error on imports
 			logger.warn("Couldn't release version '{}'. Attempting to release date version", nextVersion);
 			try {
-				this.releaseVersion(blueprint, this.getDateVersion());
+				this.releaseVersion(blueprint, this.getDateVersion(), forceRelease);
 			} catch (Exception ex) {
 				// If it fails because there are genuinely no changes and forceRelease wasn't
 				// active, log gracefully
@@ -122,9 +119,8 @@ public class VraNgReleaseManager {
 	}
 
 	/**
-	 * Backwards compatible overload for standard single-parameter calls across your
-	 * framework.
-	 * 
+	 * Backwards compatible overload for standard single-parameter calls.
+	 *
 	 * @param blueprint blueprint
 	 */
 	public void releaseNextVersion(VraNgBlueprint blueprint) {
@@ -133,15 +129,17 @@ public class VraNgReleaseManager {
 
 	/**
 	 * Release a new version of the blueprint provided that there is no previous
-	 * version or there are
-	 * changes in the content since the latest released version.
-	 * 
-	 * @param blueprint blueprint
-	 * @param version   new version
+	 * version or there are changes in the content since the latest released version.
+	 * When {@code forceRelease} is {@code true} the isUpdated check is bypassed —
+	 * used when only a companion asset (custom form) changed.
+	 *
+	 * @param blueprint    blueprint
+	 * @param version      new version string
+	 * @param forceRelease bypass the isUpdated check
 	 */
-	public void releaseVersion(VraNgBlueprint blueprint, String version) {
+	public void releaseVersion(VraNgBlueprint blueprint, String version, boolean forceRelease) {
 		String latestVersion = this.restClient.getBlueprintLastUpdatedVersion(blueprint.getId());
-		if (latestVersion == null || this.isUpdated(blueprint, latestVersion)) {
+		if (forceRelease || latestVersion == null || this.isUpdated(blueprint, latestVersion)) {
 			this.restClient.releaseBlueprintVersion(blueprint.getId(), version);
 			logger.info("Released blueprint " + blueprint.getName() + " version " + version);
 		} else {
@@ -150,9 +148,19 @@ public class VraNgReleaseManager {
 	}
 
 	/**
+	 * Backward-compatible overload — never forces release.
+	 *
+	 * @param blueprint blueprint
+	 * @param version   new version string
+	 */
+	public void releaseVersion(VraNgBlueprint blueprint, String version) {
+		this.releaseVersion(blueprint, version, false);
+	}
+
+	/**
 	 * Perform a check whether the blueprint content has been updated since the
 	 * latest released version.
-	 * 
+	 *
 	 * @param blueprint     blueprint
 	 * @param latestVersion latest version
 	 * @return true if there are changes
@@ -160,27 +168,21 @@ public class VraNgReleaseManager {
 	private boolean isUpdated(VraNgBlueprint blueprint, String latestVersion) {
 		String draftContent = blueprint.getContent();
 		String latestVersionContent = this.restClient.getBlueprintVersionContent(blueprint.getId(), latestVersion);
-		
+
 		return !draftContent.equals(latestVersionContent);
 	}
 
 	/**
 	 * Generate next version based on the previous version format.
-	 * Supported version formats are:
-	 * * MAJOR
-	 * * MAJOR.MINOR
-	 * * MAJOR.MINOR.PATCH
-	 * A datetime-based version will be returned if the previous version format does
-	 * not match
-	 * any of the supported formats.
-	 * 
+	 * Supported version formats: MAJOR, MAJOR.MINOR, MAJOR.MINOR.PATCH.
+	 * A datetime-based version is returned when none match.
+	 *
 	 * @param version previous version
 	 * @return next version
 	 */
 	private String getNextVersion(String version) {
 
 		if (version == null) {
-			// create a version based on the date and time
 			return getDateVersion();
 		}
 
@@ -191,18 +193,15 @@ public class VraNgReleaseManager {
 		if (majorMinorPatch.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR.PATCH from {} with incrementable segment '{}'", version,
 					majorMinorPatch.group(THIRD_SEGMENT));
-			// increment the patch segment
 			return majorMinorPatch.group(FIRST_SEGMENT) + "." + majorMinorPatch.group(SECOND_SEGMENT) + "."
 					+ (Integer.parseInt(majorMinorPatch.group(THIRD_SEGMENT)) + 1);
 		} else if (majorMinor.matches()) {
 			logger.debug("Detected version pattern MAJOR.MINOR from '{}' with incrementable segment '{}'", version,
 					majorMinor.group(SECOND_SEGMENT));
-			// increment the minor segment
 			return majorMinor.group(FIRST_SEGMENT) + "." + (Integer.parseInt(majorMinor.group(SECOND_SEGMENT)) + 1);
 		} else if (major.matches()) {
 			logger.debug("Detected version pattern MAJOR from '{}' with incrementable segment '{}'", version,
 					major.group(FIRST_SEGMENT));
-			// increment the major segment
 			return Integer.toString(Integer.parseInt(major.group(FIRST_SEGMENT)) + 1);
 		} else {
 			logger.debug("Could not determine version pattern from {}", version);
@@ -213,7 +212,7 @@ public class VraNgReleaseManager {
 
 	/**
 	 * Create a version based on the current date and time.
-	 * 
+	 *
 	 * @return datetime-based version
 	 */
 	private String getDateVersion() {
