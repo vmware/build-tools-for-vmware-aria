@@ -15,6 +15,7 @@
 package com.vmware.pscoe.iac.artifact.aria.logs.store.v1;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +23,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -38,6 +41,7 @@ import org.mockito.Mockito;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vmware.pscoe.iac.artifact.PackageMocked;
 import com.vmware.pscoe.iac.artifact.aria.logs.configuration.ConfigurationVrli;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.RestClientVrliV1;
 import com.vmware.pscoe.iac.artifact.aria.logs.rest.v1.models.AlertDTO;
@@ -91,9 +95,72 @@ public final class VrliPackageStoreTestV1 {
 		System.out.println("==========================================================");
 	}
 
+	// -------------------------------------------------------------------------
+	// Content-validation tests (validateContentMatchesDescriptor) — V1 store
+	// -------------------------------------------------------------------------
+
 	@Test
-	void exportAlertsApiV1() throws IOException {
-		// GIVEN
+	void importPackageValidationPassesWhenContentYamlMatchesPackage() throws IOException {
+		// GIVEN: content.yaml listing one alert; package contains that alert JSON file.
+		// restClient.importAlert is a void mock that silently does nothing.
+		String yaml = "---\nalerts:\n  - MyAlert\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("alerts/MyAlert.json", "{\"id\":\"1\",\"name\":\"MyAlert\"}");
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+		Package pkg = PackageFactory.getInstance(PackageType.VRLI, zip);
+
+		// WHEN / THEN: no exception expected
+		storeApiVersion1.importPackage(pkg, false, false);
+		assertTrue(Boolean.TRUE);
+	}
+
+	@Test
+	void importPackageValidationFailsWhenExactEntryInContentYamlMissingFromPackage() throws IOException {
+		// GIVEN: content.yaml lists an alert that has no corresponding file in the package
+		String yaml = "---\nalerts:\n  - MissingAlert\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+		Package pkg = PackageFactory.getInstance(PackageType.VRLI, zip);
+
+		// WHEN / THEN: RuntimeException must mention the missing alert
+		RuntimeException ex = assertThrows(RuntimeException.class,
+				() -> storeApiVersion1.importPackage(pkg, false, false));
+		assertTrue(ex.getMessage().contains("MissingAlert"));
+		assertTrue(ex.getMessage().contains("missing on disk"));
+	}
+
+	@Test
+	void importPackageValidationFailsWhenPackageHasFileNotListedInContentYaml() throws IOException {
+		// GIVEN: content.yaml with an empty alerts list; package contains an alert file
+		String yaml = "---\nalerts:\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("alerts/ExtraAlert.json", "{\"id\":\"1\",\"name\":\"ExtraAlert\"}");
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+		Package pkg = PackageFactory.getInstance(PackageType.VRLI, zip);
+
+		// WHEN / THEN: RuntimeException must mention the unlisted file
+		RuntimeException ex = assertThrows(RuntimeException.class,
+				() -> storeApiVersion1.importPackage(pkg, false, false));
+		assertTrue(ex.getMessage().contains("ExtraAlert"));
+		assertTrue(ex.getMessage().contains("not listed in content.yaml"));
+	}
+
+	@Test
+	void importPackageValidationIsSkippedWhenNoContentYamlIsPresent() throws IOException {
+		// GIVEN: package has an alert file but NO content.yaml – validation must be skipped.
+		// restClient.importAlert is a void mock that silently does nothing.
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("alerts/SomeAlert.json", "{\"id\":\"1\",\"name\":\"SomeAlert\"}");
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), null, entries);
+		Package pkg = PackageFactory.getInstance(PackageType.VRLI, zip);
+
+		// WHEN / THEN: no exception expected
+		storeApiVersion1.importPackage(pkg, false, false);
+		assertTrue(Boolean.TRUE);
+	}
+
+	@Test
+	void exportAlertsApiV1() throws IOException {		// GIVEN
 		Mockito.doReturn(getAlerts()).when(restClientApiVersion1).getAllAlerts();
 		Mockito.doReturn(getAlertNames()).when(descriptor).getAlerts();
 		File path = new File(vrliPackage.getFilesystemPath() + File.separator + ALERTS_DIR);
