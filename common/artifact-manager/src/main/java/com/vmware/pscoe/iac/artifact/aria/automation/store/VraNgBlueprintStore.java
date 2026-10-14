@@ -45,6 +45,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgBlueprint;
+import com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm;
 import com.vmware.pscoe.iac.artifact.aria.automation.store.helpers.VraNgReleaseManager;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.filters.CustomFolderFolderFilter;
@@ -332,17 +333,17 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 	}
 
 	/**
-	 * REPLICATED DESIGN: Scans the companion layout paths to check for incoming
-	 * custom
-	 * request form adjustments and updates to enforce synchronized release
-	 * deployments.
+	 * Scans the companion layout paths to check for incoming custom request form
+	 * adjustments and updates to enforce synchronised release deployments.
+	 *
+	 * @param bpDir blueprint directory
+	 * @param bp    blueprint
+	 * @return true if the custom form has changed and a force-release is required
 	 */
 	private boolean processBlueprintFormCustomForm(final File bpDir, final VraNgBlueprint bp) {
 		File sourceDirectory = bpDir.getParentFile().getParentFile();
 		String bpName = bp.getName();
 
-		// Map companion resources under catalog-items relative workspace directory
-		// structure
 		File customFormsFolder = Paths.get(sourceDirectory.getPath(), "catalog-items", "custom-forms").toFile();
 		File customFormDataFile = new File(customFormsFolder, bpName + "__FormData.json");
 		File customFormStylesFile = new File(customFormsFolder, bpName + "__FormStyles.css");
@@ -352,7 +353,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 		// Step 1: Handle cleanup mapping transitions if local assets are missing
 		if (!customFormDataFile.exists()) {
 			try {
-				Object rawServerForm = this.restClient.getCustomFormByTypeAndSource("blueprint", bp.getId());
+				VraNgCustomForm rawServerForm = this.restClient.getCustomFormByTypeAndSource("blueprint", bp.getId());
 				if (rawServerForm != null) {
 					logger.info(
 							"Orphaned custom request form detected on server for blueprint '{}'. Forcing state-change release version.",
@@ -369,45 +370,28 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 
 		// Step 2: Compare working structures to detect updates
 		try {
-			String localFormContent = new String(Files.readAllBytes(customFormDataFile.toPath()),
-					StandardCharsets.UTF_8);
+			String localFormContent = new String(Files.readAllBytes(customFormDataFile.toPath()), StandardCharsets.UTF_8);
 			JsonElement localFormJson = JsonParser.parseString(localFormContent);
 			String localFormNormalized = gson.toJson(localFormJson);
 
 			String localCssContent = "";
 			if (customFormStylesFile.exists()) {
-				localCssContent = new String(Files.readAllBytes(customFormStylesFile.toPath()), StandardCharsets.UTF_8)
-						.trim();
+				localCssContent = new String(Files.readAllBytes(customFormStylesFile.toPath()), StandardCharsets.UTF_8).trim();
 			}
 
 			boolean formChanged = true;
 			try {
-				Object rawServerForm = this.restClient.getCustomFormByTypeAndSource("blueprint", bp.getId());
-				if (rawServerForm != null) {
+				VraNgCustomForm serverForm = this.restClient.getCustomFormByTypeAndSource("blueprint", bp.getId());
+				if (serverForm != null) {
 					String serverFormJsonNormalized = "";
 					String serverStyles = "";
 
-					// Safe evaluation against internal VraNgCustomForm model schema structure
-					if (rawServerForm instanceof com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm) {
-						com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm vf = (com.vmware.pscoe.iac.artifact.aria.automation.models.VraNgCustomForm) rawServerForm;
-
-						if (vf.getForm() != null) {
-							serverFormJsonNormalized = gson.toJson(JsonParser.parseString(vf.getForm()));
-						}
-						if (vf.getStyles() != null) {
-							serverStyles = vf.getStyles().trim();
-						}
-					} else {
-						// Dynamic fallback parsing layer if API maps directly into linked
-						// arrays/structures
-						JsonObject serverObj = gson.toJsonTree(rawServerForm).getAsJsonObject();
-						if (serverObj.has("form") && !serverObj.get("form").isJsonNull()) {
-							serverFormJsonNormalized = gson
-									.toJson(JsonParser.parseString(serverObj.get("form").getAsString()));
-						}
-						if (serverObj.has("styles") && !serverObj.get("styles").isJsonNull()) {
-							serverStyles = serverObj.get("styles").getAsString().trim();
-						}
+					// getCustomFormByTypeAndSource always returns VraNgCustomForm — cast directly
+					if (serverForm.getForm() != null) {
+						serverFormJsonNormalized = gson.toJson(JsonParser.parseString(serverForm.getForm()));
+					}
+					if (serverForm.getStyles() != null) {
+						serverStyles = serverForm.getStyles().trim();
 					}
 
 					if (localFormNormalized.equals(serverFormJsonNormalized) && localCssContent.equals(serverStyles)) {
@@ -432,7 +416,7 @@ public class VraNgBlueprintStore extends AbstractVraNgStore {
 
 		return false;
 	}
-
+	
 	/*
 	 * ==============
 	 * Helper methods
