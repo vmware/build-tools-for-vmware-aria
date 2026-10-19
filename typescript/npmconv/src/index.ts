@@ -12,15 +12,11 @@
  * This product may include a number of subcomponents with separate copyright notices and license terms. Your use of these subcomponents is subject to the terms and conditions of the subcomponent's license, as noted in the LICENSE file.
  * #L%
  */
-import * as glob from "glob";
-
-import * as path from "path";
-
-import * as fs from "fs-extra";
-
 import * as cp from "child_process";
-
-import * as dwonloadGit from "download-git-repo";
+import * as fs from "fs-extra";
+import * as glob from "glob";
+import * as path from "path";
+import tiged from "tiged";
 
 import { DependenciesMapper, NpmProxy } from "./deps";
 import ImportsRewriter from "./rewriter";
@@ -72,11 +68,11 @@ export class NpmConverter {
 			await ensureGone(this.opts.source.directory);
 
 			console.log(`Cloning source repo from: ${gitRepo} to ${this.opts.source.directory}`);
-			await new Promise((resolve, reject) => {
-				dwonloadGit(`direct:${gitRepo}`, this.opts.source.directory, { clone: true }, err => {
-					err ? reject(err) : resolve(undefined);
-				});
+			const emitter = tiged(gitRepo, {
+				disableCache: true,
+				force: true
 			});
+			await emitter.clone(this.opts.source.directory);
 			console.debug("Cloning done.");
 
 			this.hasDirectDependencies = this.packRep.dependencies && Object.keys(this.packRep.dependencies).length > 0;
