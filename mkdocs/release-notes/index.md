@@ -39,6 +39,16 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Fix VCFA push of vRO package dependencies ignoring the vro.\* settings*
+
+#### Previous Behavior
+
+For `vcfa-all-apps` projects that depend on vRO packages, `mvn package vcfa-all-apps:push` ignored the `vro.*` properties defined in `settings.xml`, because the `all-apps-package` parent did not pass them to the plugin. Pushing the vRO dependencies failed with `Port is not a number: Cannot parse null string`.
+
+#### New Behavior
+
+The `all-apps-package` parent passes the `vro.*` properties to the `vcfa-all-apps` plugin, so the vRO package dependencies are pushed to the configured Orchestrator.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
