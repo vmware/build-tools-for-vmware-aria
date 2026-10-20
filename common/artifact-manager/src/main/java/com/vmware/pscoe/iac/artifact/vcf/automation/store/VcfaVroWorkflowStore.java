@@ -54,7 +54,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
 
         // Use the native framework validator with isFolder set to false (just like
         // subscriptions)
-        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, workflowFolder, "vRO Workflow", false, "workflow",
+        VcfaDescriptorHelper.validateAssetsPresent(this.descriptor, workflowFolder, "vRO Workflow", false, "workflow",
                 "workflows");
 
         if (!workflowFolder.exists()) {
@@ -217,7 +217,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "workflow",
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "workflow",
                     "workflows");
 
             if (itemsToDelete == null) {
@@ -251,7 +251,7 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
     }
 
     private boolean isExcludedByDescriptor(String wfName) {
-        List<String> allowedWfs = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "workflow", "workflows");
+        List<String> allowedWfs = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "workflow", "workflows");
         if (allowedWfs == null) {
             return false;
         }
@@ -305,12 +305,14 @@ public class VcfaVroWorkflowStore extends AbstractVcfaStore {
 
         // 2. Handle cross-module routing for the .wf.form.json sidecar file
         if (formElement != null && !formElement.isJsonNull()) {
-            // Get the actual directory where the user executed the pull command
-            Path projectRoot = Paths.get(System.getProperty("user.dir"));
+            // Get the module directory, which may differ from the working directory
+            // (e.g. mvn -pl <module>)
+            Path projectRoot = VcfaDescriptorHelper.getModuleDirectory(this.descriptor).toPath();
 
-            // Guard: If executed from inside the 'vra' sub-module folder, step up to the
+            // Guard: If the vro module is a sibling of this module, step up to the
             // repository root
-            if (projectRoot.getFileName() != null && projectRoot.getFileName().toString().equalsIgnoreCase("vra")) {
+            if (!Files.exists(projectRoot.resolve("vro").resolve("src")) && projectRoot.getParent() != null
+                    && Files.exists(projectRoot.getParent().resolve("vro").resolve("src"))) {
                 projectRoot = projectRoot.getParent();
             }
 

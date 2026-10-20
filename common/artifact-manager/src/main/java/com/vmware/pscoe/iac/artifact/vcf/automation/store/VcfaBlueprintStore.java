@@ -58,7 +58,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         File bpFolder = Paths.get(sourceDirectory.getPath(), DIR_BLUEPRINTS).toFile();
 
         // --- NEW: COUPLING WORKSPACE DEPLOYMENT ACCURACY VALIDATION ---
-        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, bpFolder, "Blueprint", true, "blueprint",
+        VcfaDescriptorHelper.validateAssetsPresent(this.descriptor, bpFolder, "Blueprint", true, "blueprint",
                 "blueprints");
 
         if (!bpFolder.exists()) {
@@ -149,7 +149,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
             }
 
             // --- STREAMLINED: FETCH DELETION TARGETS VIA SHARED UTILITY ---
-            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "blueprint",
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "blueprint",
                     "blueprints");
 
             if (itemsToDelete == null) {
@@ -185,7 +185,7 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
      * Streamlined local exclusion rule evaluator.
      */
     private boolean isExcludedByDescriptor(String bpName) {
-        List<String> allowedBps = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "blueprint", "blueprints");
+        List<String> allowedBps = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "blueprint", "blueprints");
 
         if (allowedBps == null) {
             return false; // Wildcard active, nothing is excluded
@@ -620,8 +620,9 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
                     "No customized form layout metadata found on the server for blueprint '{}'. Processing workspace cleanup...",
                     bp.getName());
 
-            // Track the real project root directory where the command was executed
-            String realProjectWorkspace = System.getProperty("user.dir");
+            // Track the real module directory, which may differ from the working directory
+            // (e.g. mvn -pl <module>)
+            String realProjectWorkspace = VcfaDescriptorHelper.getModuleDirectory(this.descriptor).getPath();
 
             // Build a list of potential targets to check (both temp directory and actual
             // local workspace layouts)
