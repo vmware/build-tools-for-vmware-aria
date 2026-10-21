@@ -39,6 +39,18 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Fix VCFA pull/push failure for provider admin users targeting a specific organization*
+
+#### Previous Behavior
+
+When a provider admin user (e.g. `admin@System`) executed a pull or push for a `vcfa-all-apps` project, the configured `org.name` was not passed to the VCF Automation authentication. As a result the acquired token was scoped to the `System` organization instead of the target organization and the operation failed with an error similar to: `403 Forbidden from GET https://project-service.prelude.svc.cluster.local:8080/rbac-service/api/auth-context`.
+
+#### New Behavior
+
+The `org.name` property is passed to the VCF Automation authentication, so a provider admin user acquires a token for the configured organization, the same way as for `vra-ng` projects on VCF 9.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
+
+No additional steps are required.
