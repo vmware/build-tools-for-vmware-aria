@@ -23,6 +23,7 @@ import CanvasItemDecoratorStrategy from "./decorators/base/canvasItemDecoratorSt
 import DecisionItemDecoratorStrategy from "./decorators/decisionItemDecoratorStrategy";
 import DefaultErrorHandlerDecoratorStrategy from "./decorators/defaultErrorHandlerDecoratorStrategy";
 import EndItemDecoratorStrategy from "./decorators/endItemDecoratorStrategy";
+import ForeachItemDecoratorStrategy from "./decorators/foreachItemDecoratorStrategy";
 import ItemDecoratorStrategy from "./decorators/itemDecoratorStrategy";
 import RootItemDecoratorStrategy from "./decorators/rootItemDecoratorStrategy";
 import ScheduledWorkflowItemDecoratorStrategy from "./decorators/scheduledWorkflowItemDecoratorStrategy";
@@ -105,6 +106,8 @@ function getItemStrategy(decoratorNode: ts.Decorator): CanvasItemDecoratorStrate
 			return new EndItemDecoratorStrategy();
 		case WorkflowItemType.Switch:
 			return new SwitchItemDecoratorStrategy();
+		case WorkflowItemType.Foreach:
+			return new ForeachItemDecoratorStrategy();
 		default:
 			throw new Error(`Invalid decorator type: ${identifierText}`);
 	}

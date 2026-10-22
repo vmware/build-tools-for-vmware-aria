@@ -99,6 +99,11 @@ export interface CanvasItemPolymorphicBagForSwitch {
 	exception?: string;	
 }
 
+export interface CanvasItemPolymorphicBagForForeach {
+	linkedItem: string;
+	exception?: string;
+}
+
 export interface WorkflowParameter {
 	name: string;
 	type: string;
@@ -208,6 +213,13 @@ export enum WorkflowItemType {
 	 * It can target multiple items based on switch conditions.
 	 */
 	Switch = "SwitchItem",
+
+	/**
+	 * This item type represents a foreach item.
+	 *
+	 * It iterates over an array and calls a linked workflow for each element.
+	 */
+	Foreach = "ForeachItem",
 }
 
 /////////////////////////////////// Polyglot Decorator ///////////////////////////////////
