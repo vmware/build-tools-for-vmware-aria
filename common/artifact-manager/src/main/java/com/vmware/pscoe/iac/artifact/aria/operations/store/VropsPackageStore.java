@@ -25,17 +25,25 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,6 +52,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,10 +77,8 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.RecommendationDTO;
-import com.vmware.pscoe.iac.artifact.aria.operations.models.ReportDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SupermetricDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.SymptomDefinitionDTO;
-import com.vmware.pscoe.iac.artifact.aria.operations.models.ViewDefinitionDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.rest.RestClientVrops;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageDescriptor;
 import com.vmware.pscoe.iac.artifact.aria.operations.store.models.VropsPackageMemberType;
@@ -139,6 +146,11 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * Constant for action deactivate.
 	 */
 	private static final String ACTION_DEACTIVATE = "deactivate";
+	/**
+	 * The root policy all other policies inherit from, which the server does not
+	 * export.
+	 */
+	private static final String BASE_SETTINGS_POLICY = "Base Settings";
 	/**
 	 * Content yaml file name.
 	 */
@@ -325,75 +337,20 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			tempVropsExportDir.mkdir();
 		}
 
-		final List<String> viewNames = vropsPackageDescriptor.getView();
-		if (viewNames != null) {
-			exportViews(vropsPackage, viewNames);
+		if (isContentManagementApiSupported()) {
+			exportContentBundle(vropsPackageDescriptor);
 		} else {
-			logger.info("No views found in content.yaml");
+			exportViews(vropsPackage, vropsPackageDescriptor.getView());
+			exportDashboards(vropsPackage, vropsPackageDescriptor.getDashboard());
+			exportReports(vropsPackage, vropsPackageDescriptor.getReport());
+			exportSuperMetrics(vropsPackage, vropsPackageDescriptor.getSuperMetric());
+			exportMetricConfigs(vropsPackage, vropsPackageDescriptor.getMetricConfig());
 		}
-
-		final List<String> dashboardNames = vropsPackageDescriptor.getDashboard();
-		if (dashboardNames != null) {
-			exportDashboards(vropsPackage, dashboardNames);
-		} else {
-			logger.info("No dashboards found in content.yaml");
-		}
-
-		final List<String> reportNames = vropsPackageDescriptor.getReport();
-		if (reportNames != null) {
-			this.exportReports(vropsPackage, reportNames);
-		} else {
-			logger.info("No reports found in content.yaml");
-		}
-
-		final List<String> alertDefinitions = vropsPackageDescriptor.getAlertDefinition();
-		if (alertDefinitions != null) {
-			exportDefinitions(VropsPackageMemberType.ALERT_DEFINITION, alertDefinitions);
-		} else {
-			logger.info("No alert definitions found in content.yaml");
-		}
-
-		final List<String> symptomDefinitions = vropsPackageDescriptor.getSymptomDefinition();
-		if (symptomDefinitions != null) {
-			exportDefinitions(VropsPackageMemberType.SYMPTOM_DEFINITION, symptomDefinitions);
-		} else {
-			logger.info("No symptom definitions found in content.yaml");
-		}
-
-		final List<String> recommendations = vropsPackageDescriptor.getRecommendation();
-		if (recommendations != null) {
-			exportDefinitions(VropsPackageMemberType.RECOMMENDATION, recommendations);
-		} else {
-			logger.info("No recommendations found in content.yaml");
-		}
-
-		final List<String> policies = vropsPackageDescriptor.getPolicy();
-		if (policies != null) {
-			exportPolicies(vropsPackage, policies);
-		} else {
-			logger.info("No policies found in content.yaml");
-		}
-
-		final List<String> customGroupNames = vropsPackageDescriptor.getCustomGroup();
-		if (customGroupNames != null) {
-			exportCustomGroups(vropsPackage, customGroupNames);
-		} else {
-			logger.info("No custom group configurations found in content.yaml");
-		}
-
-		final List<String> superMetricNames = vropsPackageDescriptor.getSuperMetric();
-		if (superMetricNames != null) {
-			exportSuperMetrics(vropsPackage, superMetricNames);
-		} else {
-			logger.info("No super metrics found in content.yaml");
-		}
-
-		final List<String> metricConfigNames = vropsPackageDescriptor.getMetricConfig();
-		if (metricConfigNames != null) {
-			exportMetricConfigs(vropsPackage, metricConfigNames);
-		} else {
-			logger.info("No metric configurations found in content.yaml");
-		}
+		exportDefinitions(VropsPackageMemberType.ALERT_DEFINITION, vropsPackageDescriptor.getAlertDefinition());
+		exportDefinitions(VropsPackageMemberType.SYMPTOM_DEFINITION, vropsPackageDescriptor.getSymptomDefinition());
+		exportDefinitions(VropsPackageMemberType.RECOMMENDATION, vropsPackageDescriptor.getRecommendation());
+		exportPolicies(vropsPackage, vropsPackageDescriptor.getPolicy());
+		exportCustomGroups(vropsPackage, vropsPackageDescriptor.getCustomGroup());
 
 		try {
 			if (!dryrun) {
@@ -417,6 +374,210 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	}
 
 	/**
+	 * Export views, dashboards, reports, super metrics and metric configurations
+	 * using the content management API. All the content of the selected types is
+	 * exported in a single content bundle, which is then split to the files of
+	 * the selected items.
+	 *
+	 * @param descriptor content descriptor.
+	 * @throws RuntimeException if the export fails or any of the listed items is
+	 *                          not present on the server.
+	 */
+	private void exportContentBundle(final VropsPackageDescriptor descriptor) {
+		List<String> contentTypes = new ArrayList<>();
+		if (!isNothingSelected(descriptor.getView(), "views")) {
+			contentTypes.add("VIEW_DEFINITIONS");
+		}
+		if (!isNothingSelected(descriptor.getDashboard(), "dashboards")) {
+			contentTypes.add("DASHBOARDS");
+		}
+		if (!isNothingSelected(descriptor.getReport(), "reports")) {
+			contentTypes.add("REPORT_DEFINITIONS");
+		}
+		if (!isNothingSelected(descriptor.getSuperMetric(), "super metrics")) {
+			contentTypes.add("SUPER_METRICS");
+		}
+		if (!isNothingSelected(descriptor.getMetricConfig(), "metric configurations")) {
+			contentTypes.add("CONFIG_FILES");
+		}
+		if (contentTypes.isEmpty()) {
+			return;
+		}
+
+		// check the items listed in the content.yaml before the (long) export where
+		// possible
+		Map<String, String> viewIds = contentTypes.contains("VIEW_DEFINITIONS") ? getViewIdsByName()
+				: Collections.emptyMap();
+		List<String> views = selectContent("views", descriptor.getView(), viewIds.keySet());
+		Map<String, String> reportIds = contentTypes.contains("REPORT_DEFINITIONS") ? getReportIdsByName()
+				: Collections.emptyMap();
+		List<String> reports = selectContent("reports", descriptor.getReport(), reportIds.keySet());
+		List<String> superMetrics = contentTypes.contains("SUPER_METRICS")
+				? selectContent("super metrics", descriptor.getSuperMetric(),
+						restClient.getAllSupermetrics().getSuperMetrics().stream()
+								.map(SupermetricDTO.SuperMetric::getName).collect(Collectors.toList()))
+				: Collections.emptyList();
+
+		File bundleFile = new File(tempDir, "content-export-" + UUID.randomUUID() + ".zip");
+		restClient.exportContent(contentTypes, bundleFile);
+		try (VropsContentBundleReader bundle = new VropsContentBundleReader(bundleFile)) {
+			File viewsDir = new File(tempVropsExportDir, "views");
+			for (String view : views) {
+				logger.info("Exporting view '{}'", view);
+				bundle.writeView(viewIds.get(view), view, viewsDir);
+			}
+			File reportsDir = new File(tempVropsExportDir, "reports");
+			for (String report : reports) {
+				logger.info("Exporting report '{}'", report);
+				bundle.writeReport(reportIds.get(report), report, reportsDir);
+			}
+			if (contentTypes.contains("SUPER_METRICS")) {
+				File superMetricsDir = new File(tempVropsExportDir, "supermetrics");
+				for (String superMetric : selectContent("super metrics", superMetrics,
+						bundle.getSuperMetricNames())) {
+					logger.info("Exporting super metric '{}'", superMetric);
+					bundle.writeSuperMetric(superMetric, superMetricsDir);
+				}
+			}
+			if (contentTypes.contains("CONFIG_FILES")) {
+				List<String> metricConfigs = bundle.getMetricConfigNames();
+				File metricConfigsDir = new File(tempVropsExportDir, "metricconfigs");
+				for (String metricConfig : selectContent("metric configurations",
+						withXmlExtensionIfMissing(descriptor.getMetricConfig(), metricConfigs), metricConfigs)) {
+					logger.info("Exporting metric configuration '{}'", metricConfig);
+					bundle.writeMetricConfig(metricConfig, metricConfigsDir);
+				}
+			}
+			if (contentTypes.contains("DASHBOARDS")) {
+				String dashboardUser = restClient.getDashboardUser();
+				File dashboardsDir = new File(tempVropsExportDir, "dashboards");
+				List<String> dashboards = selectContent(String.format("dashboards of user '%s'", dashboardUser),
+						descriptor.getDashboard(), bundle.getDashboardNames(dashboardUser));
+				List<String> incompleteDashboards = new ArrayList<>(bundle.getIncompleteDashboardNames(dashboardUser));
+				incompleteDashboards.retainAll(dashboards);
+				if (!incompleteDashboards.isEmpty()) {
+					throw new RuntimeException(String.format("The import of dashboards %s of user '%s' is not completed "
+							+ "and they are exported without their widget configurations. Open them in the UI as '%s' "
+							+ "to complete the import and pull again.", incompleteDashboards, dashboardUser, dashboardUser));
+				}
+				for (String dashboard : dashboards) {
+					logger.info("Exporting dashboard '{}'", dashboard);
+					bundle.writeDashboard(dashboardUser, dashboard, dashboardsDir);
+				}
+				dashboardsDir.mkdirs();
+				// store initial dashboard sharing and activation metadata files with current
+				// dashboards
+				storeDashboardSharingMetadata(dashboardsDir, dashboards);
+				storeDashboardActivationMetadata(dashboardsDir, dashboards, false);
+				storeDashboardActivationMetadata(dashboardsDir, dashboards, true);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("Unable to export content : " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Checks whether the content type is listed as an empty list in the
+	 * content.yaml, i.e. nothing should be processed.
+	 *
+	 * @param requested   items listed in the content.yaml.
+	 * @param contentType content type used in logs.
+	 * @return true if nothing should be processed.
+	 */
+	private boolean isNothingSelected(final List<String> requested, final String contentType) {
+		if (requested != null && requested.isEmpty()) {
+			logger.info("No {} listed in content.yaml", contentType);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Selects the items to process based on the items listed in the content.yaml:
+	 * <ul>
+	 * <li>null (no value) - all available items.</li>
+	 * <li>empty list - nothing.</li>
+	 * <li>list of items - only the listed items, matching wildcards if any.</li>
+	 * </ul>
+	 *
+	 * @param contentType content type used in logs and errors.
+	 * @param requested   items listed in the content.yaml.
+	 * @param available   items available on the server.
+	 * @return the names of the items to process.
+	 * @throws RuntimeException if any of the listed items (without wildcard) is
+	 *                          not present on the server.
+	 */
+	List<String> selectContent(final String contentType, final List<String> requested,
+			final Collection<String> available) {
+		Set<String> selected = new LinkedHashSet<>();
+		if (requested == null) {
+			available.stream().filter(Objects::nonNull).forEach(selected::add);
+			logger.info("No {} listed in content.yaml, processing all {} of them", contentType, selected.size());
+			return new ArrayList<>(selected);
+		}
+
+		List<String> missing = new ArrayList<>();
+		for (String name : requested) {
+			List<String> matching = available.stream()
+					.filter(item -> item != null && isPackageAssetMatching(name, item)).collect(Collectors.toList());
+			if (matching.isEmpty() && !name.contains(WILDCARD_MATCH_SYMBOL)) {
+				missing.add(name);
+			}
+			selected.addAll(matching);
+		}
+		if (!missing.isEmpty()) {
+			throw new RuntimeException(String.format("The following %s listed in content.yaml are not present on the "
+					+ "vROPs server: %s", contentType, String.join(", ", missing)));
+		}
+
+		return new ArrayList<>(selected);
+	}
+
+	/**
+	 * Metric configurations can be stored with or without the xml extension, so
+	 * the listed names are matched to the available names with the extension when
+	 * only that one exists.
+	 */
+	private static List<String> withXmlExtensionIfMissing(final List<String> requested, final List<String> available) {
+		if (requested == null) {
+			return null;
+		}
+		return requested.stream().map(name -> !available.contains(name) && available.contains(name + ".xml")
+				? name + ".xml"
+				: name).collect(Collectors.toList());
+	}
+
+	private Map<String, String> getViewIdsByName() {
+		Map<String, String> viewIds = new LinkedHashMap<>();
+		restClient.getAllViewDefinitions().getViewDefinitions()
+				.forEach(view -> viewIds.putIfAbsent(view.getName(), view.getId()));
+		return viewIds;
+	}
+
+	private Map<String, String> getReportIdsByName() {
+		Map<String, String> reportIds = new LinkedHashMap<>();
+		restClient.getAllReportDefinitions().getReportDefinitions()
+				.forEach(report -> reportIds.putIfAbsent(report.getName(), report.getId()));
+		return reportIds;
+	}
+
+	private static List<String> getDefinitionNames(final Object definitions) {
+		if (definitions instanceof AlertDefinitionDTO) {
+			return ((AlertDefinitionDTO) definitions).getAlertDefinitions().stream()
+					.map(AlertDefinitionDTO.AlertDefinition::getName).collect(Collectors.toList());
+		}
+		if (definitions instanceof SymptomDefinitionDTO) {
+			return ((SymptomDefinitionDTO) definitions).getSymptomDefinitions().stream()
+					.map(SymptomDefinitionDTO.SymptomDefinition::getName).collect(Collectors.toList());
+		}
+		if (definitions instanceof RecommendationDTO) {
+			return ((RecommendationDTO) definitions).getRecommendations().stream()
+					.map(RecommendationDTO.Recommendation::getDescription).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
 	 * Export views from vROPs.
 	 * 
 	 * @param vropsPackage Package to export views to.
@@ -425,16 +586,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 *                          fails.
 	 */
 	private void exportViews(final Package vropsPackage, final List<String> viewNames) {
-		ViewDefinitionDTO allViewDefinitions = restClient.getAllViewDefinitions();
-		if (allViewDefinitions.getViewDefinitions().isEmpty()) {
-			throw new RuntimeException("No views are available on vROPS server");
+		if (isNothingSelected(viewNames, "views")) {
+			return;
 		}
-		List<String> filteredViews = new ArrayList<>();
-		for (ViewDefinitionDTO.ViewDefinition view : allViewDefinitions.getViewDefinitions()) {
-			if (viewNames.stream().anyMatch(name -> this.isPackageAssetMatching(name, view.getName()))) {
-				filteredViews.add(view.getName());
-			}
-		}
+		List<String> filteredViews = selectContent("views", viewNames, getViewIdsByName().keySet());
 
 		File viewsDir = new File(tempVropsExportDir, "views");
 		viewsDir.mkdir();
@@ -462,16 +617,12 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 *                          export fails.
 	 */
 	private void exportSuperMetrics(final Package vropsPackage, final List<String> superMetricNames) {
-		SupermetricDTO allSupermetrics = restClient.getAllSupermetrics();
-		if (allSupermetrics.getSuperMetrics().isEmpty()) {
-			throw new RuntimeException("No supermetrics are available on vROPS server");
+		if (isNothingSelected(superMetricNames, "super metrics")) {
+			return;
 		}
-		List<String> filteredSupermetrics = new ArrayList<>();
-		for (SupermetricDTO.SuperMetric supermetric : allSupermetrics.getSuperMetrics()) {
-			if (superMetricNames.stream().anyMatch(name -> this.isPackageAssetMatching(name, supermetric.getName()))) {
-				filteredSupermetrics.add(supermetric.getName());
-			}
-		}
+		List<String> superMetricNamesOnServer = restClient.getAllSupermetrics().getSuperMetrics().stream()
+				.map(SupermetricDTO.SuperMetric::getName).collect(Collectors.toList());
+		List<String> filteredSupermetrics = selectContent("super metrics", superMetricNames, superMetricNamesOnServer);
 
 		File superMetricsDir = new File(this.tempVropsExportDir, "supermetrics");
 		if (!superMetricsDir.exists()) {
@@ -500,6 +651,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @throws RuntimeException If the the export fails.
 	 */
 	private void exportMetricConfigs(final Package vropsPackage, final List<String> metricConfigNames) {
+		if (isNothingSelected(metricConfigNames, "metric configurations")) {
+			return;
+		}
+		if (metricConfigNames == null) {
+			throw new RuntimeException("Exporting all metric configurations (metric-config without value in content.yaml) "
+					+ "requires VCF Operations 9.0 or later, list the metric configurations instead");
+		}
 		File metricConfigsDir = new File(this.tempVropsExportDir, "metricconfigs");
 		if (!metricConfigsDir.exists()) {
 			logger.info("Created metric config temporary directory {}", metricConfigsDir.getAbsolutePath());
@@ -617,6 +775,13 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @throws RuntimeException if the export fails.
 	 */
 	private void exportDashboards(final Package vropsPackage, final List<String> dashboardNames) {
+		if (isNothingSelected(dashboardNames, "dashboards")) {
+			return;
+		}
+		if (dashboardNames == null) {
+			throw new RuntimeException("Exporting all dashboards (dashboard without value in content.yaml) "
+					+ "requires VCF Operations 9.0 or later, list the dashboards instead");
+		}
 		File dashboardsDir = new File(tempVropsExportDir, "dashboards");
 		logger.info("Created dashboard temporary directory {} ", dashboardsDir.getAbsolutePath());
 		dashboardsDir.mkdir();
@@ -658,16 +823,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 *                          fails.
 	 */
 	private void exportReports(final Package vropsPackage, final List<String> reportNames) {
-		ReportDefinitionDTO allReportDefinitions = restClient.getAllReportDefinitions();
-		if (allReportDefinitions.getReportDefinitions().isEmpty()) {
-			throw new RuntimeException("No reports are available on vROPS server");
+		if (isNothingSelected(reportNames, "reports")) {
+			return;
 		}
-		List<String> filteredReports = new ArrayList<>();
-		for (ReportDefinitionDTO.ReportDefinition report : allReportDefinitions.getReportDefinitions()) {
-			if (reportNames.stream().anyMatch(name -> this.isPackageAssetMatching(name, report.getName()))) {
-				filteredReports.add(report.getName());
-			}
-		}
+		List<String> filteredReports = selectContent("reports", reportNames, getReportIdsByName().keySet());
 
 		File reportsDir = new File(tempVropsExportDir, "reports");
 		logger.info("Created report temporaty directory {}", reportsDir.getAbsolutePath());
@@ -677,7 +836,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			filteredReports.forEach(report -> copyReportToFilesystem(report, reportsDir));
 		} catch (JSchException e) {
 			String message = "Unable to pull reports '%s' from remote vROPs location to local package '%s' : '%s' : '%s' Use command '%s' for troubleshooting remote SSH connection";
-			message = String.format(message, String.join(", ", reportNames), vropsPackage.getFQName(),
+			message = String.format(message, String.join(", ", filteredReports), vropsPackage.getFQName(),
 					e.getClass().getName(), e.getMessage(),
 					cliManager.toSshComand());
 			logger.error(message);
@@ -1266,6 +1425,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @throws RuntimeException if the export fails.
 	 */
 	private void exportDefinitions(final VropsPackageMemberType definitionType, final List<String> definitions) {
+		if (isNothingSelected(definitions, definitionType.toString().replace('_', ' ') + "s")) {
+			return;
+		}
 		File definitionsDir;
 		String definitionsSubDir;
 		switch (definitionType) {
@@ -1290,8 +1452,10 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 
 		Object allDefinitions = restClient.exportDefinitionsFromVrops(definitionType);
 		logger.info("Extracted definitions of type '{}' to '{}'", definitionType, definitionsDir.getAbsolutePath());
-		Map<String, String> definitionsJsonMap = this.generateDefinitionsJsonMap(allDefinitions, definitions,
-				definitionType);
+		List<String> selectedDefinitions = selectContent(definitionType.toString().replace('_', ' ') + "s", definitions,
+				getDefinitionNames(allDefinitions));
+		Map<String, String> definitionsJsonMap = this.generateDefinitionsJsonMap(allDefinitions,
+				new HashSet<>(selectedDefinitions), definitionType);
 
 		generateDefinitionsFile(definitionsJsonMap, definitionsDir);
 	}
@@ -1304,14 +1468,14 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @param definitionType type of the definition.
 	 * @return Mapping of definition name and data.
 	 */
-	private Map<String, String> generateDefinitionsJsonMap(final Object definitionData, final List<String> definitions,
+	private Map<String, String> generateDefinitionsJsonMap(final Object definitionData, final Set<String> definitions,
 			final VropsPackageMemberType definitionType) {
 		Map<String, String> retVal = new HashMap<>();
 
 		if (definitionData instanceof AlertDefinitionDTO) {
 			for (AlertDefinitionDTO.AlertDefinition definition : ((AlertDefinitionDTO) definitionData)
 					.getAlertDefinitions()) {
-				if (definitions.stream().anyMatch(name -> this.isPackageAssetMatching(name, definition.getName()))) {
+				if (definitions.contains(definition.getName())) {
 					String payload = this.serializeObject(definition);
 					if (!StringUtils.isEmpty(payload)) {
 						retVal.put(definition.getName(), payload);
@@ -1324,7 +1488,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (definitionData instanceof SymptomDefinitionDTO) {
 			for (SymptomDefinitionDTO.SymptomDefinition definition : ((SymptomDefinitionDTO) definitionData)
 					.getSymptomDefinitions()) {
-				if (definitions.stream().anyMatch(name -> this.isPackageAssetMatching(name, definition.getName()))) {
+				if (definitions.contains(definition.getName())) {
 					String payload = this.serializeObject(definition);
 					if (!StringUtils.isEmpty(payload)) {
 						retVal.put(definition.getName(), payload);
@@ -1337,8 +1501,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		if (definitionData instanceof RecommendationDTO) {
 			for (RecommendationDTO.Recommendation definition : ((RecommendationDTO) definitionData)
 					.getRecommendations()) {
-				if (definitions.stream()
-						.anyMatch(name -> this.isPackageAssetMatching(name, definition.getDescription()))) {
+				if (definitions.contains(definition.getDescription())) {
 					String payload = this.serializeObject(definition);
 					if (!StringUtils.isEmpty(payload)) {
 						retVal.put(definition.getDescription(), payload);
@@ -1361,7 +1524,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 */
 	private void generateDefinitionsFile(final Map<String, String> definitionJson, final File dir) {
 		for (Map.Entry<String, String> definition : definitionJson.entrySet()) {
-			File definitionFile = new File(dir, definition.getKey() + ".json");
+			File definitionFile = new File(dir, toFileName(definition.getKey()) + ".json");
 			try {
 				FileUtils.write(definitionFile, definition.getValue(), StandardCharsets.UTF_8);
 			} catch (IOException e) {
@@ -1379,6 +1542,9 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @throws RuntimeException if the export fails.
 	 */
 	private void exportCustomGroups(final Package vropsPackage, final List<String> customGroupNames) {
+		if (isNothingSelected(customGroupNames, "custom groups")) {
+			return;
+		}
 		File customGroupTargetDir = new File(this.tempVropsExportDir, "custom_groups");
 		if (!customGroupTargetDir.exists()) {
 			logger.info("Created temporary directory {}", customGroupTargetDir.getAbsolutePath());
@@ -1386,18 +1552,18 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		}
 
 		List<CustomGroupDTO.Group> customGroups = restClient.getAllCustomGroups();
-		if (customGroups == null || customGroups.isEmpty()) {
-			logger.error("No custom groups found in vROPs");
-			return;
+		if (customGroups == null) {
+			customGroups = Collections.emptyList();
 		}
+		Set<String> selectedCustomGroups = new HashSet<>(selectContent("custom groups", customGroupNames,
+				customGroups.stream().map(group -> group.getResourceKey().getName()).collect(Collectors.toList())));
 		// extract all policies in order to assign name of the policy in the target JSON
 		// file
 		List<PolicyDTO.Policy> policies = restClient.getAllPolicies();
 
 		StringBuilder messages = new StringBuilder();
 		for (CustomGroupDTO.Group customGroup : customGroups) {
-			if (customGroupNames.stream()
-					.anyMatch(name -> this.isPackageAssetMatching(name, customGroup.getResourceKey().getName()))) {
+			if (selectedCustomGroups.contains(customGroup.getResourceKey().getName())) {
 				// set the policy name to the policy JSON file if it is defined in the file
 				if (!StringUtils.isEmpty(customGroup.getPolicy())) {
 					try {
@@ -1407,12 +1573,16 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 						continue;
 					}
 				}
+				// the id differs per server and changes when the group is recreated, the import
+				// finds the group by name
+				customGroup.setId(null);
 				String payload = this.serializeObject(customGroup);
 				if (StringUtils.isEmpty(payload)) {
 					continue;
 				}
 				logger.info("Exporting custom group '{}'", customGroup.getResourceKey().getName());
-				File customGroupFile = new File(customGroupTargetDir, customGroup.getResourceKey().getName() + ".json");
+				File customGroupFile = new File(customGroupTargetDir,
+						toFileName(customGroup.getResourceKey().getName()) + ".json");
 				try {
 					Files.write(customGroupFile.toPath(), payload.getBytes(StandardCharsets.UTF_8),
 							StandardOpenOption.CREATE_NEW);
@@ -1460,17 +1630,25 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	 * @throws RuntimeException if the export fails.
 	 */
 	private void exportPolicies(final Package vropsPackage, final List<String> policyEntries) {
+		if (isNothingSelected(policyEntries, "policies")) {
+			return;
+		}
 		File policyDir = new File(tempVropsExportDir, "policies");
 		policyDir.mkdir();
 		logger.info("Created temp dir for storing policies {}", policyDir.getAbsolutePath());
 
 		List<PolicyDTO.Policy> policies = restClient.getAllPolicies();
+		List<String> policyNames = policies.stream().map(PolicyDTO.Policy::getName).collect(Collectors.toList());
+		if (policyEntries == null && policyNames.remove(BASE_SETTINGS_POLICY)) {
+			logger.info("Skipping policy '{}' as it cannot be exported", BASE_SETTINGS_POLICY);
+		}
+		Set<String> selectedPolicies = new HashSet<>(selectContent("policies", policyEntries, policyNames));
 		Map<String, String> policyIdNameMap = new HashMap<>();
 		StringBuilder messages = new StringBuilder();
 		for (PolicyDTO.Policy policy : policies) {
-			if (policyEntries.stream().anyMatch(name -> this.isPackageAssetMatching(name, policy.getName()))) {
+			if (selectedPolicies.contains(policy.getName())) {
 				policyIdNameMap.put(policy.getId(), policy.getName());
-				File policyZipFile = new File(policyDir, policy.getName() + ".zip");
+				File policyZipFile = new File(policyDir, toFileName(policy.getName()) + ".zip");
 				try {
 					logger.info("Exporting policy '{}'", policy.getName());
 					PolicyDTO.Policy policyContent = restClient.getPolicyContent(policy);
@@ -1608,15 +1786,19 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		try {
 			new PackageManager(pkg).unpack(tmpDir);
 
-			addViewToImportList(pkg, tmpDir);
-			addDashboardToImportList(pkg, tmpDir);
-			addReportToImportList(pkg, tmpDir);
-			addSuperMetricToImportList(pkg, tmpDir);
-			addMetricConfigToImportList(pkg, tmpDir);
+			if (isContentManagementApiSupported()) {
+				importContentBundles(tmpDir);
+			} else {
+				addViewToImportList(pkg, tmpDir);
+				addDashboardToImportList(pkg, tmpDir);
+				addReportToImportList(pkg, tmpDir);
+				addSuperMetricToImportList(pkg, tmpDir);
+				addMetricConfigToImportList(pkg, tmpDir);
 
-			if (cliManager.hasAnyCommands()) {
-				cliManager.connect();
-				cliManager.importFilesToVrops();
+				if (cliManager.hasAnyCommands()) {
+					cliManager.connect();
+					cliManager.importFilesToVrops();
+				}
 			}
 
 			importDefinitions(pkg, tmpDir);
@@ -1672,6 +1854,85 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 	@Override
 	protected void deleteContent(final Content content, final boolean dryrun) {
 		throw new NotImplementedException("Not implemented");
+	}
+
+	/**
+	 * Checks whether views, dashboards, reports, super metrics and metric
+	 * configurations should be imported using the content management API. The
+	 * ops-cli used for older versions does not work on VCF Operations 9.x.
+	 *
+	 * @return true if the target is VCF Operations 9.0 or later.
+	 */
+	private boolean isContentManagementApiSupported() {
+		return restClient != null && Boolean.TRUE.equals(restClient.isVersionAbove90());
+	}
+
+	/**
+	 * Imports the views, dashboards, reports, super metrics and metric
+	 * configurations using the content management API. Super metrics and metric
+	 * configurations are imported with a single bundle, followed by a bundle per
+	 * view, report and dashboard as their definitions cannot be merged.
+	 *
+	 * @param tmpDir Directory where the package is unpacked.
+	 * @throws IOException            if a bundle cannot be created.
+	 * @throws ConfigurationException if a view has invalid format.
+	 * @throws RuntimeException       if the import of any bundle fails.
+	 */
+	private void importContentBundles(final File tmpDir) throws IOException, ConfigurationException {
+		File bundlesDir = new File(tmpDir, "content-bundles");
+		bundlesDir.mkdirs();
+
+		VropsContentBundle metricsBundle = new VropsContentBundle();
+		for (File superMetric : listContentFiles(tmpDir, "supermetrics", new String[] { "json" })) {
+			metricsBundle.addSuperMetrics(superMetric);
+		}
+		for (File metricConfig : listContentFiles(tmpDir, "metricconfigs", null)) {
+			metricsBundle.addMetricConfig(metricConfig);
+		}
+		importContentBundle(metricsBundle, bundlesDir, "super metrics and metric configurations");
+
+		for (File view : listContentFiles(tmpDir, "views", new String[] { "xml" })) {
+			String name = fromFileName(FilenameUtils.removeExtension(view.getName()));
+			importContentBundle(new VropsContentBundle().setView(createViewZip(view)), bundlesDir,
+					String.format("view '%s'", name));
+		}
+
+		File reportsFolder = new File(tmpDir, "reports");
+		if (reportsFolder.exists()) {
+			for (File report : reportsFolder.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY)) {
+				importContentBundle(new VropsContentBundle().setReport(createReportZip(report)), bundlesDir,
+						String.format("report '%s'", fromFileName(report.getName())));
+			}
+		}
+
+		List<File> dashboards = listContentFiles(tmpDir, "dashboards", new String[] { "json" });
+		if (!dashboards.isEmpty()) {
+			List<String> dashboardUsers = restClient.getDashboardImportUsers();
+			for (File dashboard : dashboards) {
+				String name = getDashboardName(dashboard);
+				importContentBundle(new VropsContentBundle().setDashboard(createDashboardZip(dashboard), dashboardUsers),
+						bundlesDir, String.format("dashboard '%s' for user(s) '%s'", name,
+								String.join(", ", dashboardUsers)));
+			}
+		}
+	}
+
+	private void importContentBundle(final VropsContentBundle bundle, final File bundlesDir,
+			final String contentDescription) throws IOException {
+		if (bundle.isEmpty()) {
+			return;
+		}
+		File bundleZip = bundle.write(File.createTempFile("content-", ".zip", bundlesDir));
+		restClient.importContent(bundleZip, contentDescription);
+	}
+
+	private static List<File> listContentFiles(final File tmpDir, final String folder, final String[] extensions) {
+		File contentFolder = new File(tmpDir, folder);
+		if (!contentFolder.exists()) {
+			return Collections.emptyList();
+		}
+
+		return new ArrayList<>(FileUtils.listFiles(contentFolder, extensions, false));
 	}
 
 	private void addViewToImportList(final Package pkg, final File tmp) throws IOException, ConfigurationException {
@@ -1847,6 +2108,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				ZipOutputStream zipOut = new ZipOutputStream(fos);) {
 			ZipEntry contentZipEntry = new ZipEntry("dashboard/dashboard.json");
 			zipOut.putNextEntry(contentZipEntry);
+			String dashboardName = getDashboardName(dashboard);
 			fileCopyAndCloseInput(dashboard, zipOut);
 			boolean success = dashboard.delete();
 			if (!success) {
@@ -1856,10 +2118,12 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			File resourcesDir = new File(dashboard.getParent(), "resources");
 			if (resourcesDir.exists()) {
 				logger.info("Resources directory: {}", resourcesDir.getAbsolutePath());
+				// the localization keys are prefixed with the dashboard name
+				String prefix = dashboardName;
 				for (File propfile : FileUtils.listFiles(resourcesDir, new String[] { "properties" }, false)) {
 					ZipEntry propEntry = new ZipEntry("dashboard/resources/" + propfile.getName());
 					zipOut.putNextEntry(propEntry);
-					fileCopyFiltering(propfile, name, zipOut);
+					fileCopyFiltering(propfile, prefix, zipOut);
 				}
 			}
 		}
@@ -1877,19 +2141,18 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 				ZipOutputStream zipOut = new ZipOutputStream(fos);) {
 			ZipEntry contentZipEntry = new ZipEntry("content.xml");
 			zipOut.putNextEntry(contentZipEntry);
-			fileCopyAndCloseInput(new File(report, "content.xml"), zipOut);
-			boolean success = report.delete();
-			if (!success) {
-				logger.warn("Error deleting dashboard file '{}'. Leaving file there.", report.getAbsolutePath());
-			}
+			File content = new File(report, "content.xml");
+			fileCopyAndCloseInput(content, zipOut);
 
 			File resourcesDir = new File(report, "resources");
 			if (resourcesDir.exists()) {
 				logger.info("Resources directory: {}", resourcesDir.getAbsolutePath());
+				// the localization keys are prefixed with the report id
+				String prefix = "report." + getReportId(content) + ".";
 				for (File resource : FileUtils.listFiles(resourcesDir, new String[] { "properties" }, false)) {
 					ZipEntry propEntry = new ZipEntry("resources/" + resource.getName());
 					zipOut.putNextEntry(propEntry);
-					fileCopyFiltering(resource, name, zipOut);
+					fileCopyFiltering(resource, prefix, zipOut);
 				}
 			}
 		}
@@ -1936,6 +2199,146 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		}
 
 		filtered.store(out, null);
+	}
+
+	/**
+	 * Selects the asset files of a content type based on the items listed in the
+	 * content.yaml:
+	 * <ul>
+	 * <li>null (no value) - all assets of the type.</li>
+	 * <li>empty list - nothing.</li>
+	 * <li>list of items - only the listed assets, matching wildcards if any.</li>
+	 * </ul>
+	 *
+	 * @param contentType       content type used in errors.
+	 * @param dir               directory holding the assets.
+	 * @param requested         items listed in the content.yaml.
+	 * @param fileExtension     extension of the asset files, null for assets
+	 *                          stored as directories.
+	 * @param fallbackExtension extension used for the listed items without a file
+	 *                          with fileExtension, null for files with any or no
+	 *                          extension.
+	 * @return the asset files.
+	 * @throws IOException if any of the listed items (without wildcard) is
+	 *                     missing.
+	 */
+	public static List<File> selectAssetFiles(final String contentType, final File dir, final List<String> requested,
+			final String fileExtension, final String fallbackExtension) throws IOException {
+		Set<File> selected = new LinkedHashSet<>();
+		if (requested == null) {
+			File[] all = dir.listFiles(file -> {
+				if (fileExtension == null) {
+					return file.isDirectory();
+				}
+				return file.isFile() && (fallbackExtension == null || file.getName().endsWith("." + fileExtension));
+			});
+			if (all != null) {
+				Arrays.sort(all);
+				selected.addAll(Arrays.asList(all));
+			}
+			return new ArrayList<>(selected);
+		}
+
+		List<String> missing = new ArrayList<>();
+		for (String name : requested) {
+			List<File> files = new ArrayList<>();
+			// files of older versions may have the name as it is
+			for (String fileName : new LinkedHashSet<>(Arrays.asList(toFileName(name), name))) {
+				if (files.isEmpty() && fileName.indexOf('/') < 0) {
+					files = listAssetFiles(dir, fileName, fileExtension);
+				}
+				if (files.isEmpty() && !Objects.equals(fileExtension, fallbackExtension)) {
+					files = listAssetFiles(dir, fileName, fallbackExtension);
+				}
+			}
+			if (files.isEmpty() && !name.contains(WILDCARD_MATCH_SYMBOL)) {
+				missing.add(name);
+			}
+			selected.addAll(files);
+		}
+		if (!missing.isEmpty()) {
+			throw new IOException(String.format("The following %s listed in content.yaml are not present in '%s': %s",
+					contentType, dir.getAbsolutePath(), String.join(", ", missing)));
+		}
+
+		return new ArrayList<>(selected);
+	}
+
+	private static List<File> listAssetFiles(final File dir, final String name, final String fileExtension) {
+		FileFilter fileFilter = new WildcardFileFilter(fileExtension == null ? name : name + "." + fileExtension);
+		File[] files = dir.listFiles(fileFilter);
+		if (files == null) {
+			return Collections.emptyList();
+		}
+		Arrays.sort(files);
+		return Arrays.asList(files);
+	}
+
+	/**
+	 * Returns the file name for a content item, escaping the path separators, e.g.
+	 * a view named "VMs Min/Max/Avg IOPS" is stored as "VMs Min%2FMax%2FAvg
+	 * IOPS.xml". The escaping is distinct per character, so that names like
+	 * "Capacity \\ Idle VM" and "Capacity | Idle VM" do not overwrite each other.
+	 *
+	 * @param name the content item name, possibly with wildcards.
+	 * @return the file name (without extension).
+	 */
+	public static String toFileName(final String name) {
+		return name.replace("\\", "%5C").replace("/", "%2F");
+	}
+
+	/**
+	 * Returns the content item name of a file name, see {@link #toFileName(String)}.
+	 *
+	 * @param fileName the file name (without extension).
+	 * @return the content item name.
+	 */
+	static String fromFileName(final String fileName) {
+		return fileName.replace("%2F", "/").replace("%5C", "\\");
+	}
+
+	/**
+	 * Returns the name of the dashboard in a dashboard JSON file, which may differ
+	 * from the file name, see {@link #toFileName(String)}.
+	 *
+	 * @param dashboard dashboard JSON file
+	 * @return the dashboard name, or the file name if the file has no dashboard
+	 *         name
+	 */
+	public static String getDashboardName(final File dashboard) {
+		try {
+			String name = new ObjectMapper().readTree(dashboard).path("dashboards").path(0).path("name").asText();
+			if (!StringUtils.isEmpty(name)) {
+				return name;
+			}
+		} catch (IOException e) {
+			// fall back to the file name
+		}
+		return FilenameUtils.removeExtension(dashboard.getName());
+	}
+
+	/**
+	 * Returns the id of the report definition in a report content.xml file.
+	 *
+	 * @param report report content.xml file
+	 * @return the report id
+	 * @throws IOException if the file cannot be parsed or has no report definition
+	 */
+	static String getReportId(final File report) throws IOException {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			NodeList reportDefs = dbFactory.newDocumentBuilder().parse(report).getElementsByTagName("ReportDef");
+			Node id = reportDefs.getLength() == 0 ? null : reportDefs.item(0).getAttributes().getNamedItem("id");
+			if (id == null || id.getNodeValue().trim().isEmpty()) {
+				throw new IOException(String.format("The report file '%s' has no ReportDef with id",
+						report.getAbsolutePath()));
+			}
+			return id.getNodeValue().trim();
+		} catch (ParserConfigurationException | SAXException e) {
+			throw new IOException(String.format("The report file '%s' cannot be parsed : %s", report.getAbsolutePath(),
+					e.getMessage()), e);
+		}
 	}
 
 	/**

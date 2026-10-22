@@ -128,24 +128,48 @@ To capture the state of your {{ products.vrops_9_short_name }} environment simpl
     All object types are list of string values except for `default-policy` which is a single policy name string.
 
 !!! note
-    Due to limitation of the {{ products.vrops_9_short_name }} CLI the import / export of report definitions is not currently supported.
+    Since VCF Operations 9.0 views, dashboards, reports, super metrics and metric configurations are imported / exported using the Content Management REST API. Older versions use the in-guest CLI, which does not support the import / export of report definitions.
+
+!!! note
+    Since VCF Operations 9.0 the fields that are set by the server and change on every export (e.g. `uuid`, `userId`, `creationTime`, `lastUpdateTime` of the dashboards, `modificationTime`, `modifiedBy` of the super metrics and the `id` of the custom groups) are not stored in the project. The `id` of the dashboards is kept as it is required for their import.
+
+!!! note
+    VCF Operations completes the import of a dashboard when the dashboard is first opened in the UI by its owner. Until then the dashboard is exported without its widget configurations, so `vrops:pull` fails for such dashboards. Open them in the UI as the `dashboardUser` and pull again.
+
+!!! note
+    The content is stored in files named after the content objects. The `/` and `\` characters, which cannot be part of a file name, are stored as `%2F` and `%5C`, e.g. the view `VMs Min/Max/Avg IOPS` is stored as `VMs Min%2FMax%2FAvg IOPS.xml`. Use the actual name in the `content.yaml`.
 
 !!! note
     The import of the symptoms definitions defined for all the adapter types is not currently supported.
 
 #### Content Filtering
 
-Contents are managed by different rules.
+Following is a list of the rules for managing project contents based on the contents of the content descriptor for each category type. Note that these rules apply to both operation types, export (pulling contents) and import (pushing contents).
 
-##### Import Rules for content types
+- Empty array (`[]`) - nothing from the object type is processed.
+- List of items - only the listed items from the object type are processed. If an object is not present on the server (when pulling) or in the project (when pushing), an exception is thrown. Items with a [wildcard](#wildcard-support) are not required to match any object.
+- Null (no value) - everything from the object type is processed.
+- Missing category type - nothing from the object type is processed.
 
-- Only objects explicitly defined in the `content.yaml` are imported.
+Additionally:
+
 - `default-policy` does not actually import a policy - it only sets an existing policy with the given name as default.
-
-##### Export Rules for content types
-
-- Only objects explicitly defined in the `content.yaml` are exported.
 - `default-policy` is not exported. If you want to export the policy set as default it needs to be added to the `policy` list.
+- When all policies are exported (`policy` without value), the `Base Settings` policy is skipped as it cannot be exported.
+- The policy priorities are set based on the ordering of the `policy` list for the policies that are active (applied to objects).
+- Dashboards are exported for the user set in `vrops.dashboardUser`.
+- Before VCF Operations 9.0, all dashboards (`dashboard` without value) and all metric configurations (`metric-config` without value) cannot be exported.
+
+##### Content Filtering Rule Example
+
+```yaml
+view:                     # exports and imports all views
+dashboard: []             # nothing from dashboards is processed
+super-metric:             # exports and imports only the listed super metrics
+  - Group CPU Average
+  - "Group Memory*"       # all super metrics starting with "Group Memory", if any
+                          # report is missing, nothing from reports is processed
+```
 
 #### Example
 
@@ -200,7 +224,7 @@ The following need to be added to the profile that you intend to use:
 1. {{ archetype.customer_project.maven_settings_location_hint}}
 
 !!! note
-    Some {{ products.vrops_9_short_name }} content is managed via in-guest CLI commands instead of REST API which requires credentials for REST API (`vrops.restUser` and `vrops.password`) and SSH communication (`vrops.username` and `vrops.password`) with sufficient privileges.
+    Some {{ products.vrops_9_short_name }} content is managed via in-guest CLI commands instead of REST API which requires credentials for REST API (`vrops.restUser` and `vrops.password`) and SSH communication (`vrops.username` and `vrops.password`) with sufficient privileges. Since VCF Operations 9.0 SSH communication is only used for the dashboard sharing and activation.
 
 - `vrops.dashboardUser` - User account to which to assign the ownership of a dashboard when importing it.
 
@@ -255,7 +279,7 @@ report:
 ```
 
 !!! note
-    Due to limitation of {{ products.vrops_9_short_name }} REST API wildcard is currently NOT supported for the dashboard and metric-config asset types.
+    Before VCF Operations 9.0, due to limitation of the {{ products.vrops_9_short_name }} CLI, wildcard is NOT supported for the dashboard and metric-config asset types.
 !!! note
     If you specify a wildcard in the asset name defined in the `content.yaml`file, it needs to be enclosed with quotes ("). You can also enclose the asset name with quotes (") in the `content.yaml` file, even if you specify it with its full name.
 

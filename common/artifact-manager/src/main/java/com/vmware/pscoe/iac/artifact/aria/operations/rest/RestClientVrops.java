@@ -15,8 +15,10 @@
 package com.vmware.pscoe.iac.artifact.aria.operations.rest;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -65,6 +68,7 @@ import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthGroupsDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUserDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.AuthUsersDTO;
+import com.vmware.pscoe.iac.artifact.aria.operations.models.ContentOperationDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.CustomGroupTypeDTO;
 import com.vmware.pscoe.iac.artifact.aria.operations.models.PolicyCustomGroupAssignmentDTO;
@@ -208,6 +212,35 @@ public class RestClientVrops extends RestClient {
 	 */
 	private static final String AUTH_USERS_API = PUBLIC_API_PREFIX + "/auth/users";
 	/**
+	 * CONTENT_IMPORT_API.
+	 */
+	private static final String CONTENT_IMPORT_API = PUBLIC_API_PREFIX + "content/operations/import";
+	/**
+	 * CONTENT_EXPORT_API.
+	 */
+	private static final String CONTENT_EXPORT_API = PUBLIC_API_PREFIX + "content/operations/export";
+	/**
+	 * CONTENT_EXPORT_ZIP_API.
+	 */
+	private static final String CONTENT_EXPORT_ZIP_API = CONTENT_EXPORT_API + "/zip";
+	/**
+	 * Content operation states while the operation is still in progress.
+	 */
+	private static final List<String> CONTENT_OPERATION_PENDING_STATES = Arrays.asList("NOT_STARTED", "INITIALIZED",
+			"RUNNING");
+	/**
+	 * Content operation state when the operation completed.
+	 */
+	private static final String CONTENT_OPERATION_FINISHED_STATE = "FINISHED";
+	/**
+	 * Maximum time to wait for a content operation to complete.
+	 */
+	private static final long CONTENT_OPERATION_TIMEOUT_MS = 10 * 60 * 1000L;
+	/**
+	 * Default interval between content operation status checks.
+	 */
+	private static final long CONTENT_OPERATION_POLL_INTERVAL_MS = 2000L;
+	/**
 	 * DEFAULT_PAGE_SIZE.
 	 */
 	private static final int DEFAULT_PAGE_SIZE = 10000;
@@ -227,6 +260,10 @@ public class RestClientVrops extends RestClient {
 	 * VROPS_8_17_0 version.
 	 */
 	private static final String VROPS_8_17 = "8.17";
+	/**
+	 * VCF Operations 9.0 version.
+	 */
+	private static final String VCF_OPS_9_0 = "9.0";
 
 	/**
 	 * configuration.
@@ -252,6 +289,14 @@ public class RestClientVrops extends RestClient {
 	 * isAbove817 flag.
 	 */
 	private Boolean isAbove817 = null;
+	/**
+	 * isAbove90 flag.
+	 */
+	private Boolean isAbove90 = null;
+	/**
+	 * Interval between content operation status checks.
+	 */
+	private long contentOperationPollIntervalMs = CONTENT_OPERATION_POLL_INTERVAL_MS;
 
 	/**
 	 * RestClientVrops.
@@ -373,6 +418,215 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
+	 * Checks whether the target is VCF Operations 9.0 or later.
+	 *
+	 * @return true if version is above or equal to 9.0 otherwise false.
+	 */
+	public Boolean isVersionAbove90() {
+		if (this.isAbove90 == null) {
+			this.isAbove90 = this.isVersionAbove(VCF_OPS_9_0);
+		}
+
+		return this.isAbove90;
+	}
+
+	/**
+	 * @return the user whose dashboards are exported.
+	 */
+	public String getDashboardUser() {
+		return configuration.getVropsDashboardUser();
+	}
+
+	/**
+	 * Returns the names of the users the dashboards are imported for, i.e. all
+	 * users when importing the dashboards for all users, otherwise the configured
+	 * dashboard user.
+	 *
+	 * @return list of user names.
+	 */
+	public List<String> getDashboardImportUsers() {
+		if (!configuration.getVropsImportDashboardsForAllUsers()) {
+			return Collections.singletonList(configuration.getVropsDashboardUser());
+		}
+
+		return findAllAuthUsers().stream().map(AuthUserDTO::getUsername).filter(StringUtils::isNotBlank)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Imports a content management bundle using the content management API and
+	 * waits for the import to complete.
+	 *
+	 * @param bundle             the content bundle zip.
+	 * @param contentDescription description of the bundled content used in logs
+	 *                           and errors.
+	 * @throws RuntimeException if the import fails or any of the content is not
+	 *                          imported.
+	 */
+	public void importContent(final File bundle, final String contentDescription) {
+		URI uri = getURI(getURIBuilder().setPath(CONTENT_IMPORT_API).addParameter("force", Boolean.TRUE.toString()));
+		// the status API returns the last operation only, use the start time to tell
+		// apart the new operation from the previous one
+		Long previousStartTime = getLastContentOperationStartTime(CONTENT_IMPORT_API);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+		body.add("contentFile", new FileSystemResource(bundle));
+
+		logger.info("Importing {}", contentDescription);
+		try {
+			restTemplate.postForEntity(uri, new HttpEntity<>(body, headers), String.class);
+		} catch (RestClientException e) {
+			throw new RuntimeException(
+					String.format("Unable to import %s : %s", contentDescription, e.getMessage()), e);
+		}
+
+		ContentOperationDTO result = waitForContentOperation(CONTENT_IMPORT_API, previousStartTime,
+				"import of " + contentDescription);
+		// the import is forced, so skipped content was not imported either, e.g. the
+		// dashboard owner does not exist on the target
+		List<String> errors = getContentOperationErrors(result, true);
+		if (!errors.isEmpty()) {
+			throw new RuntimeException(String.format("Unable to import %s : %s", contentDescription,
+					String.join("; ", errors)));
+		}
+		result.getOperationSummaries().forEach(summary -> {
+			logger.info("Imported {} {} : {}/{}", contentDescription, summary.getContentType(), summary.getImported(),
+					summary.getTotal());
+			summary.getInfoMessages().forEach(logger::info);
+		});
+	}
+
+	/**
+	 * Exports all content of the given types using the content management API and
+	 * downloads the resulting content bundle.
+	 *
+	 * @param contentTypes content types to export, e.g. DASHBOARDS,
+	 *                     VIEW_DEFINITIONS.
+	 * @param target       the file to download the content bundle zip to.
+	 * @throws RuntimeException if the export or the download fails.
+	 */
+	public void exportContent(final List<String> contentTypes, final File target) {
+		String contentDescription = String.join(", ", contentTypes);
+		Long previousStartTime = getLastContentOperationStartTime(CONTENT_EXPORT_API);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		Map<String, Object> body = new HashMap<>();
+		// scope ALL includes the out of the box content, CUSTOM only the user created
+		body.put("scope", "ALL");
+		body.put("contentTypes", contentTypes);
+
+		logger.info("Exporting {}", contentDescription);
+		try {
+			restTemplate.postForEntity(getURI(getURIBuilder().setPath(CONTENT_EXPORT_API)),
+					new HttpEntity<>(mapper.writeValueAsString(body), headers), String.class);
+		} catch (RestClientException | JsonProcessingException e) {
+			throw new RuntimeException(String.format("Unable to export %s : %s", contentDescription, e.getMessage()),
+					e);
+		}
+
+		ContentOperationDTO result = waitForContentOperation(CONTENT_EXPORT_API, previousStartTime,
+				"export of " + contentDescription);
+		List<String> errors = getContentOperationErrors(result, false);
+		if (!errors.isEmpty()) {
+			throw new RuntimeException(String.format("Unable to export %s : %s", contentDescription,
+					String.join("; ", errors)));
+		}
+
+		HttpHeaders downloadHeaders = new HttpHeaders();
+		downloadHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
+		try {
+			ResponseEntity<byte[]> response = restTemplate.exchange(
+					getURI(getURIBuilder().setPath(CONTENT_EXPORT_ZIP_API)), HttpMethod.GET,
+					new HttpEntity<>(downloadHeaders), byte[].class);
+			Files.write(target.toPath(), response.getBody());
+		} catch (RestClientException | IOException e) {
+			throw new RuntimeException(
+					String.format("Unable to download the export of %s : %s", contentDescription, e.getMessage()), e);
+		}
+		logger.info("Exported {}", contentDescription);
+	}
+
+	/**
+	 * Sets the interval between content operation status checks.
+	 *
+	 * @param pollIntervalMs interval in milliseconds.
+	 */
+	void setContentOperationPollIntervalMs(final long pollIntervalMs) {
+		this.contentOperationPollIntervalMs = pollIntervalMs;
+	}
+
+	private ContentOperationDTO waitForContentOperation(final String statusApi, final Long previousStartTime,
+			final String operationDescription) {
+		long deadline = System.currentTimeMillis() + CONTENT_OPERATION_TIMEOUT_MS;
+		while (System.currentTimeMillis() < deadline) {
+			try {
+				Thread.sleep(contentOperationPollIntervalMs);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new RuntimeException("Interrupted while waiting for the " + operationDescription, e);
+			}
+			ContentOperationDTO status = getLastContentOperation(statusApi);
+			boolean isNewOperation = status != null && status.getStartTime() != null
+					&& !status.getStartTime().equals(previousStartTime);
+			if (isNewOperation && !CONTENT_OPERATION_PENDING_STATES.contains(status.getState())) {
+				return status;
+			}
+		}
+
+		throw new RuntimeException(String.format("Timed out after %d seconds waiting for the %s",
+				TimeUnit.MILLISECONDS.toSeconds(CONTENT_OPERATION_TIMEOUT_MS), operationDescription));
+	}
+
+	private Long getLastContentOperationStartTime(final String statusApi) {
+		ContentOperationDTO previous = getLastContentOperation(statusApi);
+		return previous == null ? null : previous.getStartTime();
+	}
+
+	private ContentOperationDTO getLastContentOperation(final String statusApi) {
+		URI uri = getURI(getURIBuilder().setPath(statusApi));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(headers),
+					String.class);
+			return mapper.readValue(response.getBody(), ContentOperationDTO.class);
+		} catch (HttpClientErrorException e) {
+			// no operation has been done yet
+			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+				return null;
+			}
+			throw e;
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Unable to parse the content operation status : " + e.getMessage(), e);
+		}
+	}
+
+	private static List<String> getContentOperationErrors(final ContentOperationDTO result,
+			final boolean failOnSkipped) {
+		List<String> errors = new ArrayList<>(result.getErrorMessages());
+		if (!CONTENT_OPERATION_FINISHED_STATE.equals(result.getState()) && errors.isEmpty()) {
+			errors.add(String.format("operation state is %s (error code %s)", result.getState(),
+					result.getErrorCode()));
+		}
+		for (ContentOperationDTO.OperationSummary summary : result.getOperationSummaries()) {
+			errors.addAll(summary.getErrorMessages());
+			// an import may also neither import nor report the content as failed or skipped
+			boolean notImported = failOnSkipped && summary.getImported() < summary.getTotal();
+			if (summary.getFailed() > 0 || (failOnSkipped && summary.getSkipped() > 0) || notImported) {
+				errors.add(String.format("%s: %d imported, %d failed, %d skipped out of %d", summary.getContentType(),
+						summary.getImported(), summary.getFailed(), summary.getSkipped(), summary.getTotal()));
+			}
+		}
+
+		return errors;
+	}
+
+	/**
 	 * Import policies from a zip file.
 	 * 
 	 * @param file       policy zip file as byte[]
@@ -483,18 +737,6 @@ public class RestClientVrops extends RestClient {
 			return;
 		}
 		List<PolicyDTO.Policy> allPolicies = this.getAllPolicies();
-		List<PolicyDTO.Policy> policyObjects = policies.stream()
-				.map(policyName -> allPolicies.stream()
-						.filter(policyObject -> policyObject.getName().equalsIgnoreCase(policyName)).findFirst()
-						.orElse(null))
-				.toList();
-		// the default policy cannot be part of the priority order list (due to
-		// limitation of vROPs)
-		List<PolicyDTO.Policy> filteredObjects = policyObjects.stream()
-				.filter(policyObject -> policyObject != null && !policyObject.getDefaultPolicy())
-				.collect(Collectors.toList());
-		List<String> policyIds = filteredObjects.stream().map(item -> item.getId()).collect(Collectors.toList());
-		List<String> policyNames = filteredObjects.stream().map(item -> item.getName()).collect(Collectors.toList());
 
 		// check whether there are missing policies
 		List<String> missingPolicies = CollectionUtils
@@ -503,6 +745,29 @@ public class RestClientVrops extends RestClient {
 		if (!missingPolicies.isEmpty()) {
 			throw new RuntimeException(String.format("The policies '%s' cannot be found on the target system",
 					this.concatenateList(missingPolicies, ", ")));
+		}
+
+		// only the active policies (the ones applied to objects) have priority and all
+		// of them have to be ordered. The default policy cannot be part of the priority
+		// order list (due to limitation of vROPs)
+		List<PolicyDTO.Policy> activePolicies = this.getPolicies(true).stream()
+				.filter(policyObject -> !Boolean.TRUE.equals(policyObject.getDefaultPolicy()))
+				.collect(Collectors.toList());
+		List<String> policyIds = new ArrayList<>();
+		List<String> policyNames = new ArrayList<>();
+		for (String policyName : policies) {
+			Optional<PolicyDTO.Policy> activePolicy = activePolicies.stream()
+					.filter(policyObject -> policyObject.getName().equalsIgnoreCase(policyName)).findFirst();
+			if (activePolicy.isPresent()) {
+				policyIds.add(activePolicy.get().getId());
+				policyNames.add(activePolicy.get().getName());
+			} else {
+				logger.info("Policy '{}' is not active or is the default policy, skipping its priority", policyName);
+			}
+		}
+		if (policyIds.isEmpty()) {
+			logger.info("None of the policies is active, the policy priorities are not changed");
+			return;
 		}
 
 		logger.info("Ordering policies by priority '{}'", this.concatenateList(policyNames, ", "));
@@ -517,7 +782,7 @@ public class RestClientVrops extends RestClient {
 			List<String> mergedPolicyIds = policyIds;
 			// in order priority list to work properly preserve the current ordering for the
 			// rest of the policies prior sending them to the API
-			mergedPolicyIds.addAll(allPolicies.stream().filter(item -> item.getPriority() != null)
+			mergedPolicyIds.addAll(activePolicies.stream().filter(item -> item.getPriority() != null)
 					.filter(item -> !policyIds.contains(item.getId()))
 					.sorted((object1, object2) -> object1.getPriority().compareTo(object2.getPriority()))
 					.map(item -> item.getId())
@@ -579,6 +844,17 @@ public class RestClientVrops extends RestClient {
 	 * @return a list of policies
 	 */
 	public List<PolicyDTO.Policy> getAllPolicies() {
+		return getPolicies(false);
+	}
+
+	/**
+	 * Get policies.
+	 *
+	 * @param activesOnly true to get only the active policies, i.e. the ones with
+	 *                    priority and the default policy (vROPs 8.17 and later).
+	 * @return list of policies.
+	 */
+	private List<PolicyDTO.Policy> getPolicies(final boolean activesOnly) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -599,6 +875,9 @@ public class RestClientVrops extends RestClient {
 
 			}
 			uriBuilder.queryParam("pageSize", DEFAULT_PAGE_SIZE);
+			if (activesOnly) {
+				uriBuilder.queryParam("activesOnly", Boolean.TRUE);
+			}
 			URI restUri = uriBuilder.build().toUri();
 			response = restTemplate.exchange(restUri, HttpMethod.GET, entity, String.class);
 		} catch (HttpClientErrorException e) {
@@ -1715,7 +1994,7 @@ public class RestClientVrops extends RestClient {
 		String definitionId = getDefinitionId(definition, definitionType);
 		HttpMethod method = HttpMethod.POST;
 		if (!StringUtils.isEmpty(definitionId)) {
-			removeIdFromDefinitionPayload(definitionId, definitionType);
+			removeIdFromDefinitionPayload(definition, definitionType);
 			updateDefinitionId(definition, definitionType, definitionId);
 			method = HttpMethod.PUT;
 		}

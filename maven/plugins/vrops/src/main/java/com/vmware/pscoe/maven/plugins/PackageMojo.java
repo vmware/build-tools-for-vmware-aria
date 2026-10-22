@@ -15,17 +15,11 @@
 package com.vmware.pscoe.maven.plugins;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -159,28 +153,16 @@ public class PackageMojo extends AbstractVroMojo {
 		destMetricConfigsDir.mkdirs();
 		destCustomGroupDir.mkdirs();
 
-		final List<String> dashboardsToPackage = contentYaml.getDashboard() == null ? Collections.emptyList()
-				: contentYaml.getDashboard();
-		final List<String> viewsToPackage = contentYaml.getView() == null ? Collections.emptyList()
-				: contentYaml.getView();
-		final List<String> reportsToPackage = contentYaml.getReport() == null ? Collections.emptyList()
-				: contentYaml.getReport();
-		final List<String> policiesToPackage = contentYaml.getPolicy() == null ? Collections.emptyList()
-				: contentYaml.getPolicy();
-		final List<String> alertDefinitionsToPackage = contentYaml.getAlertDefinition() == null
-				? Collections.emptyList()
-				: contentYaml.getAlertDefinition();
-		final List<String> symptomDefinitionsToPackage = contentYaml.getSymptomDefinition() == null
-				? Collections.emptyList()
-				: contentYaml.getSymptomDefinition();
-		final List<String> recommendationsToPackage = contentYaml.getRecommendation() == null ? Collections.emptyList()
-				: contentYaml.getRecommendation();
-		final List<String> superMetricsToPackage = contentYaml.getSuperMetric() == null ? Collections.emptyList()
-				: contentYaml.getSuperMetric();
-		final List<String> metricConfigsToPackage = contentYaml.getMetricConfig() == null ? Collections.emptyList()
-				: contentYaml.getMetricConfig();
-		final List<String> customGroupsToPackage = contentYaml.getCustomGroup() == null ? Collections.emptyList()
-				: contentYaml.getCustomGroup();
+		final List<String> dashboardsToPackage = contentYaml.getDashboard();
+		final List<String> viewsToPackage = contentYaml.getView();
+		final List<String> reportsToPackage = contentYaml.getReport();
+		final List<String> policiesToPackage = contentYaml.getPolicy();
+		final List<String> alertDefinitionsToPackage = contentYaml.getAlertDefinition();
+		final List<String> symptomDefinitionsToPackage = contentYaml.getSymptomDefinition();
+		final List<String> recommendationsToPackage = contentYaml.getRecommendation();
+		final List<String> superMetricsToPackage = contentYaml.getSuperMetric();
+		final List<String> metricConfigsToPackage = contentYaml.getMetricConfig();
+		final List<String> customGroupsToPackage = contentYaml.getCustomGroup();
 
 		filterDashboards(srcDashboardsDir, destDashboardsDir, dashboardsToPackage);
 		filterViews(srcViewsDir, destViewsDir, viewsToPackage);
@@ -207,21 +189,18 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterDashboards(final File srcDashboardsDir, final File destDashboardsDir,
 			final List<String> dashboardsToPackage) throws IOException {
-		if (dashboardsToPackage == null || dashboardsToPackage.isEmpty()) {
+		if (dashboardsToPackage != null && dashboardsToPackage.isEmpty()) {
 			return;
 		}
 
 		StringBuilder messages = new StringBuilder();
-		for (String dashboard : dashboardsToPackage) {
-			List<File> fileList = getAssetFiles(srcDashboardsDir, dashboard, JSON_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(file, new File(destDashboardsDir, file.getName()));
-					filterResources(srcDashboardsDir, dashboard, destDashboardsDir);
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy dashboard file '%s', error: '%s' %n", file.getName(),
-							e.getMessage()));
-				}
+		for (File file : selectAssetFiles("dashboards", srcDashboardsDir, dashboardsToPackage, JSON_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destDashboardsDir, file.getName()));
+				filterResources(srcDashboardsDir, VropsPackageStore.getDashboardName(file), destDashboardsDir);
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy dashboard file '%s', error: '%s' %n", file.getName(),
+						e.getMessage()));
 			}
 		}
 		// copy dashboard sharing metadata file for dashboards
@@ -255,21 +234,15 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterSuperMetrics(final File srcSuperMetricsDir, final File destSuperMetricsDir,
 			final List<String> superMetricsToPackage) throws IOException {
-		if (superMetricsToPackage == null || superMetricsToPackage.isEmpty()) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String superMetric : superMetricsToPackage) {
-			List<File> fileList = getAssetFiles(srcSuperMetricsDir, superMetric, JSON_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(file, new File(destSuperMetricsDir, file.getName()));
-					filterResources(srcSuperMetricsDir, file.getName(), destSuperMetricsDir);
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy supermetric file '%s', error: '%s' %n",
-							file.getName(), e.getMessage()));
-				}
+		for (File file : selectAssetFiles("super metrics", srcSuperMetricsDir, superMetricsToPackage,
+				JSON_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destSuperMetricsDir, file.getName()));
+				filterResources(srcSuperMetricsDir, file.getName(), destSuperMetricsDir);
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy supermetric file '%s', error: '%s' %n",
+						file.getName(), e.getMessage()));
 			}
 		}
 
@@ -289,22 +262,16 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterMetricConfigs(File srcMetricConfigsDir, File destMetricConfigsDir,
 			List<String> metricConfigsToPackage) throws IOException {
-		if (metricConfigsToPackage == null || metricConfigsToPackage.isEmpty()) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String metricConfig : metricConfigsToPackage) {
-			List<File> fileList = getAssetFiles(srcMetricConfigsDir, metricConfig, XML_FILE_TYPE);
-			fileList = fileList.isEmpty() ? getAssetFiles(srcMetricConfigsDir, metricConfig, null) : fileList;
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(file, new File(destMetricConfigsDir, file.getName()));
-					filterResources(srcMetricConfigsDir, file.getName(), destMetricConfigsDir);
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy metric config file '%s', error: '%s' %n",
-							file.getName(), e.getMessage()));
-				}
+		// metric configs can be stored with or without the xml extension
+		for (File file : VropsPackageStore.selectAssetFiles("metric configurations", srcMetricConfigsDir,
+				metricConfigsToPackage, XML_FILE_TYPE, null)) {
+			try {
+				FileUtils.copyFile(file, new File(destMetricConfigsDir, file.getName()));
+				filterResources(srcMetricConfigsDir, file.getName(), destMetricConfigsDir);
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy metric config file '%s', error: '%s' %n",
+						file.getName(), e.getMessage()));
 			}
 		}
 
@@ -322,29 +289,22 @@ public class PackageMojo extends AbstractVroMojo {
 	 * @throws IOException if the copying files fails.
 	 */
 	private void filterViews(File srcViewsDir, File destViewsDir, List<String> viewsToPackage) throws IOException {
-		if (viewsToPackage == null || viewsToPackage.isEmpty()) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String view : viewsToPackage) {
-			List<File> fileList = getAssetFiles(srcViewsDir, view, XML_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(file, new File(destViewsDir, file.getName()));
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy view file '%s', error: '%s' %n", file.getName(),
-							e.getMessage()));
-					continue;
-				}
-				String viewId;
-				try {
-					viewId = VropsPackageStore.getViewId(file);
-					filterResources(srcViewsDir, "view." + viewId, destViewsDir);
-				} catch (ConfigurationException | IOException e) {
-					messages.append(String.format("Unable to extract view id from file '%s', error: '%s' %n",
-							file.getName(), e.getMessage()));
-				}
+		for (File file : selectAssetFiles("views", srcViewsDir, viewsToPackage, XML_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destViewsDir, file.getName()));
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy view file '%s', error: '%s' %n", file.getName(),
+						e.getMessage()));
+				continue;
+			}
+			String viewId;
+			try {
+				viewId = VropsPackageStore.getViewId(file);
+				filterResources(srcViewsDir, "view." + viewId, destViewsDir);
+			} catch (ConfigurationException | IOException e) {
+				messages.append(String.format("Unable to extract view id from file '%s', error: '%s' %n",
+						file.getName(), e.getMessage()));
 			}
 		}
 
@@ -354,39 +314,14 @@ public class PackageMojo extends AbstractVroMojo {
 	}
 
 	/**
-	 * Gets asset files from a specific directory based on their extension.
+	 * Selects the asset files to package based on the items listed in the
+	 * content.yaml.
 	 *
-	 * @param dir           directory to fetch files from.
-	 * @param fileName      name of the file.
-	 * @param fileExtension extension of the file.
-	 * @return List<File> list of fetched files.
+	 * @see VropsPackageStore#selectAssetFiles(String, File, List, String, String)
 	 */
-	@SuppressWarnings("unchecked")
-	private List<File> getAssetFiles(File dir, String fileName, String fileExtension) {
-		List<File> retVal = new ArrayList<>();
-
-		FileFilter fileFilter = StringUtils.isEmpty(fileExtension) ? new WildcardFileFilter(fileName)
-				: new WildcardFileFilter(fileName + "." + fileExtension);
-		File[] fileList;
-		try {
-			fileList = dir.listFiles(fileFilter);
-		} catch (Exception e) {
-			getLog().warn(
-					String.format("Error when retrieving file listing for directory '%s' with file pattern '%s' : '%s'",
-							directory.getName(), fileName,
-							e.getMessage()));
-
-			return retVal;
-		}
-		if (fileList == null) {
-			getLog().warn(String.format("No files were listed in directory '%s' matching file pattern '%s'",
-					directory.getName(), fileName));
-
-			return retVal;
-		}
-		retVal.addAll(Arrays.asList(fileList));
-
-		return retVal;
+	private List<File> selectAssetFiles(final String contentType, final File dir, final List<String> requested,
+			final String fileExtension) throws IOException {
+		return VropsPackageStore.selectAssetFiles(contentType, dir, requested, fileExtension, fileExtension);
 	}
 
 	/**
@@ -399,22 +334,15 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterReports(File srcReportsDir, File destReportsDir, List<String> reportsToPackage)
 			throws IOException {
-		if (reportsToPackage == null || reportsToPackage.isEmpty()) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String report : reportsToPackage) {
-			List<File> reportFiles = getAssetFiles(srcReportsDir, report, null);
-			for (File reportFile : reportFiles) {
-				File srcFile = new File(srcReportsDir, reportFile.getName());
-				File destFile = new File(destReportsDir, reportFile.getName());
-				try {
-					FileUtils.copyDirectory(srcFile, destFile);
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy file for report '%s', error: '%s' %n",
-							reportFile.getName(), e.getMessage()));
-				}
+		// each report is a directory with its content.xml and resources
+		for (File reportFile : selectAssetFiles("reports", srcReportsDir, reportsToPackage, null)) {
+			File destFile = new File(destReportsDir, reportFile.getName());
+			try {
+				FileUtils.copyDirectory(reportFile, destFile);
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy file for report '%s', error: '%s' %n",
+						reportFile.getName(), e.getMessage()));
 			}
 		}
 
@@ -434,20 +362,14 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterAlertDefinitions(File srcAlertDefsDir, File destAlertDefsDir,
 			List<String> alertDefinitionsToPackage) throws IOException {
-		if (alertDefinitionsToPackage == null || alertDefinitionsToPackage.isEmpty()) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String alertDefinitionId : alertDefinitionsToPackage) {
-			List<File> fileList = getAssetFiles(srcAlertDefsDir, alertDefinitionId, JSON_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(file, new File(destAlertDefsDir, file.getName()));
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy file for alert definition '%s', error: '%s' %n",
-							file.getName(), e.getMessage()));
-				}
+		for (File file : selectAssetFiles("alert definitions", srcAlertDefsDir, alertDefinitionsToPackage,
+				JSON_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destAlertDefsDir, file.getName()));
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy file for alert definition '%s', error: '%s' %n",
+						file.getName(), e.getMessage()));
 			}
 		}
 
@@ -468,20 +390,14 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterSymptomDefinitions(File srcSymptomDefsDir, File destSymptomDefsDir,
 			List<String> symptomDefinitionsToPackage) throws IOException {
-		if (symptomDefinitionsToPackage == null || symptomDefinitionsToPackage.isEmpty()) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String symptomDefinitionId : symptomDefinitionsToPackage) {
-			List<File> fileList = getAssetFiles(srcSymptomDefsDir, symptomDefinitionId, JSON_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(new File(file.getAbsolutePath()), new File(destSymptomDefsDir, file.getName()));
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy file for symptom definition '%s', error: '%s' %n",
-							file.getName(), e.getMessage()));
-				}
+		for (File file : selectAssetFiles("symptom definitions", srcSymptomDefsDir, symptomDefinitionsToPackage,
+				JSON_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destSymptomDefsDir, file.getName()));
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy file for symptom definition '%s', error: '%s' %n",
+						file.getName(), e.getMessage()));
 			}
 		}
 
@@ -501,20 +417,14 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterRecommendation(File srcRecommendationsDir, File destRecommendationsDir,
 			List<String> recommendationsToPackage) throws IOException {
-		if (recommendationsToPackage == null || recommendationsToPackage.isEmpty()) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String recommendationId : recommendationsToPackage) {
-			List<File> fileList = getAssetFiles(srcRecommendationsDir, recommendationId, JSON_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(file, new File(destRecommendationsDir, file.getName()));
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy file for recommendation '%s', error: '%s' %n",
-							file.getName(), e.getMessage()));
-				}
+		for (File file : selectAssetFiles("recommendations", srcRecommendationsDir, recommendationsToPackage,
+				JSON_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destRecommendationsDir, file.getName()));
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy file for recommendation '%s', error: '%s' %n",
+						file.getName(), e.getMessage()));
 			}
 		}
 
@@ -564,21 +474,14 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterCustomGroups(File srcCustomGroupsDir, File destCustomGroupsDir,
 			List<String> customGroupsToPackage) throws IOException {
-		File[] files = srcCustomGroupsDir.listFiles();
-		if (files == null || files.length == 0) {
-			return;
-		}
-
 		StringBuilder messages = new StringBuilder();
-		for (String customGroup : customGroupsToPackage) {
-			List<File> fileList = getAssetFiles(srcCustomGroupsDir, customGroup, JSON_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(file, new File(destCustomGroupsDir, file.getName()));
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy file for custom group '%s', error: '%s' %n",
-							file.getName(), e.getMessage()));
-				}
+		for (File file : selectAssetFiles("custom groups", srcCustomGroupsDir, customGroupsToPackage,
+				JSON_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destCustomGroupsDir, file.getName()));
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy file for custom group '%s', error: '%s' %n",
+						file.getName(), e.getMessage()));
 			}
 		}
 
@@ -597,21 +500,17 @@ public class PackageMojo extends AbstractVroMojo {
 	 */
 	private void filterPolicies(File srcPoliciesDir, File destPoliciesDir, List<String> policiesToPackage)
 			throws IOException {
-		if (policiesToPackage == null || policiesToPackage.isEmpty()) {
+		if (policiesToPackage != null && policiesToPackage.isEmpty()) {
 			return;
 		}
 
 		StringBuilder messages = new StringBuilder();
-		for (String policy : policiesToPackage) {
-			List<File> fileList = getAssetFiles(srcPoliciesDir, policy, ZIP_FILE_TYPE);
-			for (File file : fileList) {
-				try {
-					FileUtils.copyFile(new File(srcPoliciesDir, file.getName()),
-							new File(destPoliciesDir, file.getName()));
-				} catch (IOException e) {
-					messages.append(String.format("Unable to copy file for policy '%s', error: '%s' %n", file.getName(),
-							e.getMessage()));
-				}
+		for (File file : selectAssetFiles("policies", srcPoliciesDir, policiesToPackage, ZIP_FILE_TYPE)) {
+			try {
+				FileUtils.copyFile(file, new File(destPoliciesDir, file.getName()));
+			} catch (IOException e) {
+				messages.append(String.format("Unable to copy file for policy '%s', error: '%s' %n", file.getName(),
+						e.getMessage()));
 			}
 		}
 
@@ -637,8 +536,11 @@ public class PackageMojo extends AbstractVroMojo {
 	 * @throws IOException if the copying files fails.
 	 */
 	private void copyPolicyMetadataFile(File srcPoliciesDir, File destPoliciesDir) throws IOException {
+		// the metadata file is no longer created on pull, but projects may still have it
 		File policyMetadataFile = new File(srcPoliciesDir, POLICY_METADATA_FILE_NAME);
-		FileUtils.copyFile(policyMetadataFile, new File(destPoliciesDir, POLICY_METADATA_FILE_NAME));
+		if (policyMetadataFile.exists()) {
+			FileUtils.copyFile(policyMetadataFile, new File(destPoliciesDir, POLICY_METADATA_FILE_NAME));
+		}
 	}
 
 	/**
