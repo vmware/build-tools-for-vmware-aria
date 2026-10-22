@@ -49,6 +49,16 @@ When a provider admin user (e.g. `admin@System`) executed a pull or push for a `
 
 The `org.name` property is passed to the VCF Automation authentication, so a provider admin user acquires a token for the configured organization, the same way as for `vra-ng` projects on VCF 9.
 
+### *Add Validation of local content.yml File Items during Push for VCF Ops for Logs, VCFA VM Apps and VCF Ops*
+
+#### Previous Behavior
+
+VCF Ops for Logs (VRLI) and VCFA VM Apps (CS) project types were pushing all local content and ignoring content.yaml, while VCF Ops (VROPS) and VCFA All Apps push only what's explicitly defined in `content.yaml`. This inconsistency made it impossible to control what content gets deployed.
+
+#### New Behavior
+
+Added bidirectional content.yaml validation that throws a clear error if local files and content.yaml don't match. Both the package Maven goal and the Installer (import path) enforce this.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
