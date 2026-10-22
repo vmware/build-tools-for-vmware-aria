@@ -269,7 +269,8 @@ public final class RestClientFactory {
 		return vcdRestClient.isExternalVro();
 	}
 
-	private static ConfigurationVcd createConfigurationVcd(Configuration configuration) {
+	// package-private for unit testing
+	static ConfigurationVcd createConfigurationVcd(Configuration configuration) {
 		Properties properties = new Properties();
 
 		String fullUsername;
@@ -292,12 +293,19 @@ public final class RestClientFactory {
 		properties.setProperty(Configuration.AUTH_HOST, configuration.getAuthHost());
 		properties.setProperty(Configuration.AUTH_PORT, configuration.getAuthPort() + "");
 
-		if (configuration instanceof ConfigurationVraNg && ((ConfigurationVraNg) configuration).getOrgName() != null) {
-			// Set organization in case provider admin (user@System) is executing a vra-ng
-			// push for specific organization. Note that in ConfigurationVroNg organization
-			// is missing and not required
-			properties.setProperty(ConfigurationVraNg.ORGANIZATION_NAME,
-					((ConfigurationVraNg) configuration).getOrgName());
+		// Set organization in case provider admin (user@System) is executing a vra-ng
+		// or vcfa push/pull for specific organization. Without it the interceptor does
+		// not exchange the provider token for an organization scoped one. Note that in
+		// ConfigurationVroNg organization is missing and not required
+		String orgName = null;
+		if (configuration instanceof ConfigurationVraNg) {
+			orgName = ((ConfigurationVraNg) configuration).getOrgName();
+		} else if (configuration instanceof VcfAutoConfiguration) {
+			orgName = ((VcfAutoConfiguration) configuration).getOrgName();
+		}
+
+		if (orgName != null) {
+			properties.setProperty(ConfigurationVcd.ORGANIZATION_NAME, orgName);
 		}
 
 		return ConfigurationVcd.fromProperties(properties);
