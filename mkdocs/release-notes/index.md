@@ -49,6 +49,16 @@ When a provider admin user (e.g. `admin@System`) executed a pull or push for a `
 
 The `org.name` property is passed to the VCF Automation authentication, so a provider admin user acquires a token for the configured organization, the same way as for `vra-ng` projects on VCF 9.
 
+### *Add Support for CSS Form Styles for Resource Actions*
+
+#### Previous Behavior
+
+Resource actions don't generate separate CSS file for form styles.
+
+#### New Behavior
+
+Add support for CSS file for form styles for resource actions similar to the request forms for `vra-ng` projects.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
