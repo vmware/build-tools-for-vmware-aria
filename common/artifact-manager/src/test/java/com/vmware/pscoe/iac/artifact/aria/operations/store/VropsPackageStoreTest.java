@@ -16,6 +16,7 @@ package com.vmware.pscoe.iac.artifact.aria.operations.store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -25,7 +26,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
@@ -204,6 +207,184 @@ public class VropsPackageStoreTest {
 		assertEquals(importedPackages.size(), packages.size());
 		Mockito.verify(cliMock, Mockito.times(packages.size())).connect();
 		Mockito.verify(cliMock, Mockito.times(packages.size())).importFilesToVrops();
+	}
+
+	// -------------------------------------------------------------------------
+	// Content-validation tests (validateContentMatchesDescriptor)
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Valid XML for a view file accepted by getViewId().
+	 */
+	private static final String SAMPLE_VIEW_XML =
+			"<Content><Views><ViewDef id=\"testid\"></ViewDef></Views></Content>";
+
+	/**
+	 * Builds a VropsPackageStore whose CLI manager does nothing and whose REST
+	 * client returns safe empty/no-op responses. The store's temp directory is
+	 * placed inside the shared tempFolder so it is cleaned up automatically.
+	 */
+	private VropsPackageStore createMinimalStore() throws IOException {
+		CliManagerVrops cliMock = Mockito.mock(CliManagerVrops.class);
+		Mockito.doReturn(false).when(cliMock).hasAnyCommands();
+		Mockito.doNothing().when(cliMock).addViewToImportList(any(File.class));
+		RestClientVrops restMock = Mockito.mock(RestClientVrops.class);
+		return new VropsPackageStore(cliMock, restMock, tempFolder.newFolder());
+	}
+
+	/**
+	 * Wraps the zip in a Package and invokes importAllPackages.
+	 */
+	private List<Package> doImport(VropsPackageStore store, File packageZip) {
+		Package pkg = PackageFactory.getInstance(PackageType.VROPS, packageZip);
+		List<Package> pkgs = new ArrayList<>();
+		pkgs.add(pkg);
+		return store.importAllPackages(pkgs, false, false);
+	}
+
+	@Test
+	void importPackageValidationPassesWhenContentYamlMatchesPackageExactly() throws Exception {
+		// GIVEN: content.yaml lists exactly one view; package contains that view file
+		tempFolder.create();
+		String yaml = "---\nview:\n  - MyView\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("views/MyView.xml", SAMPLE_VIEW_XML);
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: no exception expected
+		List<Package> result = doImport(store, zip);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+	}
+
+	@Test
+	void importPackageValidationPassesWhenWildcardPatternCoversAllPackageFiles() throws Exception {
+		// GIVEN: content.yaml uses a wildcard; package has two views that both match
+		tempFolder.create();
+		String yaml = "---\nview:\n  - My*\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("views/MyView.xml", SAMPLE_VIEW_XML);
+		entries.put("views/MyOtherView.xml", SAMPLE_VIEW_XML);
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: wildcard covers both files - no exception
+		List<Package> result = doImport(store, zip);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+	}
+
+	@Test
+	void importPackageValidationPassesWhenWildcardPatternMatchesNoFiles() throws Exception {
+		// GIVEN: content.yaml has a wildcard for views; package has no view files at all.
+		// Wildcards may legitimately match zero items on export, so no error is expected.
+		tempFolder.create();
+		String yaml = "---\nview:\n  - My*\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		// No view files in the package
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: no exception expected
+		List<Package> result = doImport(store, zip);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+	}
+
+	@Test
+	void importPackageValidationFailsWhenExactEntryInContentYamlIsMissingFromPackage() throws Exception {
+		// GIVEN: content.yaml lists two views; package only contains one of them
+		tempFolder.create();
+		String yaml = "---\nview:\n  - MyView\n  - MissingView\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("views/MyView.xml", SAMPLE_VIEW_XML);
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: RuntimeException must mention the missing view
+		RuntimeException ex = assertThrows(RuntimeException.class, () -> doImport(store, zip));
+		assertTrue(ex.getMessage().contains("MissingView"),
+				"Exception message should name the missing item; was: " + ex.getMessage());
+		assertTrue(ex.getMessage().contains("missing in package"),
+				"Exception message should describe the problem; was: " + ex.getMessage());
+	}
+
+	@Test
+	void importPackageValidationFailsWhenPackageContainsFileNotListedInContentYaml() throws Exception {
+		// GIVEN: content.yaml lists only one view; package has an extra view file
+		tempFolder.create();
+		String yaml = "---\nview:\n  - MyView\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("views/MyView.xml", SAMPLE_VIEW_XML);
+		entries.put("views/ExtraView.xml", SAMPLE_VIEW_XML);
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: RuntimeException must mention the uncovered file
+		RuntimeException ex = assertThrows(RuntimeException.class, () -> doImport(store, zip));
+		assertTrue(ex.getMessage().contains("ExtraView"),
+				"Exception message should name the unlisted item; was: " + ex.getMessage());
+		assertTrue(ex.getMessage().contains("not listed in content.yaml"),
+				"Exception message should describe the problem; was: " + ex.getMessage());
+	}
+
+	@Test
+	void importPackageValidationFailsWhenFileOnDiskIsNotCoveredByWildcard() throws Exception {
+		// GIVEN: content.yaml has a wildcard "My*"; package has a view that does NOT match
+		tempFolder.create();
+		String yaml = "---\nview:\n  - My*\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("views/OtherView.xml", SAMPLE_VIEW_XML);
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: OtherView is not covered by "My*"
+		RuntimeException ex = assertThrows(RuntimeException.class, () -> doImport(store, zip));
+		assertTrue(ex.getMessage().contains("OtherView"),
+				"Exception message should name the uncovered file; was: " + ex.getMessage());
+		assertTrue(ex.getMessage().contains("not listed in content.yaml"),
+				"Exception message should describe the problem; was: " + ex.getMessage());
+	}
+
+	@Test
+	void importPackageValidationCoversMultipleContentTypes() throws Exception {
+		// GIVEN: package has both views and alert definitions; content.yaml lists both
+		tempFolder.create();
+		String yaml = "---\nview:\n  - MyView\nalert-definition:\n  - MyAlert\n";
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("views/MyView.xml", SAMPLE_VIEW_XML);
+		entries.put("alert_definitions/MyAlert.json", "{\"id\":\"1\"}");
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), yaml, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: both types match - no exception
+		List<Package> result = doImport(store, zip);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+	}
+
+	@Test
+	void importPackageValidationIsSkippedWhenNoContentYamlIsPresent() throws Exception {
+		// GIVEN: package has a view file but NO content.yaml - validation must be skipped
+		tempFolder.create();
+		Map<String, String> entries = new LinkedHashMap<>();
+		entries.put("views/MyView.xml", SAMPLE_VIEW_XML);
+		File zip = PackageMocked.createVropsPackageZip(tempFolder.newFolder(), null, entries);
+
+		VropsPackageStore store = createMinimalStore();
+
+		// WHEN / THEN: no exception - validation is opt-in (only runs when content.yaml exists)
+		List<Package> result = doImport(store, zip);
+		assertNotNull(result);
+		assertEquals(1, result.size());
 	}
 
 	private static VropsPackageDescriptor getVropsPackageDescriptorMock(String viewName, String policyName) {
