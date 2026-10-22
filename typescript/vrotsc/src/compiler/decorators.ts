@@ -120,6 +120,20 @@ export interface WorkflowParameter {
 	parameterType: WorkflowParameterType;
 	isAttribute?: boolean;
 	bind?: boolean;
+	/**
+	 * Optional override for the `name` attribute of the generated `<bind>` element.
+	 *
+	 * When set, the bind element will use this value as its `name` attribute (the parameter name
+	 * inside the called sub-workflow), while `export-name` will still use the outer workflow
+	 * variable name (`WorkflowParameter.name`).
+	 *
+	 * This is particularly useful for foreach composite-type bindings where the sub-workflow
+	 * parameter name differs from the enclosing workflow variable name.
+	 *
+	 * @example
+	 * `bindName: "inputComposite"` → `<bind name="inputComposite" export-name="globalUserList" ...>`
+	 */
+	bindName?: string;
 }
 
 export enum WorkflowParameterType {

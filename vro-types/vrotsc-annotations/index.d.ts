@@ -13,6 +13,19 @@ interface VroParameter {
 	defaultValue?: string | number | boolean;
 	availableValues?: (string | number)[];
 	description?: string;
+	/**
+	 * Optional override for the `name` attribute of the generated `<bind>` element.
+	 *
+	 * When set, the bind element will use this value as the parameter name inside the called
+	 * sub-workflow, while `export-name` still refers to this outer workflow variable.
+	 * Primarily useful for foreach items with composite-type bindings where the sub-workflow
+	 * parameter name differs from the enclosing workflow variable name.
+	 *
+	 * @example
+	 * Input parameter `globalUserList` with `bindName: "inputComposite"` produces:
+	 * `<bind name="inputComposite" type="..." export-name="globalUserList" />`
+	 */
+	bindName?: string;
 }
 
 interface VroAttributeList {

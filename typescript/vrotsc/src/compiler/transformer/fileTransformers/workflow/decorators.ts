@@ -385,6 +385,10 @@ function buildWorkflowDecoratorParameters(
 					parameter.bind = property.initializer.kind === ts.SyntaxKind.TrueKeyword;
 					break;
 				}
+				case "bindName": {
+					parameter.bindName = (<ts.StringLiteral>property.initializer).text;
+					break;
+				}
 				default: {
 					throw new Error(`Workflow parameter attribute '${propName}' is not suported.`);
 				}

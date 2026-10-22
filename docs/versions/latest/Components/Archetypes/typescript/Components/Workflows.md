@@ -23,8 +23,10 @@ You can use the method decorators to define various canvas items that will be in
    - [`@AsyncWorkflowItem`](#asyncworkflowitem)
    - [`@ActionItem`](#actionitem)
    - [`@UserInteractionItem`](#userinteractionitem)
-4. [Custom Form support](#custom-form-support)
-5. [Example Workflow](#example-workflow)
+   - [`@ForeachItem`](#foreachitem)
+4. [Composite Type Bindings](#composite-type-bindings)
+5. [Custom Form support](#custom-form-support)
+6. [Example Workflow](#example-workflow)
 
 ### Workflow Decorator
 
@@ -64,11 +66,12 @@ You can use the method decorators to define various canvas items that will be in
 - `resumeFromFailedMode` - resume workflow from failed behavior (0 - system default, 1 - enabled, 2 - disabled).
 
 The following parameters are supported for each element of attributes, input, and output:
-- `type` - parameter type.
+- `type` - parameter type. Supports all vRO built-in types as well as composite types (see [Composite Type Bindings](#composite-type-bindings)).
 - `title` - parameter name.
-- `description` - parameter description.
+- `description` - parameter description. When set on an `input` or `output` parameter whose binding is part of a foreach/workflow item, a `<description>` child element is emitted inside the `<bind>` XML element.
 - `value` or `defaultValue` - parameter value (attributes only).
 - `bind` - parameter bind to configuration flag (attributes only). Configuration reference is stored in value or defaultValue parameter.
+- `bindName` - optional override for the `name` attribute of the generated `<bind>` XML element. When set, the bind element uses this value as the sub-workflow parameter name, while `export-name` still refers to the outer workflow variable. Primarily useful for foreach items with [composite type bindings](#composite-type-bindings) where the sub-workflow parameter name differs from the enclosing workflow variable name.
 - parameters that apply to presentation, ignored when custom presentation is used:
   - `required` - if parameter to be marked mandatory.
   - `multiLine` - if parameter to be marked as multiline.
@@ -704,6 +707,142 @@ export class UserInteractionWorkflow {
 The example above would generate the following workflow.
 
 [![User Interaction Workflow](images/User_Interaction_Canvas_Item_Workflow.png)](images/User_Interaction_Canvas_Item_Workflow.png)
+
+#### `@ForeachItem`
+
+The decorator is used to specify a foreach item that iterates over an array and calls a linked sub-workflow once for each element.
+
+##### Supported Parameters
+
+- `target` - The name of the next in line item after **all** iterations complete. Same semantics as `@Item`.
+- `linkedItem` - The ID of the sub-workflow to call for each element in the array.
+- `exception` - The name of the next in line item in case an exception is encountered during iteration. If this is set to `null` or empty string, the parameter is ignored.
+
+In order to bind inputs and outputs, use `@In` and `@Out` on the method parameters. The number of bindings is reflected in the `alt-connections` attribute of the generated XML element.
+
+For advanced scenarios where the sub-workflow parameter name differs from the outer workflow variable name, or where the binding requires a composite type, see [Composite Type Bindings](#composite-type-bindings).
+
+##### Example
+
+```ts
+import { ForeachItem, RootItem, Workflow, In, Out } from "vrotsc-annotations";
+
+@Workflow({
+    name: "Foreach Workflow",
+    path: "VMware/PSCoE",
+    description: "Iterates a string array and calls a linked sub-workflow for each element",
+    attributes: {
+        items: {
+            type: "Array/string"
+        },
+        results: {
+            type: "Array/string"
+        }
+    }
+})
+export class ForeachWorkflow {
+
+    @ForeachItem({
+        linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
+        target: "end"
+    })
+    @RootItem()
+    public foreachElement(@In items: string[], @Out results: string[]) {
+        // Iteration is handled automatically by the linked sub-workflow
+    }
+}
+```
+
+The example above generates the following XML fragment:
+
+```xml
+<workflow-item name="item1" type="foreach" alt-connections="2" x="100.0" y="20.0">
+  <display-name><![CDATA[foreachElement]]></display-name>
+  <subworkflow-id><![CDATA[9e4503db-cbaa-435a-9fad-144409c08df0]]></subworkflow-id>
+  <in-binding>
+    <bind name="items" type="Array/string" export-name="items" />
+  </in-binding>
+  <out-binding>
+    <bind name="results" type="Array/string" export-name="results" />
+  </out-binding>
+  <next-item name="item0"/>
+</workflow-item>
+```
+
+### Composite Type Bindings
+
+Aria Orchestrator supports _composite types_ — inline structural type definitions of the form `CompositeType(field1:type1,field2:type2,...):TypeName` — as parameter types. These can appear standalone or as array elements (e.g. `Array/CompositeType(name:string,age:number):UserData`).
+
+#### Using Composite Types
+
+Composite type strings are used directly in the `type` field of any `input`, `output`, or `attributes` workflow parameter. No special syntax is required — the string is passed through verbatim to the generated XML.
+
+#### The `bindName` Parameter
+
+In a foreach item the sub-workflow is called once per element. The sub-workflow may expose its input/output parameters under different names than the outer workflow variables. Use the `bindName` property on an `input` or `output` parameter to specify the parameter name inside the sub-workflow, while the outer workflow variable name remains unchanged.
+
+| Property | XML attribute | Description |
+|---|---|---|
+| _(key in `input`/`output`)_ | `export-name` | The outer workflow variable name. |
+| `bindName` | `name` | The parameter name inside the called sub-workflow. Defaults to the outer variable name when omitted. |
+| `description` | `<description>` child | Optional human-readable description. Rendered as a CDATA child element inside `<bind>`. |
+
+#### Example — Composite Type Foreach
+
+```ts
+import { ForeachItem, RootItem, Workflow, In, Out } from "vrotsc-annotations";
+
+@Workflow({
+    name: "Process Complex Data",
+    path: "VMware/PSCoE",
+    description: "Foreach loop over composite-type arrays with distinct sub-workflow parameter names",
+    input: {
+        globalUserList: {
+            type: "Array/CompositeType(name:string,age:number):UserData",
+            description: "Array of composite structures passed to the loop",
+            bindName: "inputComposite"   // sub-workflow parameter name
+        }
+    },
+    output: {
+        globalResultList: {
+            type: "Array/CompositeType(status:string,id:string):ResultData",
+            bindName: "outputComposite"  // sub-workflow parameter name
+        }
+    }
+})
+export class ProcessComplexData {
+
+    @ForeachItem({
+        linkedItem: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+        target: "end"
+    })
+    @RootItem()
+    public processingHandler(@In globalUserList: any, @Out globalResultList: any) {
+        // Processing is handled by the linked sub-workflow for each element
+    }
+}
+```
+
+The example above generates the following XML fragment:
+
+```xml
+<workflow-item name="item1" type="foreach" alt-connections="2" x="100.0" y="20.0">
+  <display-name><![CDATA[processingHandler]]></display-name>
+  <subworkflow-id><![CDATA[a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d]]></subworkflow-id>
+  <in-binding>
+    <!-- bindName="inputComposite" → name in sub-workflow; export-name → outer variable -->
+    <bind name="inputComposite" type="Array/CompositeType(name:string,age:number):UserData" export-name="globalUserList">
+      <description><![CDATA[Array of composite structures passed to the loop]]></description>
+    </bind>
+  </in-binding>
+  <out-binding>
+    <bind name="outputComposite" type="Array/CompositeType(status:string,id:string):ResultData" export-name="globalResultList" />
+  </out-binding>
+  <next-item name="item0"/>
+</workflow-item>
+```
+
+> **Note:** `bindName` and composite type strings can be used on any `input`/`output` parameter, not only for foreach items. They are most commonly needed for foreach because the iterated sub-workflow often has different parameter naming conventions than the parent workflow.
 
 ### Custom Form Support
 
