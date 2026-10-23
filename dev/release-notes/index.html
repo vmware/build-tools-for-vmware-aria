@@ -2402,90 +2402,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Improvements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#fix-vcfa-pullpush-failure-for-provider-admin-users-targeting-a-specific-organization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fix VCFA pull/push failure for provider admin users targeting a specific organization
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Fix VCFA pull/push failure for provider admin users targeting a specific organization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#previous-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Previous Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#new-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        New Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#change-log4j2-configuration-to-reduce-non-relevant-logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Change log4j2 configuration to reduce non-relevant logs
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Change log4j2 configuration to reduce non-relevant logs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#previous-behavior_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Previous Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#new-behavior_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        New Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2525,18 +2441,7 @@
 <h2 id="deprecations">Deprecations<a class="headerlink" href="#deprecations" title="Permanent link">&para;</a></h2>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <h2 id="improvements">Improvements<a class="headerlink" href="#improvements" title="Permanent link">&para;</a></h2>
-<h3 id="fix-vcfa-pullpush-failure-for-provider-admin-users-targeting-a-specific-organization"><em>Fix VCFA pull/push failure for provider admin users targeting a specific organization</em><a class="headerlink" href="#fix-vcfa-pullpush-failure-for-provider-admin-users-targeting-a-specific-organization" title="Permanent link">&para;</a></h3>
-<h4 id="previous-behavior">Previous Behavior<a class="headerlink" href="#previous-behavior" title="Permanent link">&para;</a></h4>
-<p>When a provider admin user (e.g. <code>admin@System</code>) executed a pull or push for a <code>vcfa-all-apps</code> project, the configured <code>org.name</code> was not passed to the VCF Automation authentication. As a result the acquired token was scoped to the <code>System</code> organization instead of the target organization and the operation failed with an error similar to: <code>403 Forbidden from GET https://project-service.prelude.svc.cluster.local:8080/rbac-service/api/auth-context</code>.</p>
-<h4 id="new-behavior">New Behavior<a class="headerlink" href="#new-behavior" title="Permanent link">&para;</a></h4>
-<p>The <code>org.name</code> property is passed to the VCF Automation authentication, so a provider admin user acquires a token for the configured organization, the same way as for <code>vra-ng</code> projects on VCF 9.</p>
-<h3 id="change-log4j2-configuration-to-reduce-non-relevant-logs"><em>Change log4j2 configuration to reduce non-relevant logs</em><a class="headerlink" href="#change-log4j2-configuration-to-reduce-non-relevant-logs" title="Permanent link">&para;</a></h3>
-<h4 id="previous-behavior_1">Previous Behavior<a class="headerlink" href="#previous-behavior_1" title="Permanent link">&para;</a></h4>
-<p>When running commands, some non-relevant log messages were generated (like thread pool information) due to the default log4j2 configuration, making it harder to focus on important information.</p>
-<h4 id="new-behavior_1">New Behavior<a class="headerlink" href="#new-behavior_1" title="Permanent link">&para;</a></h4>
-<p>The log4j2 configuration has been updated to reduce non-relevant log messages.</p>
 <h2 id="upgrade-procedure">Upgrade procedure<a class="headerlink" href="#upgrade-procedure" title="Permanent link">&para;</a></h2>
-<p>No additional steps are required.</p>
 
 
 
