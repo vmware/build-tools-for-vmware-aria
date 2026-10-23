@@ -11,19 +11,19 @@ You can use the method decorators to define various canvas items that will be in
 1. [Workflow Decorator](#workflow-decorator)
 2. [Argument Decorators](#argument-decorators)
 3. [Available Method Decorators](#available-method-decorators)
-   - [`@DefaultErrorHandler`](#defaulterrorhandler)
-   - [`@WorkflowEndItem`](#workflowenditem)
-   - [`@Item`](#item)
-   - [`@WaitingTimerItem`](#waitingtimeritem)
-   - [`@DecisionItem`](#decisionitem)
-   - [`@SwitchItem`](#switchitem)
-   - [`@WorkflowItem`](#workflowitem)
-   - [`@ScheduledWorkflowItem`](#scheduledworkflowitem)
-   - [`@RootItem`](#rootitem)
-   - [`@AsyncWorkflowItem`](#asyncworkflowitem)
-   - [`@ActionItem`](#actionitem)
-   - [`@UserInteractionItem`](#userinteractionitem)
-   - [`@ForeachItem`](#foreachitem)
+    - [`@DefaultErrorHandler`](#defaulterrorhandler)
+    - [`@WorkflowEndItem`](#workflowenditem)
+    - [`@Item`](#item)
+    - [`@WaitingTimerItem`](#waitingtimeritem)
+    - [`@DecisionItem`](#decisionitem)
+    - [`@SwitchItem`](#switchitem)
+    - [`@WorkflowItem`](#workflowitem)
+    - [`@ScheduledWorkflowItem`](#scheduledworkflowitem)
+    - [`@RootItem`](#rootitem)
+    - [`@AsyncWorkflowItem`](#asyncworkflowitem)
+    - [`@ActionItem`](#actionitem)
+    - [`@UserInteractionItem`](#userinteractionitem)
+    - [`@ForeachItem`](#foreachitem)
 4. [Composite Type Bindings](#composite-type-bindings)
 5. [Custom Form support](#custom-form-support)
 6. [Example Workflow](#example-workflow)
@@ -73,13 +73,13 @@ The following parameters are supported for each element of attributes, input, an
 - `bind` - parameter bind to configuration flag (attributes only). Configuration reference is stored in value or defaultValue parameter.
 - `bindName` - optional override for the `name` attribute of the generated `<bind>` XML element. When set, the bind element uses this value as the sub-workflow parameter name, while `export-name` still refers to the outer workflow variable. Primarily useful for foreach items with [composite type bindings](#composite-type-bindings) where the sub-workflow parameter name differs from the enclosing workflow variable name.
 - parameters that apply to presentation, ignored when custom presentation is used:
-  - `required` - if parameter to be marked mandatory.
-  - `multiLine` - if parameter to be marked as multiline.
-  - `hidden` - if parameter to be hidden.
-  - `maxStringLength` - parameter max string length.
-  - `minStringLength` - parameter min string length.
-  - `numberFormat` - parameter number format.
-  - `availableValues` - list of parameter available values.
+    - `required` - if parameter to be marked mandatory.
+    - `multiLine` - if parameter to be marked as multiline.
+    - `hidden` - if parameter to be hidden.
+    - `maxStringLength` - parameter max string length.
+    - `minStringLength` - parameter min string length.
+    - `numberFormat` - parameter number format.
+    - `availableValues` - list of parameter available values.
 
 
 ### Argument Decorators
@@ -465,7 +465,7 @@ export class SwitchStringCases {
     System.log("Error occurred in switch processing");
   }
 }
-````
+```
 
 #### `@WorkflowItem`
 
@@ -572,9 +572,9 @@ This is a meta decorator. Add this to whichever function you want to be the entr
 ##### Supported Parameters
 
 - `@AsyncWorkflowItem({target: "", linkedItem: "" })`
-  - `target` - The name of the next in line item.
-  - `linkedItem` - The ID of the workflow to call
-  - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
+    - `target` - The name of the next in line item.
+    - `linkedItem` - The ID of the workflow to call
+    - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 ##### Outputs
 
@@ -591,9 +591,9 @@ No special inputs are needed for the AsyncWorkflowItem.
 ##### Supported Parameters
 
 - `@ActionItem({target: "", scriptModule: "" })`
-  - `target` - The name of the next in line item. Same as `@Item`.
-  - `scriptModule` - The path of the action you want to call and the action name, separated by `/`. Example: `com.vmware.pscoe.library.general/echo`.
-  - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
+    - `target` - The name of the next in line item. Same as `@Item`.
+    - `scriptModule` - The path of the action you want to call and the action name, separated by `/`. Example: `com.vmware.pscoe.library.general/echo`. 
+    - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
 
@@ -848,14 +848,14 @@ The example above generates the following XML fragment:
 
 You can push `Workflow Custom Form` and `User Interaction Custom Forms` provided as separate files containing the forms as JSON definitions. The files need to be placed in the same folder as the related `.wf.ts` file and must follow naming conventions:
 - `Workflow Custom Form`: `{{workflowFileName}}.wf.form.json` where:
-  - `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
+    - `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
 - `User Interaction Custom Form` - supports two conventions, if a file with the first convention is not found, the code validates for a file that follows the second:
-  - `{{workflowFileName}}_input_form_{{userInteractionItemId}}.wf.form.json` where:
-    - `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
-    - `userInteractionItemId` - the ID of the `User Interaction` component as defined in the UI (autogenerated if the component is manually added to the `Workflow` schema) or in the JSON definition under `itemId` key.
-  - `{{workflowFileName}}_input_form_{{userInteractionName}}.wf.form.json` where:
-    - `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
-    - `userInteractionName` - the name of the `User Interaction` component - corresponds to the decorated function name in the `.wf.ts` file and is translated to the display name of the `User Interaction` component in the Orchestrator UI. Please note that the function name (and thus - display name) cannot contain whitespaces and comes with any other function naming limitation of Typescript functions.
+    - `{{workflowFileName}}_input_form_{{userInteractionItemId}}.wf.form.json` where:
+        - `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
+        - `userInteractionItemId` - the ID of the `User Interaction` component as defined in the UI (autogenerated if the component is manually added to the `Workflow` schema) or in the JSON definition under `itemId` key.
+    - `{{workflowFileName}}_input_form_{{userInteractionName}}.wf.form.json` where:
+        - `workflowFileName` - is the actual file name of the `.wf.ts` definition file (which might be different from the `Workflow` name defined in the `name` key inside the `@Workflow` decorator parameters).
+        - `userInteractionName` - the name of the `User Interaction` component - corresponds to the decorated function name in the `.wf.ts` file and is translated to the display name of the `User Interaction` component in the Orchestrator UI. Please note that the function name (and thus - display name) cannot contain whitespaces and comes with any other function naming limitation of Typescript functions.
 
 Only a single `Workflow Custom Form` is supported per `Workflow` and a single `User Interaction Custom Form` per `User Interaction` element (which can lead to having multiple `User Interaction Custom Form` definition files mapped to a single `wf.ts` file based on the number of `User Interactions` in the `Workflow`).
 
