@@ -443,6 +443,76 @@ export class SwitchStringCases {
 }
 ````
 
+### `@ForeachItem`
+
+This decorator is used to specify a foreach canvas item that iterates over an array and calls a linked sub-workflow once for each element — equivalent to the "Foreach element" available in the vRO Orchestrator UI.
+
+#### Supported Parameters
+
+- `linkedItem` - The ID of the sub-workflow to call for each element in the array.
+- `target` - The name of the next item to execute after all iterations complete. Same semantics as `@Item`.
+- `exception` - The name of the next item to route to when the sub-workflow throws an exception. Same semantics as `@Item`.
+
+In order to bind the input array(s) and collect output array(s), use the `@In` and `@Out` decorators on the method parameters.
+
+#### Generated XML
+
+```xml
+<workflow-item name="item1" type="foreach" alt-connections="2" x="100.0" y="20.0">
+  <display-name><![CDATA[foreachElement]]></display-name>
+  <subworkflow-id><![CDATA[9e4503db-cbaa-435a-9fad-144409c08df0]]></subworkflow-id>
+  <in-binding>
+    <bind name="items" type="Array/string" export-name="items" />
+  </in-binding>
+  <out-binding>
+    <bind name="results" type="Array/string" export-name="results" />
+  </out-binding>
+  <catch-item name="item3"/>
+  <next-item name="item2"/>
+</workflow-item>
+```
+
+The `alt-connections` attribute is automatically computed as the total number of input + output array bindings on the method.
+
+#### Example
+
+```ts
+import { Workflow, ForeachItem, Item, RootItem, WorkflowEndItem, In, Out, Err } from "vrotsc-annotations";
+
+@Workflow({
+  name: "Process Items With Foreach",
+  path: "VMware/PSCoE",
+  attributes: {
+    items:        { type: "Array/string" },
+    results:      { type: "Array/string" },
+    errorMessage: { type: "string" }
+  }
+})
+export class ProcessItemsWithForeach {
+
+  @ForeachItem({
+    linkedItem: "9e4503db-cbaa-435a-9fad-144409c08df0",
+    target: "logSuccess",
+    exception: "workflowEnd"
+  })
+  @RootItem()
+  public foreachElement(@In items: string[], @Out results: string[]) {
+    // The linked sub-workflow is called once per element in `items`.
+    // Collected outputs are written back to `results`.
+  }
+
+  @Item({ target: "end" })
+  public logSuccess() {
+    System.log("All iterations completed successfully.");
+  }
+
+  @WorkflowEndItem({ endMode: 1, businessStatus: "Bad" })
+  public workflowEnd(@Err errorMessage: string) {
+    // NOOP
+  }
+}
+```
+
 ### `@WorkflowItem`
 
 The decorator is used to specify a workflow item that will be called.
