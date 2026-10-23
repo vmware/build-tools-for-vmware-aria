@@ -283,22 +283,22 @@ This decorator is used to specify a switch item that routes workflow execution t
 
 - `target` - The name of the next in line item. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow. If a non-existing name is provided, it will point to the end of the workflow.
 - `cases` - An array of case objects that define the routing logic. Each case object contains:
-  - `condition` - The value to match against the switch variable
-  - `target` - The name of the next item to execute when this condition is met
-  - `variable` - The name of the variable to evaluate (optional, can be inferred from method parameters)
-  - `type` - The data type of the variable being switched on (e.g., "number", "string", "boolean")
-  - `comparator` - The comparison operator to use when evaluating cases. Supported values are:
-    - `"equals"`              - Equals (default behaviour if not specified)
-    - `"different"`           - Not equals
-    - `"smaller"`             - Less than
-    - `"smaller or equals"`   - Less than or equal
-    - `"greater"`             - Greater than
-    - `"greater or equals"`   - Greater than or equal
-    - `"is true"`             - Boolean true
-    - `"is false"`            - Boolean false
-    - `"contains"`            - Contains a value
-    - `"match"`               - Matches a value
-    - `"is defined"`          - Value is defined
+    - `condition` - The value to match against the switch variable
+    - `target` - The name of the next item to execute when this condition is met
+    - `variable` - The name of the variable to evaluate (optional, can be inferred from method parameters)
+    - `type` - The data type of the variable being switched on (e.g., "number", "string", "boolean")
+    - `comparator` - The comparison operator to use when evaluating cases. Supported values are:
+        - `"equals"`              - Equals (default behaviour if not specified)
+        - `"different"`           - Not equals
+        - `"smaller"`             - Less than
+        - `"smaller or equals"`   - Less than or equal
+        - `"greater"`             - Greater than
+        - `"greater or equals"`   - Greater than or equal
+        - `"is true"`             - Boolean true
+        - `"is false"`            - Boolean false
+        - `"contains"`            - Contains a value
+        - `"match"`               - Matches a value
+        - `"is defined"`          - Value is defined
 - `defaultTarget` - The name of the next item to execute when none of the cases match. If this is set to `end`, it will point to the end of the workflow. If this is set to `null`, it will point to the next item or if none, the end of the workflow.
 - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
@@ -592,7 +592,7 @@ No special inputs are needed for the AsyncWorkflowItem.
 
 - `@ActionItem({target: "", scriptModule: "" })`
     - `target` - The name of the next in line item. Same as `@Item`.
-    - `scriptModule` - The path of the action you want to call and the action name, separated by `/`. Example: `com.vmware.pscoe.library.general/echo`. 
+    - `scriptModule` - The path of the action you want to call and the action name, separated by `/`. Example: `com.vmware.pscoe.library.general/echo`.
     - `exception` - The name of the next in line item in case an exception is encountered during the execution of the current item. If this is set to `null` or empty string, the parameter is ignored. If this is set to a string, but it does not exist in the workflow, it will point to the end of the workflow.
 
 In order to bind inputs and outputs, you do it with the `@In` and `@Out` decorators. This is the same way we do it for other items.
