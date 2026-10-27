@@ -54,7 +54,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
             return;
         }
 
-        List<String> allowedActions = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "resource-action",
+        List<String> allowedActions = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "resource-action",
                 "resourceActions");
         if (allowedActions != null && allowedActions.isEmpty()) {
             logger.info(
@@ -148,7 +148,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
             return;
         }
 
-        List<String> allowedActions = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "resource-action",
+        List<String> allowedActions = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "resource-action",
                 "resourceActions");
         if (allowedActions != null && allowedActions.isEmpty()) {
             logger.info(
@@ -160,7 +160,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
 
         // --- NEW STRATEGIC COUPLING: Call the unified asset validator (Folders only)
         // ---
-        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, localDir, "Resource Action", true,
+        VcfaDescriptorHelper.validateAssetsPresent(this.descriptor, localDir, "Resource Action", true,
                 "resource-action", "resourceActions");
 
         if (!localDir.exists() || !localDir.isDirectory()) {
@@ -292,7 +292,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "resource-action",
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "resource-action",
                     "resourceActions");
 
             if (itemsToDelete == null) {
@@ -328,7 +328,7 @@ public class VcfaResourceActionStore extends AbstractVcfaStore {
     }
 
     private boolean isExcludedByDescriptor(String trackingName) {
-        List<String> allowedActions = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "resource-action",
+        List<String> allowedActions = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "resource-action",
                 "resourceActions");
         if (allowedActions == null) {
             return false;

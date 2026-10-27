@@ -61,7 +61,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             return;
         }
 
-        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "custom-resource",
                 "customResources");
         if (allowedResources != null && allowedResources.isEmpty()) {
             logger.info(
@@ -186,7 +186,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
             return;
         }
 
-        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "custom-resource",
                 "customResources");
         if (allowedResources != null && allowedResources.isEmpty()) {
             logger.info(
@@ -198,7 +198,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
 
         // --- NEW STRATEGIC COUPLING: Call the unified asset validator (Folders only)
         // ---
-        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, localDir, "Custom Resource", true,
+        VcfaDescriptorHelper.validateAssetsPresent(this.descriptor, localDir, "Custom Resource", true,
                 "custom-resource", "customResources");
 
         if (!localDir.exists() || !localDir.isDirectory()) {
@@ -456,7 +456,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "custom-resource",
                     "customResources");
 
             if (itemsToDelete == null) {
@@ -492,7 +492,7 @@ public class VcfaCustomResourceStore extends AbstractVcfaStore {
     }
 
     private boolean isExcludedByDescriptor(String trackingName) {
-        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "custom-resource",
+        List<String> allowedResources = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "custom-resource",
                 "customResources");
         if (allowedResources == null) {
             return false;

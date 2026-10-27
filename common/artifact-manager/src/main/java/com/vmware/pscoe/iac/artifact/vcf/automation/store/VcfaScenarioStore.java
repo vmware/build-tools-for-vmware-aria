@@ -49,7 +49,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
     public void exportContent() {
         logger.info("Pulling scenario configurations from the remote environment...");
 
-        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "scenarios",
                 "scenario");
         if (allowedScenarios != null && allowedScenarios.isEmpty()) {
             logger.info(
@@ -131,7 +131,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
      */
     @Override
     public void importContent(File sourceDirectory) {
-        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "scenarios",
                 "scenario");
         if (allowedScenarios != null && allowedScenarios.isEmpty()) {
             logger.info(
@@ -148,7 +148,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
 
         // --- NEW STRATEGIC COUPLING: Call the unified workspace missing asset
         // validator (Folders only) ---
-        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, localDir, "Scenario", true, "scenarios",
+        VcfaDescriptorHelper.validateAssetsPresent(this.descriptor, localDir, "Scenario", true, "scenarios",
                 "scenario");
 
         if (!localDir.exists() || !localDir.isDirectory()) {
@@ -258,7 +258,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "scenarios",
                     "scenario");
 
             if (itemsToDelete == null) {
@@ -292,7 +292,7 @@ public class VcfaScenarioStore extends AbstractVcfaStore {
     }
 
     private boolean isExcludedByDescriptor(String trackingName) {
-        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "scenarios",
+        List<String> allowedScenarios = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "scenarios",
                 "scenario");
         if (allowedScenarios == null) {
             return false;
