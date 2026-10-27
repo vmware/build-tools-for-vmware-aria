@@ -49,10 +49,6 @@ The VCFA All Apps stores read `content.yaml` from the current working directory.
 
 The `content.yaml` of the module is used on pull, and the packaged `content.yaml` on push, regardless of the directory Maven is run from.
 
-#### Relevant Documentation:
-
-*NONE*
-
 ### *VCFA All Apps resolves blueprint and workflow form files against the module directory*
 
 #### Previous Behavior
@@ -62,10 +58,6 @@ On pull, the cleanup of blueprint form files (when the server has no custom form
 #### New Behavior
 
 Blueprint form files are cleaned up in the module directory, and workflow form files are placed in the sibling `vro` module, regardless of the directory Maven is run from.
-
-#### Relevant Documentation:
-
-*NONE*
 
 ## Upgrade procedure
 

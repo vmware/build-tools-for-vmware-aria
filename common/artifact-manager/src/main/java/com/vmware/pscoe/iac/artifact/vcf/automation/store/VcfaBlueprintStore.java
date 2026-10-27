@@ -616,54 +616,63 @@ public class VcfaBlueprintStore extends AbstractVcfaStore {
         // Sync local filesystem drift if the server returned no active form
         // configuration
         if (!formExistsOnServer) {
-            logger.info(
-                    "No customized form layout metadata found on the server for blueprint '{}'. Processing workspace cleanup...",
-                    bp.getName());
+            purgeOrphanedFormFiles(bp, formFile, stylesFile, formFileName);
+        }
+    }
 
-            // Track the real module directory, which may differ from the working directory
-            // (e.g. mvn -pl <module>)
-            String realProjectWorkspace = VcfaDescriptorHelper.getModuleDirectory(this.descriptor).getPath();
+    /**
+     * Deletes the custom request form and styles.css files of a blueprint that has
+     * no custom form on the server, both from the temporary directory and from the
+     * local module workspace.
+     */
+    private void purgeOrphanedFormFiles(VcfaBlueprint bp, File formFile, File stylesFile, String formFileName) {
+        logger.info(
+                "No customized form layout metadata found on the server for blueprint '{}'. Processing workspace cleanup...",
+                bp.getName());
 
-            // Build a list of potential targets to check (both temp directory and actual
-            // local workspace layouts)
-            java.util.List<File> formFilesToPurge = java.util.Arrays.asList(
-                    formFile, // Temporary directory path
-                    java.nio.file.Paths.get(realProjectWorkspace, "blueprints", bp.getName(), formFileName).toFile(), // Local
-                                                                                                                      // flat
-                                                                                                                      // workspace
-                                                                                                                      // layout
-                    java.nio.file.Paths.get(realProjectWorkspace, "src", "main", "resources", "blueprints",
-                            bp.getName(), formFileName).toFile() // Standard Maven source layout
-            );
+        // Track the real module directory, which may differ from the working directory
+        // (e.g. mvn -pl <module>)
+        String realProjectWorkspace = VcfaDescriptorHelper.getModuleDirectory(this.descriptor).getPath();
 
-            java.util.List<File> stylesFilesToPurge = java.util.Arrays.asList(
-                    stylesFile, // Temporary directory path
-                    java.nio.file.Paths.get(realProjectWorkspace, "blueprints", bp.getName(), "styles.css").toFile(),
-                    java.nio.file.Paths.get(realProjectWorkspace, "src", "main", "resources", "blueprints",
-                            bp.getName(), "styles.css").toFile());
+        // Build a list of potential targets to check (both temp directory and actual
+        // local workspace layouts)
+        java.util.List<File> formFilesToPurge = java.util.Arrays.asList(
+                formFile, // Temporary directory path
+                java.nio.file.Paths.get(realProjectWorkspace, "blueprints", bp.getName(), formFileName).toFile(), // Local
+                                                                                                                  // flat
+                                                                                                                  // workspace
+                                                                                                                  // layout
+                java.nio.file.Paths.get(realProjectWorkspace, "src", "main", "resources", "blueprints",
+                        bp.getName(), formFileName).toFile() // Standard Maven source layout
+        );
 
-            // Scan and destroy form file targets across directories
-            for (File f : formFilesToPurge) {
-                if (f.exists()) {
-                    logger.warn("Custom request form file is orphaned. Purging from disk: {}", f.getAbsolutePath());
-                    if (f.delete()) {
-                        logger.info("Successfully removed orphaned form file.");
-                    } else {
-                        logger.error("Failed to delete form file asset: {}", f.getAbsolutePath());
-                    }
+        java.util.List<File> stylesFilesToPurge = java.util.Arrays.asList(
+                stylesFile, // Temporary directory path
+                java.nio.file.Paths.get(realProjectWorkspace, "blueprints", bp.getName(), "styles.css").toFile(),
+                java.nio.file.Paths.get(realProjectWorkspace, "src", "main", "resources", "blueprints",
+                        bp.getName(), "styles.css").toFile());
+
+        // Scan and destroy form file targets across directories
+        for (File f : formFilesToPurge) {
+            if (f.exists()) {
+                logger.warn("Custom request form file is orphaned. Purging from disk: {}", f.getAbsolutePath());
+                if (f.delete()) {
+                    logger.info("Successfully removed orphaned form file.");
+                } else {
+                    logger.error("Failed to delete form file asset: {}", f.getAbsolutePath());
                 }
             }
+        }
 
-            // Scan and destroy matching stylesheet targets across directories
-            for (File s : stylesFilesToPurge) {
-                if (s.exists()) {
-                    logger.warn("Custom styles file 'styles.css' is orphaned. Purging from disk: {}",
-                            s.getAbsolutePath());
-                    if (s.delete()) {
-                        logger.info("Successfully removed orphaned styles file.");
-                    } else {
-                        logger.error("Failed to delete styles file asset: {}", s.getAbsolutePath());
-                    }
+        // Scan and destroy matching stylesheet targets across directories
+        for (File s : stylesFilesToPurge) {
+            if (s.exists()) {
+                logger.warn("Custom styles file 'styles.css' is orphaned. Purging from disk: {}",
+                        s.getAbsolutePath());
+                if (s.delete()) {
+                    logger.info("Successfully removed orphaned styles file.");
+                } else {
+                    logger.error("Failed to delete styles file asset: {}", s.getAbsolutePath());
                 }
             }
         }

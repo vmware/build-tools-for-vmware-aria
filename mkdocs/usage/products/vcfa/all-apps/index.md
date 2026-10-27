@@ -296,7 +296,7 @@ This section contains a list of known issues with regards to a {{ page.meta.vars
 
 - **Issue**: The Orchestrator data collection cannot be triggered when pushing content as an organization user (for example `admin@my-org`), and the following error is logged:
 
-    ```
+    ```text
     [ERROR] Unable to trigger VCFA Orchestrator data collection. Proceeding with old sleeping mechanism, waiting for vrang.data.collection.delay.seconds: 10
     java.lang.RuntimeException: Could not trigger vRO data collection. Reason: No VCFA Orchestrator integration found in vRA!
     ```
