@@ -52,7 +52,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     public void exportContent() {
         logger.info("Pulling property group configurations from the remote environment...");
 
-        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "property-group",
                 "propertyGroups");
         if (allowedGroups != null && allowedGroups.isEmpty()) {
             logger.info(
@@ -155,7 +155,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
      */
     @Override
     public void importContent(File sourceDirectory) {
-        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "property-group",
                 "propertyGroups");
         if (allowedGroups != null && allowedGroups.isEmpty()) {
             logger.info(
@@ -172,7 +172,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
 
         // --- NEW STRATEGIC COUPLING: Call the flexible hybrid asset validator
         // (Files/Folders mixed) ---
-        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, localDir, "Property Group", false,
+        VcfaDescriptorHelper.validateAssetsPresent(this.descriptor, localDir, "Property Group", false,
                 "property-group", "propertyGroups");
 
         if (!localDir.exists() || !localDir.isDirectory()) {
@@ -309,7 +309,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "property-group",
                     "propertyGroups");
 
             if (itemsToDelete == null) {
@@ -344,7 +344,7 @@ public class VcfaPropertyGroupStore extends AbstractVcfaStore {
     }
 
     private boolean isExcludedByDescriptor(String groupDisplayName) {
-        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "property-group",
+        List<String> allowedGroups = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "property-group",
                 "propertyGroups");
         if (allowedGroups == null) {
             return false;

@@ -221,7 +221,7 @@ Following is a list of elements from the profile configuration with further desc
     Use this configuration when the {{ products.vra_9_short_name }} project contains references to Orchestrator workflows and dynamic types that you are importing together with the {{ products.vra_9_short_name }} content for the project since {{ products.vra_9_full_name }} needs to retrieve the details of the Orchestrator content first before it can create the {{ products.vra_9_short_name }} objects that point to the Orchestrator content. The default value is `0` or no delay.
 
     !!! note
-        Note that if you provide a delay value, Build Tools for VMware Aria forces data collection via REST API and if it completes successfully, the delay is skipped and the provided delay time is disregarded. In case the data collection fails, however, the delay time is used and a wait timer is triggered.
+        Note that if you provide a delay value, Build Tools for VMware Aria forces data collection via REST API and if it completes successfully, the delay is skipped and the provided delay time is disregarded. In case the data collection fails, however, the delay time is used and a wait timer is triggered. For organization users, triggering the data collection is currently not possible. For details, see [Known Issues](#known-issues).
 
 - In the `vcfa.org.name` element, you always need to specify the organization name. The `vcfa-all-apps` project is scoped to a single organization.
 
@@ -289,6 +289,21 @@ Note that the only required parameter in this command is `vcfa.version`. The fol
 
 <!-- Clean Up Content Section -->
 {% include-markdown "../../../../assets/docs/mvn/clean-up-content.md" %}
+
+## Known Issues
+
+This section contains a list of known issues with regards to a {{ page.meta.vars.project.type }} project.
+
+- **Issue**: The Orchestrator data collection cannot be triggered when pushing content as an organization user (for example `admin@my-org`), and the following error is logged:
+
+    ```text
+    [ERROR] Unable to trigger VCFA Orchestrator data collection. Proceeding with old sleeping mechanism, waiting for vrang.data.collection.delay.seconds: 10
+    java.lang.RuntimeException: Could not trigger vRO data collection. Reason: No VCFA Orchestrator integration found in vRA!
+    ```
+
+    **Explanation**: To trigger the data collection, {{ general.bta_short_name }} looks up the Orchestrator integration through the {{ products.vra_9_short_name }} IaaS API (`/iaas/api/integrations`). For organization users in an All Apps organization, this API returns no integrations, even when an Orchestrator integration is configured for the organization. This is most probably by product design, as the integrations are not exposed to organization users through the IaaS API.
+
+    The error does not fail the push. {{ general.bta_short_name }} falls back to waiting for the time configured in `vcfa.data.collection.delay.seconds` and then continues with the import. To make sure that the Orchestrator content is collected before the {{ products.vra_9_short_name }} content that references it is imported, set `vcfa.data.collection.delay.seconds` to a value that is long enough for the data collection in your environment.
 
 <!-- Troubleshooting Section -->
 {% include-markdown "../../../../assets/docs/mvn/troubleshooting.md" %}

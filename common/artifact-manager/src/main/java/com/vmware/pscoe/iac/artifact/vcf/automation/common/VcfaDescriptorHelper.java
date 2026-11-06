@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
-import com.vmware.pscoe.iac.artifact.common.store.Package;
+import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 
 /**
  * Shared utility to parse and query the workspace 'content.yaml' configuration
@@ -43,16 +43,16 @@ public final class VcfaDescriptorHelper {
      * Resolves the target list of asset strings from content.yaml based on
      * acceptable key mappings.
      *
-     * @param vcfaPackage    The injected store package instance (can be null if
-     *                       checking working directory only).
+     * @param descriptor     The store package descriptor (can be null if checking
+     *                       working directory only).
      * @param acceptableKeys An array of key combinations to search for (e.g.,
      *                       {"blueprint", "blueprints"}).
      * @return A list of declared asset names, null if the key is missing entirely,
      *         or an empty list if explicitly written as '[]'.
      */
     @SuppressWarnings("unchecked")
-    public static List<String> getTargetedItems(Package vcfaPackage, String... acceptableKeys) {
-        File contentYamlFile = locateContentYaml(vcfaPackage);
+    public static List<String> getTargetedItems(VcfaPackageDescriptor descriptor, String... acceptableKeys) {
+        File contentYamlFile = locateContentYaml(descriptor);
 
         if (contentYamlFile == null || !contentYamlFile.exists()) {
             return null;
@@ -104,15 +104,15 @@ public final class VcfaDescriptorHelper {
      * if their matching filesystem
      * workspace folder cannot be found on disk during a push operation.
      *
-     * @param vcfaPackage    The injected store package instance.
+     * @param descriptor     The store package descriptor.
      * @param localAssetDir  The directory where the asset folders should live
      *                       (e.g., .../blueprints).
      * @param assetTypeName  Friendly name for logging (e.g., "Blueprint").
      * @param acceptableKeys The content.yaml dictionary keys to lookup.
      */
-    public static void validatePhysicalAssetsPresent(Package vcfaPackage, File localAssetDir, String assetTypeName,
+    public static void validatePhysicalAssetsPresent(VcfaPackageDescriptor descriptor, File localAssetDir, String assetTypeName,
             String... acceptableKeys) {
-        List<String> explicitItems = getTargetedItems(vcfaPackage, acceptableKeys);
+        List<String> explicitItems = getTargetedItems(descriptor, acceptableKeys);
         if (explicitItems == null || explicitItems.isEmpty()) {
             return;
         }
@@ -127,14 +127,26 @@ public final class VcfaDescriptorHelper {
         }
     }
 
-    private static File locateContentYaml(Package vcfaPackage) {
-        File target = new File(System.getProperty("user.dir"), "content.yaml");
-        if (!target.exists() && vcfaPackage != null && vcfaPackage.getFilesystemPath() != null) {
-            File packageDir = new File(vcfaPackage.getFilesystemPath());
-            File projectRoot = packageDir.getParentFile() != null ? packageDir.getParentFile() : packageDir;
-            target = new File(projectRoot, "content.yaml");
+    /**
+     * Resolves the module directory (the folder of the module content.yaml) during
+     * pull. Falls back to the working directory if the descriptor is not loaded
+     * from file.
+     *
+     * @param descriptor The store package descriptor.
+     * @return module directory
+     */
+    public static File getModuleDirectory(VcfaPackageDescriptor descriptor) {
+        return locateContentYaml(descriptor).getAbsoluteFile().getParentFile();
+    }
+
+    private static File locateContentYaml(VcfaPackageDescriptor descriptor) {
+        // Prefer the content.yaml the descriptor was loaded from (module content.yaml on pull,
+        // packaged content.yaml on push), as the working directory may differ from the module
+        // directory (e.g. mvn -pl <module>)
+        if (descriptor != null && descriptor.getSourceFile() != null) {
+            return descriptor.getSourceFile();
         }
-        return target;
+        return new File(System.getProperty("user.dir"), "content.yaml");
     }
 
     /**
@@ -142,7 +154,7 @@ public final class VcfaDescriptorHelper {
      * if their matching filesystem
      * workspace file or folder cannot be found on disk during a push operation.
      *
-     * @param vcfaPackage    The injected store package instance.
+     * @param descriptor     The store package descriptor.
      * @param localAssetDir  The parent directory where the assets live (e.g.,
      *                       .../subscriptions).
      * @param assetTypeName  Friendly name for logging (e.g., "Subscription").
@@ -151,9 +163,9 @@ public final class VcfaDescriptorHelper {
      *                       (subscriptions).
      * @param acceptableKeys The content.yaml dictionary keys to lookup.
      */
-    public static void validateAssetsPresent(Package vcfaPackage, File localAssetDir, String assetTypeName,
+    public static void validateAssetsPresent(VcfaPackageDescriptor descriptor, File localAssetDir, String assetTypeName,
             boolean isFolderOnly, String... acceptableKeys) {
-        List<String> explicitItems = getTargetedItems(vcfaPackage, acceptableKeys);
+        List<String> explicitItems = getTargetedItems(descriptor, acceptableKeys);
         if (explicitItems == null || explicitItems.isEmpty()) {
             return;
         }
