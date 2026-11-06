@@ -13,6 +13,19 @@ interface VroParameter {
 	defaultValue?: string | number | boolean;
 	availableValues?: (string | number)[];
 	description?: string;
+	/**
+	 * Optional override for the `name` attribute of the generated `<bind>` element.
+	 *
+	 * When set, the bind element will use this value as the parameter name inside the called
+	 * sub-workflow, while `export-name` still refers to this outer workflow variable.
+	 * Primarily useful for foreach items with composite-type bindings where the sub-workflow
+	 * parameter name differs from the enclosing workflow variable name.
+	 *
+	 * @example
+	 * Input parameter `globalUserList` with `bindName: "inputComposite"` produces:
+	 * `<bind name="inputComposite" type="..." export-name="globalUserList" />`
+	 */
+	bindName?: string;
 }
 
 interface VroAttributeList {
@@ -573,6 +586,37 @@ interface VroSwitchItemConfiguration {
 interface VroSwitchItemMethodDecorator {
 	<T extends Type<any>>(type: T): T;
 	(target: Object, propertyKey?: string | VroSwitchItemConfiguration, descriptor?: TypedPropertyDescriptor<Function>): void;
+}
+
+// ---------------------------------------------- Foreach Canvas Item ------------------------------------------------
+
+/**
+ * Foreach canvas item.
+ *
+ * Iterates over an array and calls a linked workflow once for each element.
+ * Bind the input array via {@link In}; optional outputs can be bound via {@link Out}.
+ *
+ * @see {@link https://github.com/vmware/build-tools-for-vmware-aria/blob/main/docs/versions/latest/Components/Archetypes/typescript/Components/Workflows.md#foreachitem|Foreach Item}
+ */
+export declare const ForeachItem: VroForeachItemDecorator;
+
+interface VroForeachItemDecorator {
+	(obj?: VroForeachItemConfiguration): VroForeachItemMethodDecorator;
+	new(obj?: VroForeachItemConfiguration): VroForeachItemConfiguration;
+}
+
+interface VroForeachItemConfiguration {
+	/** Name of the next in line item after all iterations complete. Same semantics as {@link VroItemConfiguration.target}. */
+	target?: string;
+	/** The ID of the workflow to call for each element in the array. */
+	linkedItem: string;
+	/** Name of the next item on exception. Same semantics as {@link VroItemConfiguration.exception}. */
+	exception?: string;
+}
+
+interface VroForeachItemMethodDecorator {
+	<T extends Type<any>>(type: T): T;
+	(target: Object, propertyKey?: string | VroForeachItemConfiguration, descriptor?: TypedPropertyDescriptor<Function>): void;
 }
 
 //--------------------------------------------- POLYGLOT -------------------------------------------------------------------------------

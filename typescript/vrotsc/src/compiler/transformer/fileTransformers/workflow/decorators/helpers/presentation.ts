@@ -45,7 +45,9 @@ export function buildItemParameterBindings(
 	parameters.forEach(paramName => {
 		const param = itemInfo.parent.parameters.find((p: WorkflowParameter) => p.name === paramName);
 		if (param) {
-			var bindName = param.name;
+			// bindName overrides the <bind name="..."> attribute (sub-workflow parameter name);
+			// export-name always references the outer workflow variable (param.name).
+			var bindName = param.bindName || param.name;
 			if (itemInfo.strategy.getDecoratorType() === WorkflowItemType.UserInteractionItem) {
 				switch (param.name) {
 					case "security_assignees": bindName = "security.assignees"; break;
@@ -60,7 +62,17 @@ export function buildItemParameterBindings(
 			} else if (itemInfo.strategy.getDecoratorType() === WorkflowItemType.WaitingTimer) {
 				bindName = "timer.date";
 			}
-			stringBuilder.append(`<bind name="${bindName}" type="${param.type}" export-name="${param.name}" />`).appendLine();
+
+			if (param.description) {
+				// Composite-type bindings (or any param with a description) use a child element.
+				stringBuilder.append(`<bind name="${bindName}" type="${param.type}" export-name="${param.name}">`).appendLine();
+				stringBuilder.indent();
+				stringBuilder.append(`<description><![CDATA[${param.description}]]></description>`).appendLine();
+				stringBuilder.unindent();
+				stringBuilder.append(`</bind>`).appendLine();
+			} else {
+				stringBuilder.append(`<bind name="${bindName}" type="${param.type}" export-name="${param.name}" />`).appendLine();
+			}
 		}
 	});
 	stringBuilder.unindent();
