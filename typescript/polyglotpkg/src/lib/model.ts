@@ -35,6 +35,9 @@ export enum ActionRuntime {
     VRO_POWERCLI_12_PS_71 = 'powercli:12-powershell-7.1',
     VRO_POWERCLI_12_PS_74 = 'powercli:12-powershell-7.4',
     VRO_POWERCLI_13_PS_74 = 'powercli:13-powershell-7.4',
+    VRO_POWERCLI_900_PS_74 = 'powercli:9.0.0-powershell-7.4',
+    VRO_POWERCLI_911_PS_76 = 'powercli:9.1.1-powershell-7.6',
+
     VRO_POWERSHELL_74 = 'powershell:7.4',
 
     VRO_PYTHON_37 = 'python:3.7',
@@ -60,7 +63,9 @@ export const VroPowershellActionRuntimes = [
     ActionRuntime.VRO_POWERCLI_12_PS_71,
     ActionRuntime.VRO_POWERCLI_12_PS_74,
     ActionRuntime.VRO_POWERCLI_13_PS_74,
-    ActionRuntime.VRO_POWERSHELL_74
+    ActionRuntime.VRO_POWERSHELL_74,
+    ActionRuntime.VRO_POWERCLI_900_PS_74,
+    ActionRuntime.VRO_POWERCLI_911_PS_76
 ];
 
 export const VroPythonActionRuntimes = [
