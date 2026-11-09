@@ -188,7 +188,7 @@ declare class CryptoEncoding {
 	 * 
 	 * @param data 
 	 */
-	public static base64EncodeBytes(data: byte[]): string;
+	public static base64EncodeBytes(data: any[]): string;
 	/**
 	 * Base64 Encoder.
 	 * 
