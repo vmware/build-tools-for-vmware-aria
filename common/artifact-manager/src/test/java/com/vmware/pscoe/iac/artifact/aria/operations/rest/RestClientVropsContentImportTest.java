@@ -188,9 +188,30 @@ class RestClientVropsContentImportTest {
 		Mockito.verify(restTemplate).postForEntity(uri.capture(), request.capture(), eq(String.class));
 		assertEquals("/suite-api/api/content/operations/export", uri.getValue().getPath());
 		String body = (String) request.getValue().getBody();
-		assertTrue(body.contains("\"scope\":\"ALL\""), body);
+		assertTrue(body.contains("\"scope\":\"CUSTOM\""), body);
 		assertTrue(body.contains("\"contentTypes\":[\"DASHBOARDS\",\"VIEW_DEFINITIONS\"]"), body);
 		assertArrayEquals(new byte[] { 1, 2 }, Files.readAllBytes(target.toPath()));
+	}
+
+	@Test
+	void exportContentIncludesOutOfTheBoxContentWhenEnabled() {
+		// GIVEN
+		Properties properties = getProperties(false);
+		properties.setProperty(ConfigurationVrops.VROPS_INCLUDE_OUT_OF_THE_BOX_CONTENT, "true");
+		RestClientVrops client = new RestClientVrops(new ConfigurationVrops(properties), restTemplate);
+		client.setContentOperationPollIntervalMs(1);
+		mockImportStatuses(PREVIOUS_IMPORT, "{\"state\":\"FINISHED\",\"startTime\":2}");
+		Mockito.when(restTemplate.exchange(any(URI.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(byte[].class)))
+				.thenReturn(ResponseEntity.ok(new byte[] { 1 }));
+
+		// WHEN
+		client.exportContent(Arrays.asList("VIEW_DEFINITIONS"), new File(tempDir, "export.zip"));
+
+		// THEN
+		ArgumentCaptor<HttpEntity> request = ArgumentCaptor.forClass(HttpEntity.class);
+		Mockito.verify(restTemplate).postForEntity(any(URI.class), request.capture(), eq(String.class));
+		String body = (String) request.getValue().getBody();
+		assertTrue(body.contains("\"scope\":\"ALL\""), body);
 	}
 
 	@Test

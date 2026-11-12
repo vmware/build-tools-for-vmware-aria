@@ -405,6 +405,66 @@ public class VropsPackageStoreTest {
 	}
 
 	@Test
+	void exportPackageSkipsOutOfTheBoxViewsMissingFromTheExport() throws Exception {
+		// GIVEN
+		tempFolder.create();
+		File packageDir = tempFolder.newFolder();
+		RestClientVrops restClientMock = mockViewExport("My/View", "Builtin View");
+		VropsPackageDescriptor descriptor = new VropsPackageDescriptor();
+		descriptor.setView(null);
+		VropsPackageStore store = new VropsPackageStore(Mockito.mock(CliManagerVrops.class), restClientMock,
+				tempFolder.newFolder());
+
+		// WHEN
+		store.exportPackage(PackageFactory.getInstance(PackageType.VROPS, packageDir), descriptor, false);
+
+		// THEN
+		assertTrue(new File(packageDir, "views/My%2FView.xml").exists());
+		assertFalse(new File(packageDir, "views/Builtin View.xml").exists());
+	}
+
+	@Test
+	void exportPackageSuggestsOutOfTheBoxContentWhenListedViewIsNotExported() throws Exception {
+		// GIVEN
+		tempFolder.create();
+		RestClientVrops restClientMock = mockViewExport("My/View", "Builtin View");
+		VropsPackageDescriptor descriptor = new VropsPackageDescriptor();
+		descriptor.setView(Arrays.asList("Builtin View"));
+		VropsPackageStore store = new VropsPackageStore(Mockito.mock(CliManagerVrops.class), restClientMock,
+				tempFolder.newFolder());
+
+		// WHEN
+		RuntimeException e = assertThrows(RuntimeException.class, () -> store.exportPackage(
+				PackageFactory.getInstance(PackageType.VROPS, tempFolder.newFolder()), descriptor, false));
+
+		// THEN
+		assertTrue(e.getMessage().contains("Builtin View"), e.getMessage());
+		assertTrue(e.getMessage().contains("-DincludeOutOfTheBoxContent=true"), e.getMessage());
+	}
+
+	/**
+	 * Mocks a server with the given views, of which only the first one is user
+	 * created and present in the export.
+	 */
+	private static RestClientVrops mockViewExport(final String customView, final String builtinView)
+			throws Exception {
+		RestClientVrops restClientMock = Mockito.mock(RestClientVrops.class);
+		Mockito.doReturn(true).when(restClientMock).isVersionAbove90();
+		ViewDefinitionDTO views = new ViewDefinitionDTO();
+		ViewDefinitionDTO.ViewDefinition custom = new ViewDefinitionDTO.ViewDefinition();
+		custom.setName(customView);
+		custom.setId(VropsContentExportMocked.VIEW_1_ID);
+		ViewDefinitionDTO.ViewDefinition builtin = new ViewDefinitionDTO.ViewDefinition();
+		builtin.setName(builtinView);
+		builtin.setId("builtin-view");
+		views.setViewDefinitions(Arrays.asList(custom, builtin));
+		Mockito.doReturn(views).when(restClientMock).getAllViewDefinitions();
+		Mockito.doAnswer(invocation -> VropsContentExportMocked.createExportBundle(invocation.getArgument(1)))
+				.when(restClientMock).exportContent(Mockito.anyList(), Mockito.isA(File.class));
+		return restClientMock;
+	}
+
+	@Test
 	void exportPackageFailsWhenDashboardImportIsNotCompleted() throws Exception {
 		// GIVEN
 		tempFolder.create();

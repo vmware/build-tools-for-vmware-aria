@@ -28,8 +28,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -245,6 +247,22 @@ public final class VropsContentBundleReader implements AutoCloseable {
 	}
 
 	/**
+	 * @return ids of the views in the bundle.
+	 * @throws IOException if the bundle cannot be read.
+	 */
+	public Set<String> getViewIds() throws IOException {
+		return getContentElementIds(VropsContentBundle.VIEWS_ENTRY, "ViewDef");
+	}
+
+	/**
+	 * @return ids of the reports in the bundle.
+	 * @throws IOException if the bundle cannot be read.
+	 */
+	public Set<String> getReportIds() throws IOException {
+		return getContentElementIds(VropsContentBundle.REPORTS_ENTRY, "ReportDef");
+	}
+
+	/**
 	 * @param userName dashboard owner.
 	 * @return names of the dashboards of the user in the bundle.
 	 * @throws IOException if the bundle cannot be read.
@@ -383,6 +401,28 @@ public final class VropsContentBundleReader implements AutoCloseable {
 		}
 
 		return Collections.emptyMap();
+	}
+
+	/**
+	 * Returns the ids of the items (view / report definitions) of a content.xml,
+	 * or no ids when the bundle has no such content, e.g. when no user created
+	 * content of the type is exported.
+	 */
+	private Set<String> getContentElementIds(final String zipName, final String itemTag) throws IOException {
+		Set<String> ids = new LinkedHashSet<>();
+		if (bundle.getEntry(zipName) == null) {
+			return ids;
+		}
+		Map<String, byte[]> zip = readNestedZip(zipName);
+		if (!zip.containsKey(CONTENT_XML)) {
+			return ids;
+		}
+		Matcher item = Pattern.compile("<" + itemTag + "\\s[^>]*\\bid=\"([^\"]*)\"")
+				.matcher(getContentXml(zipName, zip));
+		while (item.find()) {
+			ids.add(item.group(1));
+		}
+		return ids;
 	}
 
 	/**

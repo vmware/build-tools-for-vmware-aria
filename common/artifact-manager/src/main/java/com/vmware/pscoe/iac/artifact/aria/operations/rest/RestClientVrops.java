@@ -500,8 +500,16 @@ public class RestClientVrops extends RestClient {
 	}
 
 	/**
+	 * @return whether the content export includes the out-of-the-box content.
+	 */
+	public boolean isOutOfTheBoxContentIncluded() {
+		return configuration.getVropsIncludeOutOfTheBoxContent();
+	}
+
+	/**
 	 * Exports all content of the given types using the content management API and
-	 * downloads the resulting content bundle.
+	 * downloads the resulting content bundle. The out-of-the-box content is
+	 * included only when enabled in the configuration.
 	 *
 	 * @param contentTypes content types to export, e.g. DASHBOARDS,
 	 *                     VIEW_DEFINITIONS.
@@ -517,7 +525,7 @@ public class RestClientVrops extends RestClient {
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		Map<String, Object> body = new HashMap<>();
 		// scope ALL includes the out of the box content, CUSTOM only the user created
-		body.put("scope", "ALL");
+		body.put("scope", isOutOfTheBoxContentIncluded() ? "ALL" : "CUSTOM");
 		body.put("contentTypes", contentTypes);
 
 		logger.info("Exporting {}", contentDescription);

@@ -269,6 +269,17 @@ mvn vrops:pull -P{{ archetype.customer_project.maven_profile_name}}
 !!! note
     The command will fail if the `content.yaml` is empty or it cannot find some of the described content on the target {{ products.vrops_9_short_name }} server.
 
+#### Out-of-the-box Content
+
+Since VCF Operations 9.0 only the user created views, dashboards, reports, super metrics and metric configurations are exported by default (the *Include out-of-the-box content* option of the content export is off). Category types without value and wildcards match only the user created content, and pulling an out-of-the-box item listed in the `content.yaml` fails. To pull out-of-the-box content as well, use the `includeOutOfTheBoxContent` flag:
+
+```bash
+mvn vrops:pull -P{{ archetype.customer_project.maven_profile_name}} -DincludeOutOfTheBoxContent=true
+```
+
+!!! note
+    Including the out-of-the-box content makes the export considerably larger and slower, as all out-of-the-box items of the listed content types are exported. Keeping the default `-DincludeOutOfTheBoxContent=false` saves around 1:30 minutes per pull.
+
 #### Wildcard Support
 
 The content descriptor supports wildcard for most of the asset types. This means that you can specify a wildcard (*) symbol in the asset names defined in the `content.yaml` file exporting all assets matching the wildcard expression. E.g.

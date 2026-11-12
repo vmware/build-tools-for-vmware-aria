@@ -35,6 +35,18 @@ Previously a category type without value was treated as an empty array and the l
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Pull of out-of-the-box content for `vrops` projects*
+
+Since VCF Operations 9.0 `vrops:pull` exports only the user created views, dashboards, reports, super metrics and metric configurations by default (`-DincludeOutOfTheBoxContent=false`), which keeps the export small and saves around 1:30 minutes per pull. To pull out-of-the-box content as well, add `-DincludeOutOfTheBoxContent=true`:
+
+```bash
+mvn vrops:pull -Ptarget-env -DincludeOutOfTheBoxContent=true
+```
+
+#### Relevant Documentation:
+
+- [Out-of-the-box Content](../usage/products/vrops.md#out-of-the-box-content)
+
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
 ## Improvements

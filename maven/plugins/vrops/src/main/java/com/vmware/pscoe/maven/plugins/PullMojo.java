@@ -23,6 +23,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import com.vmware.pscoe.iac.artifact.aria.operations.configuration.ConfigurationVrops;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.common.configuration.ConfigurationException;
 import com.vmware.pscoe.iac.artifact.common.store.Package;
@@ -39,9 +40,19 @@ public class PullMojo extends AbstractIacMojo {
 	@Parameter(required = false, property = "dryrun", defaultValue = "false")
 	private boolean dryrun;
 
+	/**
+	 * Whether to include the out-of-the-box content in the content export, e.g.
+	 * to pull built-in views or dashboards. Only the user created content is
+	 * exported by default.
+	 */
+	@Parameter(required = false, property = "includeOutOfTheBoxContent", defaultValue = "false")
+	private boolean includeOutOfTheBoxContent;
+
 	@Override
 	protected void overwriteConfigurationPropertiesForType(PackageType type, Properties props) {
 		props.setProperty(Configuration.IMPORT_OLD_VERSIONS, "true");
+		props.setProperty(ConfigurationVrops.VROPS_INCLUDE_OUT_OF_THE_BOX_CONTENT,
+				Boolean.toString(includeOutOfTheBoxContent));
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -68,6 +69,12 @@ class VropsContentBundleReaderTest {
 		// the escaping of the localization is kept
 		assertEquals("view.view-1.title=\\u30d3\\u30e5\\u30fc\n",
 				read(new File(outDir, "resources/content_ja.properties")));
+	}
+
+	@Test
+	void getViewAndReportIdsListTheExportedItems() throws IOException {
+		assertEquals(new LinkedHashSet<>(Arrays.asList("view-1", "view-2")), reader.getViewIds());
+		assertEquals(new LinkedHashSet<>(Arrays.asList("report-1", "report-2")), reader.getReportIds());
 	}
 
 	@Test

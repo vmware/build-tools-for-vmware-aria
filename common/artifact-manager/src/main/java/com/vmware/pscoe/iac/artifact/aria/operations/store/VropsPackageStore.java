@@ -408,32 +408,33 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		// possible
 		Map<String, String> viewIds = contentTypes.contains("VIEW_DEFINITIONS") ? getViewIdsByName()
 				: Collections.emptyMap();
-		List<String> views = selectContent("views", descriptor.getView(), viewIds.keySet());
+		selectContent("views", descriptor.getView(), viewIds.keySet());
 		Map<String, String> reportIds = contentTypes.contains("REPORT_DEFINITIONS") ? getReportIdsByName()
 				: Collections.emptyMap();
-		List<String> reports = selectContent("reports", descriptor.getReport(), reportIds.keySet());
-		List<String> superMetrics = contentTypes.contains("SUPER_METRICS")
-				? selectContent("super metrics", descriptor.getSuperMetric(),
-						restClient.getAllSupermetrics().getSuperMetrics().stream()
-								.map(SupermetricDTO.SuperMetric::getName).collect(Collectors.toList()))
-				: Collections.emptyList();
+		selectContent("reports", descriptor.getReport(), reportIds.keySet());
+		if (contentTypes.contains("SUPER_METRICS")) {
+			selectContent("super metrics", descriptor.getSuperMetric(), restClient.getAllSupermetrics()
+					.getSuperMetrics().stream().map(SupermetricDTO.SuperMetric::getName).collect(Collectors.toList()));
+		}
 
 		File bundleFile = new File(tempDir, "content-export-" + UUID.randomUUID() + ".zip");
 		restClient.exportContent(contentTypes, bundleFile);
 		try (VropsContentBundleReader bundle = new VropsContentBundleReader(bundleFile)) {
 			File viewsDir = new File(tempVropsExportDir, "views");
-			for (String view : views) {
+			for (String view : selectExportedContent("views", descriptor.getView(),
+					getExportedNames(viewIds, bundle.getViewIds()))) {
 				logger.info("Exporting view '{}'", view);
 				bundle.writeView(viewIds.get(view), view, viewsDir);
 			}
 			File reportsDir = new File(tempVropsExportDir, "reports");
-			for (String report : reports) {
+			for (String report : selectExportedContent("reports", descriptor.getReport(),
+					getExportedNames(reportIds, bundle.getReportIds()))) {
 				logger.info("Exporting report '{}'", report);
 				bundle.writeReport(reportIds.get(report), report, reportsDir);
 			}
 			if (contentTypes.contains("SUPER_METRICS")) {
 				File superMetricsDir = new File(tempVropsExportDir, "supermetrics");
-				for (String superMetric : selectContent("super metrics", superMetrics,
+				for (String superMetric : selectExportedContent("super metrics", descriptor.getSuperMetric(),
 						bundle.getSuperMetricNames())) {
 					logger.info("Exporting super metric '{}'", superMetric);
 					bundle.writeSuperMetric(superMetric, superMetricsDir);
@@ -442,7 +443,7 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			if (contentTypes.contains("CONFIG_FILES")) {
 				List<String> metricConfigs = bundle.getMetricConfigNames();
 				File metricConfigsDir = new File(tempVropsExportDir, "metricconfigs");
-				for (String metricConfig : selectContent("metric configurations",
+				for (String metricConfig : selectExportedContent("metric configurations",
 						withXmlExtensionIfMissing(descriptor.getMetricConfig(), metricConfigs), metricConfigs)) {
 					logger.info("Exporting metric configuration '{}'", metricConfig);
 					bundle.writeMetricConfig(metricConfig, metricConfigsDir);
@@ -451,7 +452,8 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 			if (contentTypes.contains("DASHBOARDS")) {
 				String dashboardUser = restClient.getDashboardUser();
 				File dashboardsDir = new File(tempVropsExportDir, "dashboards");
-				List<String> dashboards = selectContent(String.format("dashboards of user '%s'", dashboardUser),
+				List<String> dashboards = selectExportedContent(
+						String.format("dashboards of user '%s'", dashboardUser),
 						descriptor.getDashboard(), bundle.getDashboardNames(dashboardUser));
 				List<String> incompleteDashboards = new ArrayList<>(bundle.getIncompleteDashboardNames(dashboardUser));
 				incompleteDashboards.retainAll(dashboards);
@@ -474,6 +476,42 @@ public final class VropsPackageStore extends GenericPackageStore<VropsPackageDes
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to export content : " + e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Selects the items to process from the exported content, see
+	 * {@link #selectContent(String, List, Collection)}. The out-of-the-box items
+	 * are not part of the export unless enabled, so the error for missing items
+	 * suggests including them.
+	 *
+	 * @param contentType content type used in logs and errors.
+	 * @param requested   items listed in the content.yaml.
+	 * @param exported    items present in the exported content.
+	 * @return the names of the items to process.
+	 * @throws RuntimeException if any of the listed items (without wildcard) is
+	 *                          not present in the exported content.
+	 */
+	private List<String> selectExportedContent(final String contentType, final List<String> requested,
+			final Collection<String> exported) {
+		try {
+			return selectContent(contentType, requested, exported);
+		} catch (RuntimeException e) {
+			if (restClient.isOutOfTheBoxContentIncluded()) {
+				throw e;
+			}
+			throw new RuntimeException(e.getMessage() + ". Only the user created content is exported by default, "
+					+ "if these are out-of-the-box items pull with -DincludeOutOfTheBoxContent=true", e);
+		}
+	}
+
+	/**
+	 * @param idsByName item ids by name, as listed on the server.
+	 * @param exported  ids of the items present in the exported content.
+	 * @return the names of the items present in the exported content.
+	 */
+	private static List<String> getExportedNames(final Map<String, String> idsByName, final Set<String> exported) {
+		return idsByName.entrySet().stream().filter(item -> exported.contains(item.getValue()))
+				.map(Map.Entry::getKey).collect(Collectors.toList());
 	}
 
 	/**
