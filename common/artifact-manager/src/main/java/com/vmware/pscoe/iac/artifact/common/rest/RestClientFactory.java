@@ -296,9 +296,13 @@ public final class RestClientFactory {
 		// Set organization in case provider admin (user@System) is executing a vra-ng
 		// or vcfa push/pull for specific organization. Without it the interceptor does
 		// not exchange the provider token for an organization scoped one. Note that in
-		// ConfigurationVroNg organization is missing and not required
+		// ConfigurationVroNg organization is missing and not required.
+		// External vRO in VCF 9 rejects (HTTP 500) provider tokens, so a provider admin
+		// must also provide the organization the vRO is bound to (vro.org.name)
 		String orgName = null;
-		if (configuration instanceof ConfigurationVraNg) {
+		if (configuration instanceof ConfigurationVro) {
+			orgName = ((ConfigurationVro) configuration).getOrgName();
+		} else if (configuration instanceof ConfigurationVraNg) {
 			orgName = ((ConfigurationVraNg) configuration).getOrgName();
 		} else if (configuration instanceof VcfAutoConfiguration) {
 			orgName = ((VcfAutoConfiguration) configuration).getOrgName();

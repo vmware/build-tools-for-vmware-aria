@@ -34,6 +34,12 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 	public static final String AUTH_HOST = "authHost";
 	public static final String AUTH_PORT = "authPort";
 	public static final String PROXY = "proxy";
+	/**
+	 * VCF 9 organization the (external) vRO is bound to. Required when a provider
+	 * admin (user@System) works with an external vRO, so that the provider token
+	 * is exchanged for an organization scoped one.
+	 */
+	public static final String ORGANIZATION_NAME = "org.name";
 	public static final String DEFAULT_TAG_IMPORT_MODE = "ImportAndOverwriteExistingValue";
 
 	/**
@@ -93,6 +99,10 @@ public class ConfigurationVro extends ConfigurationWithRefreshToken implements C
 
 	public boolean isPackgeExportAsZip() {
 		return Boolean.parseBoolean(this.properties.getProperty(PACKAGE_EXPORT_AS_ZIP));
+	}
+
+	public String getOrgName() {
+		return this.properties.getProperty(ORGANIZATION_NAME);
 	}
 
 	public String getTenant() {

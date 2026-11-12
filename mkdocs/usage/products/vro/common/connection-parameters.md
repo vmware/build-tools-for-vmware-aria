@@ -10,6 +10,7 @@ The following need to be added to the profile that you intend to use:
     <vro.auth>vra|basic</vro.auth>
     <vro.authHost>flt-auto01.corp.internal</vro.authHost>
     <vro.authPort>443</vro.authPort>
+    <vro.org.name>vmw-emea-mgmt</vro.org.name>
     <vro.port>443</vro.port>
     <vro.username>configurationadmin</vro.username>
     <vro.password>someSecurePassword</vro.password>
@@ -27,6 +28,8 @@ Configuration:
 - `vro.auth` - Defines the authentication type used for REST API communication.
       - Supported values: `vra`, `basic` (depending on {{ products.vro_short_name }} version might need to be explicitly enabled in the product).
       - If set to `vra`, `vro.authHost` and `vro.authPort` need to be provided with the hostname and port of the target {{ products.vra_9_short_name }} server.
+
+- `vro.org.name` - Optional. The organization the external {{ products.vro_short_name }} is bound to in {{ products.vra_9_short_name }}. Required when a provider admin (`user@System`) works with an external {{ products.vro_short_name }} with `vro.auth` set to `vra`. The provider token is then exchanged for a token scoped to this organization, which the external {{ products.vro_short_name }} requires.
 
 Use the profile by passing it with `-P`, e.g.:
 ``` bash

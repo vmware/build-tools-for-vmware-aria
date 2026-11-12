@@ -39,6 +39,20 @@
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
 
+### *Push / pull to external vRO in VCF 9.x as provider admin fails with HTTP 500*
+
+#### Previous Behavior
+
+When `vro.auth` was `vra` and `vro.username` was a provider admin (`user@System`), BTVA authenticated against VCF Automation with a provider (System) token. External vRO instances in VCF 9.x reject provider tokens, so package operations such as `mvn vrealize:push` failed with `500 Internal Server Error` and an HTML error page.
+
+#### New Behavior
+
+A new optional property, `vro.org.name`, sets the VCF Automation organization the external vRO is bound to. When it is set, the provider token is exchanged for an organization-scoped token. The token exchange calls now go to `vro.authHost` instead of `vro.host`.
+
+#### Relevant Documentation:
+
+- [vRO Connection Parameters](../usage/products/vro/common/connection-parameters.md)
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)

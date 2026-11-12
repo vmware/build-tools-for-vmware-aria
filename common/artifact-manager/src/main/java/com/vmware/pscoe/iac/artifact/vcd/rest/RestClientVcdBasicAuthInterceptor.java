@@ -252,7 +252,8 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 					// organization input is not required
 
 					if (configuration.getDomain().equals(PROVIDER_DOMAIN) && configuration.getOrgName() != null) {
-						acquireProviderToken(request);
+						// use the auth host as well, external vRO does not serve cloudapi/oidc
+						acquireProviderToken(actualRequest);
 					}
 				}
 
