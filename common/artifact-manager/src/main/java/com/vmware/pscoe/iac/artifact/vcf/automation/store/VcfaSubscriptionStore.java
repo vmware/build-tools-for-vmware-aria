@@ -44,7 +44,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
     @Override
     public void importContent(File sourceDirectory) {
         logger.debug("Importing subscriptions from {}", sourceDirectory.getAbsolutePath());
-        List<String> allowedSubs = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+        List<String> allowedSubs = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "subscription",
                 "subscriptions");
 
         if (allowedSubs != null && allowedSubs.isEmpty()) {
@@ -56,7 +56,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
         File subsFolder = Paths.get(sourceDirectory.getPath(), DIR_SUBSCRIPTIONS).toFile();
 
         // --- NEW STRATEGIC COUPLING: Call the unified flexible asset validator ---
-        VcfaDescriptorHelper.validateAssetsPresent(this.vcfaPackage, subsFolder, "Subscription", false, "subscription",
+        VcfaDescriptorHelper.validateAssetsPresent(this.descriptor, subsFolder, "Subscription", false, "subscription",
                 "subscriptions");
 
         if (!subsFolder.exists() || !subsFolder.isDirectory()) {
@@ -106,7 +106,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
     public void exportContent() {
         logger.info("Pulling subscription configurations from the remote environment...");
 
-        List<String> allowedSubs = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+        List<String> allowedSubs = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "subscription",
                 "subscriptions");
         if (allowedSubs != null && allowedSubs.isEmpty()) {
             logger.info(
@@ -209,7 +209,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
                 return;
             }
 
-            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+            List<String> itemsToDelete = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "subscription",
                     "subscriptions");
 
             if (itemsToDelete == null) {
@@ -245,7 +245,7 @@ public class VcfaSubscriptionStore extends AbstractVcfaStore {
     }
 
     private boolean isExcludedByDescriptor(String subscriptionName) {
-        List<String> allowedSubscriptions = VcfaDescriptorHelper.getTargetedItems(this.vcfaPackage, "subscription",
+        List<String> allowedSubscriptions = VcfaDescriptorHelper.getTargetedItems(this.descriptor, "subscription",
                 "subscriptions");
         if (allowedSubscriptions == null) {
             return false;

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -174,6 +175,17 @@ public final class VcfaPackageDescriptor extends PackageDescriptor {
     }
 
     /**
+     * The content.yaml file this descriptor was loaded from, null if not loaded from file.
+     */
+    @JsonIgnore
+    private File sourceFile;
+
+    @JsonIgnore
+    public File getSourceFile() {
+        return sourceFile;
+    }
+
+    /**
      * Create a VcfaPackageDescriptor instance from file.
      */
     public static VcfaPackageDescriptor getInstance(File filesystemPath) {
@@ -181,7 +193,9 @@ public final class VcfaPackageDescriptor extends PackageDescriptor {
         mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
-            return mapper.readValue(filesystemPath, VcfaPackageDescriptor.class);
+            VcfaPackageDescriptor descriptor = mapper.readValue(filesystemPath, VcfaPackageDescriptor.class);
+            descriptor.sourceFile = filesystemPath;
+            return descriptor;
         } catch (IOException e) {
             throw new RuntimeException("Unable to load VCFA package descriptor.", e);
         }
