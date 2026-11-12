@@ -16,7 +16,6 @@ import * as cp from "child_process";
 import * as fs from "fs-extra";
 import * as glob from "glob";
 import * as path from "path";
-import tiged from "tiged";
 
 import { DependenciesMapper, NpmProxy } from "./deps";
 import ImportsRewriter from "./rewriter";
@@ -68,11 +67,17 @@ export class NpmConverter {
 			await ensureGone(this.opts.source.directory);
 
 			console.log(`Cloning source repo from: ${gitRepo} to ${this.opts.source.directory}`);
-			const emitter = tiged(gitRepo, {
-				disableCache: true,
-				force: true
+
+			const cloneCmd = await exec(`git clone --depth 1 ${gitRepo} ${this.opts.source.directory}`, { 
+				cwd: process.cwd(),
+				env: { ...process.env, GIT_TERMINAL_PROMPT: '0' } 
 			});
-			await emitter.clone(this.opts.source.directory);
+
+			if (cloneCmd.code !== 0) {
+				throw new Error(`Failed to clone repository: ${cloneCmd.stderr}`);
+			}
+
+			await ensureGone(path.join(this.opts.source.directory, ".git"));
 			console.debug("Cloning done.");
 
 			this.hasDirectDependencies = this.packRep.dependencies && Object.keys(this.packRep.dependencies).length > 0;
@@ -349,7 +354,10 @@ async function ensureGone(dirPath: string): Promise<boolean> {
 }
 
 async function exec(command: string, options: cp.ExecOptions): Promise<CmdResult> {
-	console.debug(`Executing command "${command}" with options`, options);
+	// Create a shallow copy of options and explicitly remove the environment variables
+	const { env, ...safeOptions } = options;
+	
+	console.debug(`Executing command "${command}" with options`, safeOptions);
 	return new Promise<CmdResult>((resolve, reject) => {
 		cp.exec(command, options, (err: cp.ExecException, stdout, stderr) => {
 			console.debug(stdout);
