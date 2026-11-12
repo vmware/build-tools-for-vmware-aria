@@ -354,7 +354,10 @@ async function ensureGone(dirPath: string): Promise<boolean> {
 }
 
 async function exec(command: string, options: cp.ExecOptions): Promise<CmdResult> {
-	console.debug(`Executing command "${command}" with options`, options);
+	// Create a shallow copy of options and explicitly remove the environment variables
+	const { env, ...safeOptions } = options;
+	
+	console.debug(`Executing command "${command}" with options`, safeOptions);
 	return new Promise<CmdResult>((resolve, reject) => {
 		cp.exec(command, options, (err: cp.ExecException, stdout, stderr) => {
 			console.debug(stdout);
