@@ -78,6 +78,20 @@ class VropsContentBundleReaderTest {
 	}
 
 	@Test
+	void resolveInsideRejectsNamesOutsideOfTheDirectory() throws IOException {
+		assertEquals(new File(outDir, "a/b.xml").getAbsoluteFile(), VropsContentBundleReader.resolveInside(outDir, "a/b.xml"));
+		assertThrows(IOException.class, () -> VropsContentBundleReader.resolveInside(outDir, ".."));
+		assertThrows(IOException.class, () -> VropsContentBundleReader.resolveInside(outDir, "../x.xml"));
+		assertThrows(IOException.class, () -> VropsContentBundleReader.resolveInside(outDir, "a/../../x.xml"));
+		assertThrows(IOException.class, () -> VropsContentBundleReader.resolveInside(outDir, "."));
+	}
+
+	@Test
+	void writeReportFailsForNameOutsideOfTheDirectory() {
+		assertThrows(IOException.class, () -> reader.writeReport(VropsContentExportMocked.REPORT_1_ID, "..", outDir));
+	}
+
+	@Test
 	void writeViewFailsWhenViewIsMissing() {
 		assertThrows(IOException.class, () -> reader.writeView("missing", "Missing", outDir));
 	}

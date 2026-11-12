@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -176,7 +177,7 @@ public final class VropsContentBundleReader implements AutoCloseable {
 				ObjectNode content = mapper.createObjectNode();
 				content.set(superMetric.getKey(), ((ObjectNode) superMetric.getValue()).without(SUPER_METRIC_SERVER_FIELDS));
 				dir.mkdirs();
-				writeJson(content, new File(dir, VropsPackageStore.toFileName(name) + ".json"));
+				writeJson(content, resolveInside(dir, VropsPackageStore.toFileName(name) + ".json"));
 				return;
 			}
 		}
@@ -207,7 +208,7 @@ public final class VropsContentBundleReader implements AutoCloseable {
 	 */
 	public void writeMetricConfig(final String name, final File dir) throws IOException {
 		dir.mkdirs();
-		Files.write(new File(dir, name).toPath(), readEntry(VropsContentBundle.METRIC_CONFIGS_DIR + name));
+		Files.write(resolveInside(dir, name).toPath(), readEntry(VropsContentBundle.METRIC_CONFIGS_DIR + name));
 	}
 
 	/**
@@ -223,7 +224,7 @@ public final class VropsContentBundleReader implements AutoCloseable {
 		Map<String, byte[]> views = readNestedZip(VropsContentBundle.VIEWS_ENTRY);
 		dir.mkdirs();
 		writeContentElement(VropsContentBundle.VIEWS_ENTRY, views, "ViewDef", id,
-				new File(dir, VropsPackageStore.toFileName(name) + ".xml"));
+				resolveInside(dir, VropsPackageStore.toFileName(name) + ".xml"));
 		appendResources(views, CONTENT_RESOURCES_DIR, new File(dir, RESOURCES_DIR),
 				key -> key.startsWith("view." + id + "."));
 	}
@@ -238,7 +239,7 @@ public final class VropsContentBundleReader implements AutoCloseable {
 	 */
 	public void writeReport(final String id, final String name, final File dir) throws IOException {
 		Map<String, byte[]> reports = readNestedZip(VropsContentBundle.REPORTS_ENTRY);
-		File reportDir = new File(dir, VropsPackageStore.toFileName(name));
+		File reportDir = resolveInside(dir, VropsPackageStore.toFileName(name));
 		reportDir.mkdirs();
 		writeContentElement(VropsContentBundle.REPORTS_ENTRY, reports, "ReportDef", id,
 				new File(reportDir, CONTENT_XML));
@@ -355,7 +356,7 @@ public final class VropsContentBundleReader implements AutoCloseable {
 		content.set("dashboards", mapper.createArrayNode()
 				.add(((ObjectNode) mapper.readTree(renumbered.toString())).without(DASHBOARD_SERVER_FIELDS)));
 		dir.mkdirs();
-		writeJson(content, new File(dir, VropsPackageStore.toFileName(name) + ".json"));
+		writeJson(content, resolveInside(dir, VropsPackageStore.toFileName(name) + ".json"));
 
 		appendResources(getDashboardZip(userName), DASHBOARD_RESOURCES_DIR, new File(dir, RESOURCES_DIR),
 				key -> key.equals(name) || key.startsWith(name + "."));
@@ -477,7 +478,8 @@ public final class VropsContentBundleReader implements AutoCloseable {
 			}
 			if (matching.length() > 0) {
 				targetDir.mkdirs();
-				Files.write(new File(targetDir, fileName).toPath(), matching.toString().getBytes(StandardCharsets.UTF_8),
+				Files.write(resolveInside(targetDir, fileName).toPath(),
+						matching.toString().getBytes(StandardCharsets.UTF_8),
 						StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 			}
 		}
@@ -513,6 +515,25 @@ public final class VropsContentBundleReader implements AutoCloseable {
 			}
 		}
 		return key.toString();
+	}
+
+	/**
+	 * Resolves a file in a directory, making sure that it stays inside the
+	 * directory. The names come from the server or the exported content, so a
+	 * name like {@code ..} or {@code ../x} must not lead outside of the project.
+	 *
+	 * @param dir  the directory.
+	 * @param name the file name, may contain sub directories.
+	 * @return the file.
+	 * @throws IOException if the file resolves outside of the directory.
+	 */
+	static File resolveInside(final File dir, final String name) throws IOException {
+		Path base = dir.toPath().toAbsolutePath().normalize();
+		Path target = base.resolve(name).normalize();
+		if (!target.startsWith(base) || target.equals(base)) {
+			throw new IOException(String.format("Invalid file name '%s', it resolves outside of '%s'", name, dir));
+		}
+		return target.toFile();
 	}
 
 	private byte[] readEntry(final String name) throws IOException {
