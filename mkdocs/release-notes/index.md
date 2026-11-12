@@ -43,7 +43,7 @@ Since VCF Operations 9.0 `vrops:pull` exports only the user created views, dashb
 mvn vrops:pull -Ptarget-env -DincludeOutOfTheBoxContent=true
 ```
 
-#### Relevant Documentation:
+#### Relevant Documentation
 
 - [Out-of-the-box Content](../usage/products/vrops.md#out-of-the-box-content)
 
