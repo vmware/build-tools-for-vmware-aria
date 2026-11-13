@@ -64,6 +64,7 @@
 		"fs-extra": "^11.2.0",
 		"glob": "^11.1.0",
 		"iconv-lite": "^0.6.3",
+		"js-yaml": "^4.3.2",
 		"logform": "2.7.0",
 		"minimatch": "^10.2.4",
 		"node-forge": "1.4.1",
