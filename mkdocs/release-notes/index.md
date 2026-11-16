@@ -47,7 +47,7 @@ When `vro.auth` was `vra` and `vro.username` was a provider admin (`user@System`
 
 #### New Behavior
 
-A new optional property, `vro.org.name`, sets the VCF Automation organization the external vRO is bound to. When it is set, the provider token is exchanged for an organization-scoped token. The token exchange calls now go to `vro.authHost` instead of `vro.host`.
+A new optional property, `vro.org.name`, sets the VCF Automation organization the external vRO is bound to. When it is set, the provider token is exchanged for an organization-scoped token. The token exchange calls now go to `vro.authHost` instead of `vro.host`. For the package installer, the matching property is `vro_org_name`.
 
 #### Relevant Documentation:
 
