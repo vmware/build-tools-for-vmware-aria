@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -331,7 +332,10 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 				.stream()
 				.filter(e -> e.getAsJsonObject().get(JSON_RESPONSE_CLIENT_NAME_KEY).getAsString()
 						.equals(AUTOMATION_RELYING_PARTY))
-				.findFirst().orElseThrow();
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException(String.format(
+						"OpenID relying party '%s' not found on '%s'", AUTOMATION_RELYING_PARTY,
+						relyingPartiesUri.getHost())));
 
 		return autoRelyingPartyElement.getAsJsonObject().get(JSON_REQUEST_CLIENT_ID_KEY).getAsString();
 	}
@@ -346,11 +350,17 @@ public class RestClientVcdBasicAuthInterceptor extends RestClientRequestIntercep
 		JsonElement values = JsonParser.parseString(response.getBody()).getAsJsonObject().get(JSON_RESPONSE_VALUES_KEY);
 		String organizationName = this.getConfiguration().getOrgName();
 
-		JsonElement organization = values.getAsJsonArray()
-				.asList()
+		List<JsonElement> organizations = values.getAsJsonArray().asList();
+		JsonElement organization = organizations
 				.stream()
 				.filter(e -> e.getAsJsonObject().get(JSON_RESPONSE_NAME_KEY).getAsString().equals(organizationName))
-				.findFirst().orElseThrow();
+				.findFirst()
+				.orElseThrow(() -> new IllegalStateException(String.format(
+						"Organization '%s' not found on '%s'. Available organizations: %s", organizationName,
+						organizationsUri.getHost(),
+						organizations.stream()
+								.map(e -> e.getAsJsonObject().get(JSON_RESPONSE_NAME_KEY).getAsString())
+								.collect(Collectors.toList()))));
 
 		// The full organization ID contains prefix which needs to be removed, e.g.
 		// "urn:vcloud:org:79af3eb2-11c6-416e-a700-9c79c0156f98"

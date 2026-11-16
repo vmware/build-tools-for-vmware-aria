@@ -15,6 +15,7 @@
 package com.vmware.pscoe.iac.artifact.vcd.rest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -49,13 +50,7 @@ class RestClientVcdBasicAuthInterceptorTest {
 	private static final String AUTH_HOST = "vcfa.corp.internal";
 	private static final String ORG_TOKEN = "org-scoped-token";
 
-	/**
-	 * A provider admin (user@System) working with an external vRO must get an
-	 * organization scoped token, and all token related calls must go to the auth
-	 * host (VCFA), since the external vRO does not serve cloudapi / oidc.
-	 */
-	@Test
-	void testExternalVroProviderAdminUsesOrgScopedTokenFromAuthHost() throws Exception {
+	private static ConfigurationVcd providerAdminConfiguration(String orgName) {
 		Properties props = new Properties();
 		props.setProperty(Configuration.HOST, VRO_HOST);
 		props.setProperty(Configuration.PORT, "443");
@@ -63,12 +58,12 @@ class RestClientVcdBasicAuthInterceptorTest {
 		props.setProperty(Configuration.AUTH_PORT, "443");
 		props.setProperty(Configuration.USERNAME, "admin@System");
 		props.setProperty(Configuration.PASSWORD, "secret");
-		props.setProperty(ConfigurationVcd.ORGANIZATION_NAME, "vmw-emea-mgmt");
-		ConfigurationVcd configuration = ConfigurationVcd.fromProperties(props);
+		props.setProperty(ConfigurationVcd.ORGANIZATION_NAME, orgName);
+		return ConfigurationVcd.fromProperties(props);
+	}
 
+	private static RestTemplate mockRestTemplate(List<URI> calledUris) {
 		RestTemplate restTemplate = mock(RestTemplate.class);
-		List<URI> calledUris = new ArrayList<>();
-
 		when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(HttpEntity.class), eq(String.class)))
 				.thenAnswer(invocation -> {
 					URI uri = invocation.getArgument(0);
@@ -95,19 +90,31 @@ class RestClientVcdBasicAuthInterceptorTest {
 					}
 					throw new IllegalStateException("Unexpected call: " + uri);
 				});
+		return restTemplate;
+	}
 
-		RestClientVcdBasicAuthInterceptor interceptor = new RestClientVcdBasicAuthInterceptor(configuration,
-				restTemplate, RestClientVcd.API_VERSION_40, true);
-
-		HttpHeaders requestHeaders = new HttpHeaders();
+	private static HttpRequest mockVroRequest(HttpHeaders requestHeaders) {
 		HttpRequest request = mock(HttpRequest.class);
 		when(request.getURI()).thenReturn(URI.create("https://" + VRO_HOST + ":443/vco/api/packages"));
 		when(request.getMethod()).thenReturn(HttpMethod.GET);
 		when(request.getHeaders()).thenReturn(requestHeaders);
+		return request;
+	}
 
-		ClientHttpRequestExecution execution = mock(ClientHttpRequestExecution.class);
+	/**
+	 * A provider admin (user@System) working with an external vRO must get an
+	 * organization scoped token, and all token related calls must go to the auth
+	 * host (VCFA), since the external vRO does not serve cloudapi / oidc.
+	 */
+	@Test
+	void testExternalVroProviderAdminUsesOrgScopedTokenFromAuthHost() throws Exception {
+		List<URI> calledUris = new ArrayList<>();
+		RestClientVcdBasicAuthInterceptor interceptor = new RestClientVcdBasicAuthInterceptor(
+				providerAdminConfiguration("vmw-emea-mgmt"), mockRestTemplate(calledUris), RestClientVcd.API_VERSION_40,
+				true);
 
-		interceptor.intercept(request, new byte[0], execution);
+		HttpHeaders requestHeaders = new HttpHeaders();
+		interceptor.intercept(mockVroRequest(requestHeaders), new byte[0], mock(ClientHttpRequestExecution.class));
 
 		assertEquals("Bearer " + ORG_TOKEN, requestHeaders.getFirst("Authorization"));
 		// all calls apart from the external vRO detection go to the auth host
@@ -115,5 +122,23 @@ class RestClientVcdBasicAuthInterceptorTest {
 				.filter(uri -> !uri.getPath().endsWith(RestClientVcd.URL_VERSIONS))
 				.forEach(uri -> assertEquals(AUTH_HOST, uri.getHost(), "Wrong host for " + uri));
 		assertTrue(calledUris.stream().anyMatch(uri -> uri.getPath().endsWith("/oidc/oauth2/token")));
+	}
+
+	/**
+	 * A non existing organization must fail with a meaningful message instead of
+	 * a bare "No value present".
+	 */
+	@Test
+	void testProviderAdminWithUnknownOrganizationFailsWithMeaningfulMessage() {
+		RestClientVcdBasicAuthInterceptor interceptor = new RestClientVcdBasicAuthInterceptor(
+				providerAdminConfiguration("missing-org"), mockRestTemplate(new ArrayList<>()),
+				RestClientVcd.API_VERSION_40, true);
+
+		IllegalStateException e = assertThrows(IllegalStateException.class,
+				() -> interceptor.intercept(mockVroRequest(new HttpHeaders()), new byte[0],
+						mock(ClientHttpRequestExecution.class)));
+
+		assertEquals("Organization 'missing-org' not found on '" + AUTH_HOST
+				+ "'. Available organizations: [vmw-emea-mgmt]", e.getMessage());
 	}
 }
