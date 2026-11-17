@@ -3,7 +3,7 @@
 	"version": "1.0.0-SNAPSHOT",
 	"description": "Build Tools for VMware Aria documentation bundle",
 	"dependencies": {
-		"showdown": ">= 2.1.0"
+		"marked": "^18.2.0"
 	},
 	"scripts": {
 		"install": "node html-generator.js && cp -r markdown/assets html",
