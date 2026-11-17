@@ -20,7 +20,10 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import com.vmware.pscoe.iac.artifact.aria.automation.configuration.ConfigurationVraNg;
+import com.vmware.pscoe.iac.artifact.aria.orchestrator.configuration.ConfigurationVro;
 import com.vmware.pscoe.iac.artifact.common.configuration.Configuration;
 import com.vmware.pscoe.iac.artifact.vcd.configuration.ConfigurationVcd;
 import com.vmware.pscoe.iac.artifact.vcf.automation.configuration.VcfAutoConfiguration;
@@ -60,5 +63,39 @@ class RestClientFactoryTest {
 		ConfigurationVcd vcdConfig = RestClientFactory.createConfigurationVcd(config);
 
 		assertEquals(ORG_NAME, vcdConfig.getOrgName());
+	}
+
+	private static Properties externalVroProperties() {
+		Properties props = new Properties();
+		props.setProperty(Configuration.HOST, "vro.corp.internal");
+		props.setProperty(Configuration.PORT, "443");
+		props.setProperty(ConfigurationVro.AUTH, "vra");
+		props.setProperty(ConfigurationVro.AUTH_HOST, "vcfa.corp.internal");
+		props.setProperty(ConfigurationVro.AUTH_PORT, "443");
+		props.setProperty(Configuration.USERNAME, "admin@System");
+		props.setProperty(Configuration.PASSWORD, "secret");
+		return props;
+	}
+
+	@Test
+	void testCreateConfigurationVcd_VroPropagatesOrgName() {
+		Properties props = externalVroProperties();
+		props.setProperty(ConfigurationVro.ORGANIZATION_NAME, ORG_NAME);
+		ConfigurationVro config = ConfigurationVro.fromProperties(props);
+
+		ConfigurationVcd vcdConfig = RestClientFactory.createConfigurationVcd(config);
+
+		assertEquals(ORG_NAME, vcdConfig.getOrgName());
+		assertEquals("System", vcdConfig.getDomain());
+		assertEquals("vcfa.corp.internal", vcdConfig.getAuthHost());
+	}
+
+	@Test
+	void testCreateConfigurationVcd_VroWithoutOrgName() {
+		ConfigurationVro config = ConfigurationVro.fromProperties(externalVroProperties());
+
+		ConfigurationVcd vcdConfig = RestClientFactory.createConfigurationVcd(config);
+
+		assertNull(vcdConfig.getOrgName());
 	}
 }

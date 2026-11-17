@@ -508,6 +508,13 @@ enum Option {
 			"vro_authPort",
 			ConfigurationVro.AUTH_PORT),
 	/**
+	 * VRO organization name. Required for provider admin (user@System) working
+	 * with an external vRO in VCF 9.
+	 */
+	VRO_ORGANIZATION_NAME(
+			"vro_org_name",
+			ConfigurationVro.ORGANIZATION_NAME),
+	/**
 	 * VRO proxy.
 	 */
 	VRO_PROXY(
@@ -1467,6 +1474,9 @@ public final class Installer {
 		if (input.get(Option.VRO_AUTH).equalsIgnoreCase("vra")) {
 			userInput(input, Option.VRO_AUTHHOST, "    Authorization Host FQDN", input.get(Option.VRO_SERVER));
 			userInput(input, Option.VRO_AUTHPORT, "    Authorization Port", input.get(Option.VRO_PORT));
+			if (input.get(Option.VRO_USERNAME).toLowerCase().endsWith("@system")) {
+				userInput(input, Option.VRO_ORGANIZATION_NAME, "    Organization Name the vRO is bound to");
+			}
 		} else {
 			Validate.vroauth(input.get(Option.VRO_SERVER), Integer.valueOf(input.get(Option.VRO_PORT)),
 					input.get(Option.VRO_USERNAME), input.get(Option.VRO_PASSWORD),
