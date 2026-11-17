@@ -26,6 +26,13 @@
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
+### *Add support for 9.0.0 PowerShell runtime environments  for `polyglot` projects*
+
+Added support for:
+
+- powercli:9.0.0-powershell-7.4
+- powercli:9.1.1-powershell-7.6
+
 ## Improvements
 
 [//]: # (### *Improvement Name* )

@@ -16,7 +16,9 @@ describe('E2E Tests', () => {
         "powercli:13-powershell-7.4",
         "powercli:12-powershell-7.4",
         "powercli:12-powershell-7.1",
-        "powercli:11-powershell-6.2"
+        "powercli:11-powershell-6.2",
+        "powercli:9.0.0-powershell-7.4",
+        "powercli:9.1.1-powershell-7.6"
     ]
         .map(runtime => runtime.replace(/[:\-.]/g, "_"))
         .filter(runtime => existsSync(path.join('test', 'e2e', runtime)))
