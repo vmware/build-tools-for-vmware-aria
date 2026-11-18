@@ -48,6 +48,24 @@
 						<proxy>${vcfa.proxy}</proxy>
 						<cloud.proxy.name>${vcfa.cloud.proxy.name}</cloud.proxy.name>
 					</vcfa>
+					<!-- Used to push vRO package dependencies (includeDependencies) -->
+					<vro>
+						<host>${vro.host}</host>
+						<port>${vro.port}</port>
+						<username>${vro.username}</username>
+						<password>${vro.password}</password>
+						<serverId>${vro.serverId}</serverId>
+						<auth>${vro.auth}</auth>
+						<authHost>${vro.authHost}</authHost>
+						<authPort>${vro.authPort}</authPort>
+						<proxy>${vro.proxy}</proxy>
+						<tenant>${vro.tenant}</tenant>
+						<refresh.token>${vro.refresh.token}</refresh.token>
+						<packageImportConfigurationAttributeValues>
+							${vro.packageImportConfigurationAttributeValues}</packageImportConfigurationAttributeValues>
+						<packageImportConfigSecureStringAttributeValues>
+							${vro.packageImportConfigSecureStringAttributeValues}</packageImportConfigSecureStringAttributeValues>
+					</vro>
 					<ignoreSslCertificate>${vrealize.ssl.ignore.certificate}</ignoreSslCertificate>
 					<ignoreSslHostname>${vrealize.ssl.ignore.hostname}</ignoreSslHostname>
 					<socketTimeout>${vrealize.socket.timeout}</socketTimeout>
