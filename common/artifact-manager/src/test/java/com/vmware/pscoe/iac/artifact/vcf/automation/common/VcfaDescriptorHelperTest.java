@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.vmware.pscoe.iac.artifact.common.store.Package;
 import com.vmware.pscoe.iac.artifact.common.store.PackageType;
+import com.vmware.pscoe.iac.artifact.vcf.automation.store.models.VcfaPackageDescriptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -100,6 +101,51 @@ class VcfaDescriptorHelperTest {
             assertNotNull(items, "Should find items under alternate key");
             assertEquals(1, items.size());
             assertEquals("Small VM", items.get(0));
+        } finally {
+            System.setProperty("user.dir", originalDir);
+        }
+    }
+
+    @Test
+    void testGetTargetedItems_UsesDescriptorFileInsteadOfWorkingDirectory() throws IOException {
+        // Module content.yaml, e.g. when executed with "mvn -pl <module>" from the parent folder
+        File moduleDir = new File(tempDir, "module");
+        moduleDir.mkdirs();
+        File moduleContentYaml = new File(moduleDir, "content.yaml");
+        try (FileWriter writer = new FileWriter(moduleContentYaml)) {
+            writer.write("blueprint:\n  - Small VM\n");
+        }
+        // Working directory content.yaml that must be ignored
+        try (FileWriter writer = new FileWriter(new File(tempDir, "content.yaml"))) {
+            writer.write("blueprint:\n  - Other VM\n");
+        }
+
+        String originalDir = System.getProperty("user.dir");
+        System.setProperty("user.dir", tempDir.getAbsolutePath());
+        try {
+            VcfaPackageDescriptor descriptor = VcfaPackageDescriptor.getInstance(moduleContentYaml);
+            List<String> items = VcfaDescriptorHelper.getTargetedItems(descriptor, "blueprint");
+            assertEquals(List.of("Small VM"), items);
+        } finally {
+            System.setProperty("user.dir", originalDir);
+        }
+    }
+
+    @Test
+    void testGetModuleDirectory_UsesDescriptorFileFolder() throws IOException {
+        File moduleDir = new File(tempDir, "module");
+        moduleDir.mkdirs();
+        File moduleContentYaml = new File(moduleDir, "content.yaml");
+        try (FileWriter writer = new FileWriter(moduleContentYaml)) {
+            writer.write("blueprint: []\n");
+        }
+
+        String originalDir = System.getProperty("user.dir");
+        System.setProperty("user.dir", tempDir.getAbsolutePath());
+        try {
+            assertEquals(moduleDir.getAbsoluteFile(),
+                    VcfaDescriptorHelper.getModuleDirectory(VcfaPackageDescriptor.getInstance(moduleContentYaml)));
+            assertEquals(tempDir.getAbsoluteFile(), VcfaDescriptorHelper.getModuleDirectory(null));
         } finally {
             System.setProperty("user.dir", originalDir);
         }
