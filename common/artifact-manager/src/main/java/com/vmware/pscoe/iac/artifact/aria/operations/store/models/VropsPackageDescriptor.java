@@ -15,6 +15,7 @@
 package com.vmware.pscoe.iac.artifact.aria.operations.store.models;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,48 +25,52 @@ import com.vmware.pscoe.iac.artifact.common.store.models.PackageDescriptor;
 
 /**
  * VropsPackageDescriptor.
+ * <p>
+ * Content types missing in the content.yaml default to an empty list, i.e.
+ * nothing is processed, while content types without value are null, i.e.
+ * everything is processed.
  */
 public class VropsPackageDescriptor extends PackageDescriptor {
 	/**
 	 * view.
 	 */
-	private List<String> view;
+	private List<String> view = new ArrayList<>();
 	/**
 	 * dashboard.
 	 */
-	private List<String> dashboard;
+	private List<String> dashboard = new ArrayList<>();
 	/**
 	 * report.
 	 */
-	private List<String> report;
+	private List<String> report = new ArrayList<>();
 	/**
 	 * alertDefinition.
 	 */
-	private List<String> alertDefinition;
+	private List<String> alertDefinition = new ArrayList<>();
 	/**
 	 * alertDefinition.
 	 */
-	private List<String> symptomDefinition;
+	private List<String> symptomDefinition = new ArrayList<>();
 	/**
 	 * symptomDefinition.
 	 */
-	private List<String> recommendation;
+	private List<String> recommendation = new ArrayList<>();
 	/**
 	 * supermetric.
 	 */
-	private List<String> supermetric;
+	private List<String> supermetric = new ArrayList<>();
 	/**
 	 * metricConfig.
 	 */
-	private List<String> metricConfig;
+	private List<String> metricConfig = new ArrayList<>();
 	/**
 	 * customGroup.
 	 */
-	private List<String> customGroup;
+	private List<String> customGroup = new ArrayList<>();
 	/**
 	 * policy.
 	 */
-	private List<String> policy;
+	private List<String> policy = new ArrayList<>();
 	/**
 	 * defaultPolicy.
 	 */

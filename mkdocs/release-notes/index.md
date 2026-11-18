@@ -10,6 +10,17 @@
 [//]: # (Describe the breaking change AND explain how to resolve it)
 [//]: # (You can utilize internal links /e.g. link to the upgrade procedure, link to the improvement|deprecation that introduced this/)
 
+### *vROps content.yaml filtering rules*
+
+The `content.yaml` of `vrops` projects follows the same filtering rules as the other project types, for both `vrops:pull` and `vrops:push` (packaging):
+
+- Empty array (`[]`) - nothing from the object type is processed.
+- List of items - only the listed items are processed. If a listed item (without wildcard) is not present on the server (pull) or in the project (push), the build fails.
+- Null (no value) - everything from the object type is processed.
+- Missing category type - nothing from the object type is processed.
+
+Previously a category type without value was treated as an empty array and the listed items that were not found were silently skipped. To keep the previous behavior, replace the category types without value with `[]` and remove the items that are not present.
+
 ## Deprecations
 
 [//]: # (### *Deprecation*)
@@ -23,6 +34,18 @@
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
+
+### *Pull of out-of-the-box content for `vrops` projects*
+
+Since VCF Operations 9.0 `vrops:pull` exports only the user created views, dashboards, reports, super metrics and metric configurations by default (`-DincludeOutOfTheBoxContent=false`), which keeps the export small and saves around 1:30 minutes per pull. To pull out-of-the-box content as well, add `-DincludeOutOfTheBoxContent=true`:
+
+```bash
+mvn vrops:pull -Ptarget-env -DincludeOutOfTheBoxContent=true
+```
+
+#### Relevant Documentation
+
+- [Out-of-the-box Content](../usage/products/vrops.md#out-of-the-box-content)
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
