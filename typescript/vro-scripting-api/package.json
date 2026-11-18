@@ -25,7 +25,6 @@
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "jasmine": "^5.5.0",
-    "rimraf": "^6.0.1",
     "rollup": "^4.59.0",
     "@rollup/plugin-terser": "^1.0.0",
     "ts-node": "^10.9.2",
