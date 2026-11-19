@@ -56,6 +56,16 @@ If an action contains the `@tag` JSDoc tag the resulting package throws 400 erro
 
 If an action contains the `@tag` JSDoc tag the package is importable in Orchestrator and the provided `@tag` value is added to the corresponding Actions's Tags.
 
+### *Add Support for CSS Form Styles for Resource Actions*
+
+#### Previous Behavior
+
+Resource actions don't generate separate CSS file for form styles.
+
+#### New Behavior
+
+Add support for CSS file for form styles for resource actions similar to the request forms for `vra-ng` projects.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
