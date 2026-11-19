@@ -56,6 +56,16 @@ If an action contains the `@tag` JSDoc tag the resulting package throws 400 erro
 
 If an action contains the `@tag` JSDoc tag the package is importable in Orchestrator and the provided `@tag` value is added to the corresponding Actions's Tags.
 
+### *Add Validation of local content.yml File Items during Push for VCF Ops for Logs, VCFA VM Apps and VCF Ops*
+
+#### Previous Behavior
+
+VCF Ops for Logs (VRLI) and VCFA VM Apps (CS) project types were pushing all local content and ignoring content.yaml, while VCF Ops (VROPS) and VCFA All Apps push only what's explicitly defined in `content.yaml`. This inconsistency made it impossible to control what content gets deployed.
+
+#### New Behavior
+
+Added bidirectional content.yaml validation that throws a clear error if local files and content.yaml don't match. Both the package Maven goal and the Installer (import path) enforce this.
+
 ## Upgrade procedure
 
 [//]: # (Explain in details if something needs to be done)
