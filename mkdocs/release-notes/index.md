@@ -19,7 +19,20 @@
 
 ## Features
 
-[//]: # (### *Feature Name*)
+### *Orchestrator | Add support for "Foreach element" in workflow creation in TypeScript project*
+
+Added a new `@ForeachItem` decorator for TypeScript-based vRO workflows. This decorator generates a `foreach` canvas item that iterates over an array and calls a linked sub-workflow once for each element in the array — equivalent to the **"Foreach element"** available in the vRO Orchestrator UI.
+
+Key properties:
+
+- `linkedItem` — the ID of the sub-workflow to call for each array element.
+- `target` — the item to navigate to after all iterations complete.
+- `exception` (optional) — the item to route to if the sub-workflow throws an exception; generates a `<catch-item>` in the workflow XML.
+
+Input and output array bindings are declared with the standard `@In` / `@Out` parameter decorators. The `alt-connections` attribute in the generated XML is automatically computed as the total number of input + output bindings.
+
+#### Relevant Documentation
+
 [//]: # (Describe the feature)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
