@@ -147,10 +147,14 @@ export class VroJsProjParser {
 		const details = validBlocks[0];
 
 		const mappedTags = details.tags.map(tag => {
+			// For custom tags like @tag, comment-parser puts the value in 'name' instead of 'description'
+			// Move it to 'description' to match the expected behavior
+			const isCustomTag = tag.tag === "tag";
+
 			return {
 				title: tag.tag,
-				name: tag.name,
-				description: tag.description,
+				name: isCustomTag ? "" : tag.name,
+				description: isCustomTag ? (tag.name + (tag.description ? " " + tag.description : "")) : tag.description,
 				type: {
 					type: "NameExpression",
 					name: tag.type
