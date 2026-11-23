@@ -1,6 +1,6 @@
 {
 	"name": "@types/o11n-plugin-crypto",
-	"version": "4.25.2-SNAPSHOT",
+	"version": "4.26.0",
 	"author": "VMware PSCoE",
 	"license": "ISC",
 	"private": true
