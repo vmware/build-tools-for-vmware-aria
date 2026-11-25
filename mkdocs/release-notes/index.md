@@ -39,13 +39,6 @@ Input and output array bindings are declared with the standard `@In` / `@Out` pa
 
 [//]: # (Improvements -> Bugfixes/hotfixes or general improvements)
 
-### *Add support for 9.0.0 PowerShell runtime environments  for `polyglot` projects*
-
-Added support for:
-
-- powercli:9.0.0-powershell-7.4
-- powercli:9.1.1-powershell-7.6
-
 ## Improvements
 
 [//]: # (### *Improvement Name* )
@@ -58,16 +51,6 @@ Added support for:
 [//]: # (Explain how it behaves now, regarding to the change)
 [//]: # (Optional But higlhy recommended Specify *NONE* if missing)
 [//]: # (#### Relevant Documentation:)
-
-### Fix parsing of custom JSDoc `@tag` tag in Orchestrator Actions
-
-#### Previous Behavior
-
-If an action contains the `@tag` JSDoc tag the resulting package throws 400 error during package import.
-
-#### New Behavior
-
-If an action contains the `@tag` JSDoc tag the package is importable in Orchestrator and the provided `@tag` value is added to the corresponding Actions's Tags.
 
 ## Upgrade procedure
 
