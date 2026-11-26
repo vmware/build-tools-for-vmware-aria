@@ -172,6 +172,7 @@ Following is an exhaustive list of properties that can be used with the `install
     vro_tenant
     vro_authHost
     vro_authPort
+    vro_org_name
     vro_proxy
     vro_embedded
 

@@ -250,6 +250,7 @@
 						<auth>${vro.auth}</auth>
 						<authHost>${vro.authHost}</authHost>
 						<authPort>${vro.authPort}</authPort>
+						<org.name>${vro.org.name}</org.name>
 						<proxy>${vro.proxy}</proxy>
 						<tenant>${vro.tenant}</tenant>
 						<refresh.token>${vro.refresh.token}</refresh.token>
