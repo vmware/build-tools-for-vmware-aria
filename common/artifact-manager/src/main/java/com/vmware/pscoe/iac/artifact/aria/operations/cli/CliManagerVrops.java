@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,10 @@ public class CliManagerVrops implements AutoCloseable {
 	private static final String CHECK_FALSE = "--check false";
 
 	private static final String OPSCLI_PATH = "/usr/lib/vmware-vcops/tools/opscli/ops-cli.py";
+	/**
+	 * Printed by the appliance when an ops-cli command exits with non-zero code.
+	 */
+	private static final String COMMAND_FAILURE_MARKER = "failed with exit code";
 	private static final String UNIX_PATH_SEPARATOR = "/";
 	private static final String VROPS_SSH_COMMAND_INFO = "Executing vROps SSH command: {} ";
 	private static final String VROPS_SSH_COMMAND_0 = "$VMWARE_PYTHON_3_BIN %s %s %s %s";
@@ -155,7 +160,7 @@ public class CliManagerVrops implements AutoCloseable {
 		try {
 			logger.info("Sharing dashboards using command:\n{}", command);
 			List<String> output = SshClient.execute(session, command, getSshTimeout());
-			output.stream().forEach(logger::info);
+			logOutputAndFailOnErrors(output);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -169,7 +174,7 @@ public class CliManagerVrops implements AutoCloseable {
 		try {
 			logger.info("Unsharing dashboards using command:\n{}", command);
 			List<String> output = SshClient.execute(session, command, getSshTimeout());
-			output.stream().forEach(logger::info);
+			logOutputAndFailOnErrors(output);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -193,7 +198,7 @@ public class CliManagerVrops implements AutoCloseable {
 		try {
 			logger.info("Activating dashboards using command(s):\n{}", String.join(";\n", commands));
 			List<String> output = SshClient.execute(session, String.join(";", commands), getSshTimeout());
-			output.stream().forEach(logger::info);
+			logOutputAndFailOnErrors(output);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -218,7 +223,7 @@ public class CliManagerVrops implements AutoCloseable {
 		try {
 			logger.info("Deactivating dashboards using command(s):\n{}", String.join(";\n", commands));
 			List<String> output = SshClient.execute(session, String.join(";", commands), getSshTimeout());
-			output.stream().forEach(logger::info);
+			logOutputAndFailOnErrors(output);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -276,9 +281,26 @@ public class CliManagerVrops implements AutoCloseable {
 			logger.info("Executing vROps SSH remote command(s):\n{}", String.join("\n", cmdList));
 
 			List<String> output = SshClient.execute(session, remoteCommands, getSshTimeout());
-			output.stream().forEach(logger::info);
+			logOutputAndFailOnErrors(output);
 		} catch (JSchException | SftpException e) {
-			logger.error(e.getMessage(), e);
+			throw new RuntimeException("Unable to import files to vROps : " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Logs the output of ops-cli command(s) and fails if any of them failed, as
+	 * the commands are chained and their exit codes are not propagated.
+	 *
+	 * @param output the command(s) output
+	 * @throws RuntimeException if any of the commands failed
+	 */
+	void logOutputAndFailOnErrors(List<String> output) {
+		output.forEach(logger::info);
+		List<String> failures = output.stream().filter(line -> line.contains(COMMAND_FAILURE_MARKER))
+				.collect(Collectors.toList());
+		if (!failures.isEmpty()) {
+			throw new RuntimeException("ops-cli command(s) failed, check the log above for details:\n"
+					+ String.join("\n", failures));
 		}
 	}
 
@@ -301,7 +323,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 		reconnect();
 		List<String> output = SshClient.execute(session, command, getSshTimeout());
-		output.stream().forEach(logger::info);
+		logOutputAndFailOnErrors(output);
 
 		List<String> files = new ArrayList<>();
 		files.add(remoteFilePath + UNIX_PATH_SEPARATOR + viewName + ".zip");
@@ -319,7 +341,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 		reconnect();
 		List<String> output = SshClient.execute(session, command, getSshTimeout());
-		output.stream().forEach(logger::info);
+		logOutputAndFailOnErrors(output);
 
 		List<String> files = new ArrayList<>();
 		files.add(remoteFilePath + UNIX_PATH_SEPARATOR + dashboardName + ".zip");
@@ -337,7 +359,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 		reconnect();
 		List<String> output = SshClient.execute(session, command, getSshTimeout());
-		output.stream().forEach(logger::info);
+		logOutputAndFailOnErrors(output);
 
 		List<String> files = new ArrayList<>();
 		files.add(remoteFilePath + UNIX_PATH_SEPARATOR + superMetricName + ".json");
@@ -359,7 +381,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 		reconnect();
 		List<String> output = SshClient.execute(session, command, getSshTimeout());
-		output.stream().forEach(logger::info);
+		logOutputAndFailOnErrors(output);
 
 		List<String> files = new ArrayList<>();
 		files.add(remoteFilePath + UNIX_PATH_SEPARATOR + metricConfigName);
@@ -377,7 +399,7 @@ public class CliManagerVrops implements AutoCloseable {
 
 		reconnect();
 		List<String> output = SshClient.execute(session, command, getSshTimeout());
-		output.stream().forEach(logger::info);
+		logOutputAndFailOnErrors(output);
 
 		List<String> files = new ArrayList<>();
 		files.add(remoteFilePath + UNIX_PATH_SEPARATOR + reportName + ".zip");

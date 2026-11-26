@@ -37,6 +37,10 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 	public static final String VROPS_REST_AUTH_SOURCE = "restAuthSource";
 	public static final String VROPS_REST_AUTH_PROVIDER = "restAuthProvider";
 	public static final String SSH_PORT = "sshPort";
+	/**
+	 * Whether the content export (pull) includes the out-of-the-box content.
+	 */
+	public static final String VROPS_INCLUDE_OUT_OF_THE_BOX_CONTENT = "includeOutOfTheBoxContent";
 	private static final String DEFAULT_AUTH_SOURCE = "local";
 	private static final AuthProvider DEFAULT_AUTH_PROVIDER = AuthProvider.AUTH_N;
 
@@ -90,6 +94,15 @@ public class ConfigurationVrops extends ConfigurationWithRefreshToken {
 
 	public boolean getVropsImportDashboardsForAllUsers() {
 		return Boolean.parseBoolean(properties.getProperty(VROPS_IMPORT_DASHBOARDS_FOR_ALL_USERS, "true"));
+	}
+
+	/**
+	 * @return whether the content export (pull) includes the out-of-the-box
+	 *         content. False by default, i.e. only the user created content is
+	 *         exported.
+	 */
+	public boolean getVropsIncludeOutOfTheBoxContent() {
+		return Boolean.parseBoolean(properties.getProperty(VROPS_INCLUDE_OUT_OF_THE_BOX_CONTENT, "false"));
 	}
 
 	public String getVropsRestUser() {
